@@ -1,0 +1,24 @@
+
+
+public class Index {
+	byte x,y;
+	
+	public Index(){
+		x=0;
+		y=0;
+	}
+	
+	public Index(int i,int j){
+		x = (byte)i;
+		y = (byte)j;
+	}
+	
+	public Index(Index I){
+		x = I.x;
+		y = I.y;		
+	}
+	
+	public String toString(){
+		return "("+x+","+y+")";
+	}
+}

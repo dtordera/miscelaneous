@@ -1,0 +1,79 @@
+package dvtr.games.logic.BS10;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+
+public class BS10mainActivity extends Activity {
+
+	SharedPreferences Settings;
+	int GraphicalSet;
+
+	@Override public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        Settings = getSharedPreferences(BS10Settings.prefName,0);        
+       
+        setContentView(SetTitleBackGround());        
+    }  
+    
+    @Override protected void onStop(){
+       super.onStop();
+              
+    }              
+    
+    public View SetTitleBackGround(){
+    
+        LayoutInflater inflater = getLayoutInflater();
+       	View V = inflater.inflate(R.layout.menu, null);
+       	
+    	Resources res = getResources();
+    	Drawable d =res.getDrawable(R.drawable.menubkc);
+    	
+    	GraphicalSet = Settings.getInt("GS",BS10Settings.GS_RANDOM);
+       	
+    	switch(GraphicalSet)
+    		case BS10Settings.GS_CLASSIC : d = res.getDrawable(R.drawable.menubkc); break;
+    		case BS10Settings.GS_WWII    : d = res.getDrawable(R.drawable.menubkw); break;
+    		case BS10Settings.GS_NOBMPS  : d = res.getDrawable(R.drawable.menubkn); break;
+    		case BS10Settings.GS_RANDOM  : 
+    		
+    		switch(BS10Util.rnd.nextInt(3)) {
+    			case 0: d = res.getDrawable(R.drawable.menubkc); break;
+    			case 1: d = res.getDrawable(R.drawable.menubkw); break;
+    			default: d = res.getDrawable(R.drawable.menubkn); break;
+    		}    		
+    	}    	
+    	    	    	    	
+    	V.setBackgroundDrawable(d);    	
+    	
+    	return V;
+    }
+    
+    public void optionExit(View V){
+    	setResult(RESULT_OK);
+    	finish();
+    }
+    
+    public void optionNewGame(View V){
+    }
+    
+    public void optionSavedGames(View V){
+    }
+    
+    public void optionHowToPlay(View V){
+    }
+    
+    public void optionSettings(View V){
+    
+		Intent intent = new Intent();
+		intent.setClass(getApplicationContext(), BS10SettingsActivity.class);		
+		
+		startActivity(intent);	        	
+    }
+}

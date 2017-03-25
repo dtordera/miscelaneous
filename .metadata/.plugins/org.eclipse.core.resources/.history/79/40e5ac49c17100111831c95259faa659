@@ -1,0 +1,50 @@
+import java.util.Arrays;
+import java.util.Collections;
+
+
+public class Flota {
+	Vaixell[] V;
+	byte C,R;
+	
+	public Flota(byte c,byte r,byte[] l){	
+		C=c;
+		R=r;
+	
+		V= new Vaixell[l.length];
+		
+		for (byte n=0;n<l.length;n++)
+		V[n] = new Vaixell(l[n]);
+		
+		Coloca();	
+	}	
+	
+	public void Coloca(){
+		Posicions P = PosicionsShuffle();
+		
+		for (Vaixell v:V){
+			
+		}		
+	}
+	
+	public Posicions IndexsShufflejats(){
+		Index[] G = new Index[C*R];
+		int i,j;
+		
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+			G[j*C+i] = new Index(i,j);
+			
+		Posicions P = new Posicions();
+		
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+		{
+			P.add(i,j,K.HOR);
+			P.add(i,j,K.VER);
+		}
+	
+		Collections.shuffle(Arrays.asList(G));
+	
+		return G;
+	}
+}

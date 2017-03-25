@@ -1,0 +1,11 @@
+package comu;
+
+public class main {
+
+	public static void main(String[] args) {
+			
+		new FactoriaPuzzle(10,10,new byte[]{4,3,3,2,2,2,1,1,1,1}).Genera();
+
+	}
+}
+

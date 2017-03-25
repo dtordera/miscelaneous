@@ -1,0 +1,12 @@
+
+public class Posicions {
+	Posicio[] p;
+	
+	public Posicions(Posicio[] l){
+		
+	}
+	
+	public Posicions(){
+	p = new Posicio[0];
+	}
+}

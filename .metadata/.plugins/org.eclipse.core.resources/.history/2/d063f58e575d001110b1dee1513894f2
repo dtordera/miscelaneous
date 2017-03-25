@@ -1,0 +1,156 @@
+package meves.apps.logic;
+
+import meves.apps.logic.puzzle.FactoriaPuzzle;
+import meves.apps.logic.puzzle.K;
+import meves.apps.logic.puzzle.Puzzle;
+import android.app.Activity;
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.view.Display;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Toast;
+
+public class BSViewActivity extends Activity {
+
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        BSView B = new BSView(this);
+        
+        setContentView(B);
+    }
+    
+    public class BSView extends View {
+
+    	Puzzle P;
+    	Bitmap[] bmps;
+    	Bitmap 	 PuzzleBitmap;
+    	Canvas   PuzzleCanvas;
+    	Paint mPaint,ind;
+    	Context ctx;
+    	byte textsizeX,textsizeY;
+    	byte maxcellSize,
+    		 mincellSize,
+    		 currentcellSize;
+    	byte screenHeight,screenWidth;
+    	
+
+    	public BSView(Context context) {
+    		super(context);
+    		
+    		ctx = context;
+
+    		InitView();				
+    		InitGame();
+    	}
+	
+    	public void InitView(){
+	
+    		Resources r = this.getContext().getResources();		
+        
+    		bmps = new Bitmap[8];
+        
+    		setFocusable(true);
+                        
+    		loadTile(K.A,r.getDrawable(R.drawable.pa));
+    		loadTile(K.M,r.getDrawable(R.drawable.pp));
+    		loadTile(K.X,r.getDrawable(R.drawable.px));
+    		loadTile(K.N,r.getDrawable(R.drawable.pn));
+    		loadTile(K.S,r.getDrawable(R.drawable.ps));
+    		loadTile(K.E,r.getDrawable(R.drawable.pe));
+    		loadTile(K.O,r.getDrawable(R.drawable.po));
+    		loadTile(K.B,r.getDrawable(R.drawable.pb));
+		
+    		mPaint = new Paint();
+    		mPaint.setColor(Color.WHITE);
+    		mPaint.setAlpha(0xaa);
+    		mPaint.setAntiAlias(true);
+    		mPaint.setTextSize(24);
+    		
+    		Rect TextSize = new Rect();
+    		
+    		mPaint.getTextBounds("0",0,1,TextSize);
+    		
+    		textsizeX = (byte)(TextSize.right - TextSize.left);
+    		textsizeY = (byte)(TextSize.bottom - TextSize.top);
+    		
+    		
+    		WindowManager wm = (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE);
+    		Display display = wm.getDefaultDisplay();
+    		
+    		screenHeight = (byte)display.getHeight();
+    		screenWidth  = (byte)display.getWidth();    		
+
+    		mincellSize = (byte)((screenHeight - textsizeY) / P.R);
+    		currentcellSize = mincellSize;
+    		maxcellSize = (byte)((screenHeight - textsizeY) / 5);
+    		
+    		ind = new Paint();
+    		
+    		ind.setColor(0x000044);
+    		ind.setAlpha(0xff);
+    		ind.setAntiAlias(true);
+    		
+    		PuzzleBitmap = Bitmap.createBitmap(screenHeight,screenHeight,Bitmap.Config.ARGB_8888);
+    		PuzzleCanvas = new Canvas(PuzzleBitmap);
+    	}
+	
+    	public void InitGame(){
+    		long t = System.currentTimeMillis();
+    		P = new FactoriaPuzzle(10,10,new int[]{2,2,2,1,1,1,1},true).Genera();                	
+    		
+    		Toast.makeText(ctx,"Puzzle created ("+(System.currentTimeMillis()-t) + "ms)",Toast.LENGTH_SHORT).show();
+    		Toast.makeText(ctx,textsizeX + "," + textsizeY, Toast.LENGTH_SHORT).show();
+    	}
+	
+    	public void loadTile(byte key, Drawable tile) {
+    		Bitmap bitmap = Bitmap.createBitmap(mincellSize,mincellSize,Bitmap.Config.ARGB_8888);
+    		Canvas canvas = new Canvas(bitmap);
+    		tile.setBounds(0,0,mincellSize,mincellSize);
+    		tile.draw(canvas);
+    		
+    		bmps[key] = bitmap;
+    	}	
+		
+    	public void drawPuzzle(){
+    		byte i,j;
+    		
+    		for (j=0;j<P.R;j++)
+    		for (i=0;i<P.C;i++)
+    			if (P.v(i,j) > -1)
+    				PuzzleCanvas.drawBitmap(bmps[P.v(i,j)],i*currentcellSize,j*currentcellSize,mPaint);
+    			else
+    				PuzzleCanvas.drawRect(new Rect(i*currentcellSize,j*currentcellSize,(i+1)*currentcellSize - 1,(j+1)*currentcellSize - 1),ind);    		
+    				
+    		for (i=0;i<P.R;i++)
+    			PuzzleCanvas.drawText("".P.SR[i],i*currentcellSize,screenHeight - textsizeY - 2;
+    	}
+	
+    	public void onDraw(Canvas canvas){
+		
+    		byte i,j;
+		
+    		for (j=0;j<P.R;j++)	
+    		{			
+    			for (i=0;i<P.C;i++)			
+    				if (P.v(i,j) > -1)
+    					canvas.drawBitmap(bmps[P.v(i,j)],(i+1)*46,j*46,mPaint);
+    				else
+    					canvas.drawRect(new Rect((i+1)*46,j*46,(i+2)*46-1,(j+1)*46-1),ind);				
+    		}
+		
+    		for (i=0;i<P.C;i++)
+    			canvas.drawText(""+P.SR[i],(i+1)*46,20,mPaint);
+    		}
+    }
+}

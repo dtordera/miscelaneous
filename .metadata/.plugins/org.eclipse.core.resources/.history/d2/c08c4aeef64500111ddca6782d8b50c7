@@ -1,0 +1,190 @@
+import java.util.Arrays;
+import java.util.Random;
+
+public class Puzzle {
+	public int 	mc,
+				mr;
+	public Vaixell[] v;
+	public cella[]   c;
+	public boolean resolved;
+	int[] SR,SC;
+		
+	public Puzzle(int cl,int rw,Vaixell[] V,cella[] j,int[] SRo, int[] SCo){
+		mc = cl;
+		mr = rw;
+		v  = Arrays.copyOf(V,V.length);
+		c  = Arrays.copyOf(j,j.length);
+		SR = Arrays.copyOf(SRo,SRo.length);
+		SC = Arrays.copyOf(SCo,SCo.length);		
+		resolved = false;
+	}
+	
+	public boolean Resol() {
+	
+		boolean ret = false;		
+		char[][] G = new char[mc][mr]; // grid			
+		
+		Indexs p = new Indexs(mc,mr);
+			
+/*		System.out.println("Eliminant inicis ja establerts...");
+		for (int i=0;i<c.length;i++) 
+			switch(c[i].v) {
+				case k.B_ : for (int n=0;n<v.length;n++)
+						if ((v[n].l != 1) && !v[n].fixat){
+							v[n].i.x = c[i].i.x;
+							v[n].i.y = c[i].i.y;
+							v[n].fixat = true;
+							
+						}			
+				case k.A_:
+				case k.P_: 
+				case k.S_:
+				case k.E_: p.Borra(c[i].i.x,c[i].i.y);		
+	
+				default  : G[c[i].i.x][c[i].i.y] = c[i].v;
+			} */
+			
+		System.out.println("Borrant columnes 0...");			
+		for (int i=0;i<SC.length;i++)
+			if (SC[i] == 0) p.BorraColumna(i);
+			
+		System.out.println("Borrant files 0...");						
+		for (int i=0;i<SR.length;i++)
+			if (SR[i] == 0) p.BorraFila(i);
+			
+			
+		boolean Err = true;
+		boolean posat;		
+		Random  rnd = new Random();		
+
+		while (Err)
+		{						
+			for (int n=0;n<v.length;n++)
+			{
+				if (v[n].fixat) continue;		
+					
+				posat = false;
+				
+				for (int m=0;m<mc*mr && !posat;m++) // intentem a totes les posicions existents shufflejades(p.I)
+				{
+					if (p.I[m].x == Indexs.NV) continue; // si el valor esta borrat, el saltem
+				
+					boolean o = rnd.nextBoolean(); // escollim una orientacio inical aleatoria
+																
+					if (!IntentaPosar(v,n,p.I[m],o)) 
+					{
+						o = !o;
+						if (!IntentaPosar(v,n,p.I[m],o)) { // en cap orientacio aquesta posicio es valida
+					
+							Err = true;
+							continue;
+						}
+						
+					}
+					
+					// es valida, el fixem
+
+					v[n].fixat = true;
+					v[n].toGrid(G);						
+					p.Borra(m);
+				}																		
+			}
+		}		
+			
+			// ComprobaSolucio;
+//		}*/
+			
+		System.out.println("Solució : ");
+		System.out.println(toString());
+			
+		return ret;
+	}
+	
+	public boolean IntentaPosar(Vaixell[] v,int n,Index i,boolean o){
+		boolean ret = true;
+		Index D = new Index(-1,-1);
+		
+		v[n].posa(i,o);
+		
+		D = v[n].F();
+		
+		// dintre dels limits
+		if ((D.x > mc - 1) || (D.y > mr - 1)) 
+		{
+			System.out.printf("#" + n + "de l=" + (int)v[n].l + " a ("+i.x+","+i.y+") fora de marges\n");
+			return false;
+		}
+		
+								
+		for (int j=0;j<n && ret;j++) // Repasem tots els vaixells anteriors (es suposen fixats)
+		{
+			D = v[n].distancia(v[j]);
+			ret = ret && (D.x > 1) && (D.y > 1); // La distancia ha de ser major de 1 (aigua)
+		}
+		
+		return ret;		
+	}
+	
+	public void Comproba(){
+		String s="";
+		
+		s += "mc = " + mc + "; mr = " + mr + "\n";
+		
+		for (int i=0;i<v.length;i++)
+		s += "vaixell["+i+"] : i=("+v[i].i.x +","+v[i].i.y +"); l="+(int)v[i].l+"; o="+v[i].o + "; fixat=" + v[i].fixat+"\n";
+		
+		s += "\n";
+		for (int i=0;i<c.length;i++)
+		s += "cella[" +i+ "] : i=("+c[i].i.x+","+c[i].i.y+"); v="+k.r[c[i].v] + "\n";
+		
+		
+		
+		s += "\n";
+		
+		System.out.println(s);
+	}
+	
+	public String toString(){
+		char G[][] = new char[mc][mr];
+		String ret = "";
+						
+		if (resolved) {
+			for (int j=0;j<mr;j++)
+			for (int i=0;i<mc;i++)
+				G[i][j] = '~';					
+		
+			for (int n=0;n<v.length;n++)				
+				v[n].toGrid(G);	
+		}
+		else {
+			for (int j=0;j<mr;j++)
+			for (int i=0;i<mc;i++)
+				G[i][j] = ' ';
+
+			for (int n=0;n<c.length;n++)
+				G[c[n].i.x][c[n].i.y] = k.r[c[n].v];
+		}
+
+		for (int j=0;j<mr;j++)
+		{
+			for (int i=0;i<mc;i++)
+				ret += G[i][j] + "|";
+			
+			ret += " " + SC[j] + "\n";
+			
+			for (int i=0;i<mc;i++)
+			ret += "--";
+			
+			ret += "\n";
+			
+		}
+				
+		for (int i=0;i<mc;i++)
+			ret += SR[i] + " ";
+			
+		ret += "\n";
+
+		return ret;
+	}
+
+}

@@ -1,0 +1,24 @@
+package comu;
+
+public class main {
+
+	public static void main(String[] args) {
+	
+		byte[] SR = {2,2,1,2,3,1,3,1,4,1};
+		byte[] SC = {0,4,1,3,2,1,2,0,5,2};
+		byte[] Fs = {4,3,3,2,2,2,1,1,1,1};
+		Mostrades[] M = {new Mostrades(3,1,K.X),
+								   new Mostrades(0,4,K.B),
+								   new Mostrades(3,5,K.B),
+								   new Mostrades(6,6,K.O),
+								   new Mostrades(1,8,K.A)};
+								   
+		BSPuzzle B = new BSPuzzle(SR,SC,M,Fs);
+		
+		shipmodel.Resoledor R = new shipmodel.Resoledor(B);
+			
+		System.out.println(R.Resol(1));
+
+	}
+}
+

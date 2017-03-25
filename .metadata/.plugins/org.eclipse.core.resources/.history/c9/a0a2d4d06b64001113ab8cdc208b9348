@@ -1,0 +1,19 @@
+package dvtr.games.logic.BS10;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.view.View;
+
+public class BS10View extends View {
+
+
+	// Constructor
+	public BS10View(Context context){
+	    super(context);
+	}
+	
+	// onDraw
+    @Override protected void onDraw(Canvas canvas){    	
+    	super .onDraw(canvas);    		    		    		
+    }    				
+}

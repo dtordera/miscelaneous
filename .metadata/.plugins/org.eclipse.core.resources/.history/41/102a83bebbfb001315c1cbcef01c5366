@@ -1,0 +1,122 @@
+// main del engine: proves
+
+package comu;
+
+public class main {
+
+	public static void main(String[] args) {
+			
+//		BSPuzzle B = new shipmodel.FactoriaPuzzle(10,10,new byte[]{4,3,3,2,2,2,1,1,1,1}).Genera();
+
+		BSPuzzle B = new cellmodel.FactoriaPuzzle(8,8,new byte[]{4,3,3,2,2,2,1,1,1,1}).Genera();
+		
+		System.out.println(B.toString());
+		System.out.println(B.gt);
+				
+		cellmodel.Resoledor R = new cellmodel.Resoledor(B);
+		
+		R.Resol();
+		
+		System.out.println(R.toString());
+		
+/*		shipmodel.Resoledor N = new shipmodel.Resoledor(B);
+		
+		N.Resol(0);
+		
+		System.out.println(N.toString());*/
+								
+/*BSPuzzle B = new shipmodel.FactoriaPuzzle(6,6,new byte[]{3,2,2,1}).Genera();
+		
+		shipmodel.Resoledor R = new shipmodel.Resoledor(B);*/
+
+/*		byte[] SR = {2,2,2,3,3,2,1,3,2};
+		byte[] SC = {2,1,4,1,4,1,2,5,0};
+		byte[] Fs = {4,3,3,2,2,2,1,1,1,1};
+		Mostrades[] M = {new Mostrades(1,2,K.B),
+								   new Mostrades(5,2,K.A),
+								   new Mostrades(3,4,K.M),
+								   new Mostrades(7,3,K.S),
+								   new Mostrades(6,5,K.B)};*/
+								   
+/*		byte[] SR = {3,0,2,3,1,1,1,3,2,4};
+		byte[] SC = {4,2,1,1,4,2,1,0,5,0};
+		byte[] Fs = {4,3,3,2,2,2,1,1,1,1};
+		Mostrades[] M = {
+							new Mostrades(2,0,K.O),
+							new Mostrades(4,0,K.M),
+							new Mostrades(6,2,K.A),
+							new Mostrades(7,4,K.N),
+							new Mostrades(9,5,K.S),
+							new Mostrades(3,8,K.E),
+							new Mostrades(8,8,K.E)};*/
+													
+/*		byte[] SR = {1,0,2,4,1,2,3,2,1,4};
+		byte[] SC = {3,0,1,1,0,2,2,5,0,6};
+		byte[] Fs = {4,3,3,2,2,2,1,1,1,1};
+		Mostrades[] M = {
+							new Mostrades(6,0,K.M),
+							new Mostrades(6,2,K.B),
+							new Mostrades(3,5,K.B),
+							new Mostrades(7,7,K.E)};*/
+
+/*		byte[] SR = {2,3,2,1,0,3,2,3,2,2};
+		byte[] SC = {3,1,0,3,0,3,4,2,4,0};
+		byte[] Fs = {4,3,3,2,2,2,1,1,1,1};
+		Mostrades[] M = {
+							new Mostrades(2,0,K.E),
+							new Mostrades(9,0,K.B),
+							new Mostrades(7,1,K.A),
+							new Mostrades(1,5,K.M),
+							new Mostrades(8,6,K.A),
+							new Mostrades(0,7,K.O),
+							new Mostrades(6,8,K.M)};*/
+							
+/*byte[] SR = {1,1,2,0,2,4,1,4,2,3};
+		byte[] SC = {2,4,1,4,2,2,1,4,0,0};
+		byte[] Fs = {4,3,3,2,2,2,1,1,1,1};
+		Mostrades[] M = {
+							new Mostrades(8,1,K.A),
+							new Mostrades(0,3,K.O),
+							new Mostrades(7,3,K.A),
+							new Mostrades(5,4,K.S),
+							new Mostrades(9,5,K.B)};							 
+								   
+		BSPuzzle B = new BSPuzzle(SR,SC,M,Fs,K.CELL_MODEL);
+				
+		new cellmodel.Resoledor(B).Resol();			   
+								   							   								  							
+/*		R.Resol(0);
+		
+		System.out.println();
+		
+		for (shipmodel.Vaixell[] s:R.S){
+			
+				String r="";
+		
+				for (byte j=0;j<R.R;j++) {
+		
+					for (byte i=0;i<R.C;i++){
+					
+						char m='.';
+		
+						for (shipmodel.Vaixell v:s)
+							if (v.c(i,j)!=K.I) m=v.c(i,j);					
+					 
+						r+=m + " ";
+					}
+				
+					r += R.SC[j] + "\n";
+				}		
+		
+				r+="\n";
+				for (byte i=0;i<R.C;i++)
+					r+=R.SR[i] + " ";
+					
+				System.out.println(r);					
+			}
+			
+		System.out.println(R.tr);*/
+	}
+	
+}
+

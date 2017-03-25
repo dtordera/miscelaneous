@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Exercici 2, unitat 8 (NO GEOCODER)</string>
+    <string name="Desti">Destí</string>
+    <string name="Long_desti">Longitud destí</string>
+    <string name="Lat_desti">Latitud destí</string>
+    <string name="Long_act">Longitud actual</string>
+    <string name="Lat_act">Latitud actual</string>
+    <string name="Dist">Distància</string>
+    <string name="DefaultValue">&lt;sense ref.&gt;</string>
+
+</resources>

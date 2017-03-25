@@ -1,0 +1,8 @@
+
+public class celda {
+	boolean Determinada;
+	int 	Orientacio;
+	boolean PartVaixell;
+	
+	
+}

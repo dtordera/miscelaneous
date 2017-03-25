@@ -1,0 +1,21 @@
+package dvtr.games.logic.BS10;
+
+import android.content.Context;
+
+public class BS10Settings {
+
+	public final static String prefName = "BS10Settings";
+
+	public final static byte GS_CLASSIC=0,
+						     GS_WWII=1,
+						     GS_NOBMPS=2,
+						     GS_RANDOM=3;					    
+						     
+	public int GraphicalSet = GS_CLASSIC;
+	public Context ctx;
+	
+	public BS10Settings(Context context) {
+		ctx = context;
+		GraphicalSet = (byte) ctx.getSharedPreferences(prefName,0).getInt("GS",(int)GS_RANDOM);
+	}		
+}

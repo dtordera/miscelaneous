@@ -1,0 +1,27 @@
+
+public class k {
+	public final static char x_ = 0,
+							 A_ = 1,
+							 P_ = 2,
+							 B_ = 3,
+							 N_ = 4,
+							 S_ = 5,
+							 E_ = 6,
+							 O_ = 7;
+							 
+	public final static char[] r  = {' ','·','X','O','A','U','>','C'};
+	
+	public final static byte _i_ = -1,
+						     _h_ = 0,
+							 _v_ = 1;
+							 
+	public final static char SUB = 1,		
+							 DES = 2,
+							 CRE = 3,
+							 ACO = 4,
+							 POR = 5;
+							 
+	public final static byte N(byte o){
+	return o==k._v_? k._h_ : o==k._h_? k._v_ : k._i_;
+	}
+}

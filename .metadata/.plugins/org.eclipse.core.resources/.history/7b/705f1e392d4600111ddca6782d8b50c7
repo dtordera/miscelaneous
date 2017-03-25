@@ -1,0 +1,12 @@
+
+public class Yubotu01 {
+
+	public static void main(String[] args) {
+	
+//		Logic159.Puzzles[2].Comproba();
+//		Logic159.Puzzles[2].Resol();
+		Logic159.Puzzles[3].Comproba();
+		Logic159.Puzzles[3].Resol();
+	}
+
+}

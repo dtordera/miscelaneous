@@ -1,0 +1,86 @@
+
+public class Vaixell {
+	public Index i = new Index(-1,-1);	// inici
+	public char  l = 0;					// longitud
+	public byte o= k._i_;	    // orientacio
+	public boolean fixat = false;		// si ja està determinat
+			
+	public Index[] Aigues() {				
+		Index[] r = new Index[3*(l+2)];
+		
+		if (l==k.SUB) {
+			for (int m=-1;m<2;m++)
+			for (int n=-1;n<2;n++)
+			r[n + 1 + (m+1)*3] = new Index(i.x + n,i.y + m)
+		}
+		
+		for (int m=-1;m<l+1;m++)		
+		for (int n=-1;n<2;n++)
+			r[n + 1 + (m+1)*3] = new Index(i.x + n*Py() + m*Px(),i.y + m*Py() + n*Px());	
+		
+		return r;
+	}
+	
+	public boolean a(Index f){
+		
+		return (f.x >= i.x) && (f.x < i.x + Px()*l) && (f.y >= i.y) && (f.y	< i.y + Py()*l);
+	}
+	
+	public boolean e(Index f){
+		return ((i.x == f.x) && (i.y == f.y));
+	}
+	
+	public boolean a_Area(Index[] a) {	
+		boolean ret = false;
+		
+		for (int n=0;n<a.length && !ret;n++)
+			for (int m=0;m<l && !ret;m++)
+				ret = ret || a[n].e(new Index(i.x+Px()*m,i.y+Py()*m));
+	
+		return ret;
+	}
+	
+	
+	public Vaixell(int x,int y,char L,byte O){
+		i.x = x;
+		i.y = y;
+		l = L;
+		o = O;
+	}
+	
+	public Vaixell(char L) {
+		i.x = 0;
+		i.y = 0;
+		l   = L;
+		o   = k._h_;
+	}
+	
+	public void posa(Index I,byte O) {
+		i.x = I.x;
+		i.y = I.y;
+		o   = O;
+	}
+	
+	public Index F(){ // Punt final
+		return new Index(i.x + Px()*l,i.y + Py()*l);		
+	}
+	
+	public byte Px() { // projeccio a X
+		return (byte)(o == k._h_ ? 1 : 0);
+	}
+	
+	public byte Py() { // projeccio a Y
+		return (byte)(o == k._v_ ? 1 : 0);
+	}
+			
+	public void toGrid(char [][] g){
+		char c;
+	
+		for (int n=0;n<l;n++)
+		{
+			c = n == 0 ? (l == 1 ? 'O': (o == k._v_? 'A':'C')):(n==l-1 ? (o == k._v_? 'U' : '>'): 'X');
+							
+			g[i.x + n*Px()][i.y + n*Py()] = c;
+		}
+	}
+}

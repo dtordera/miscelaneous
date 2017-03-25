@@ -1,0 +1,42 @@
+package comu;
+
+import java.util.Arrays;
+
+public class main {
+
+	public static void main(String[] args) {
+			
+		BSPuzzle B = new FactoriaPuzzle(10,10,new byte[]{4,3,3,2,2,2,1,1,1,1}).Genera();
+		
+		shipmodel.Resoledor R = new shipmodel.Resoledor(B);
+		
+		R.Resol(0);
+		
+		for (shipmodel.Vaixell[] s:R.S){
+				char[][] G = new char[R.C][R.R];
+		
+				for (char[] g:G)
+					Arrays.fill(g,K.I);
+		
+				for (Mostrades ci:R.M)
+					G[ci.x][ci.y] = ci.v;
+			
+				String r="";
+		
+				for (byte j=0;j<R.R;j++) {
+		
+					for (byte i=0;i<R.C;i++) 
+						r+=G[i][j] + " ";
+				
+					r += R.F.SC[j] + "\n";
+		}		
+		
+		r+="\n";
+		for (byte i=0;i<C;i++)
+			r+=F.SR[i] + " ";
+
+		}				
+
+	}
+}
+

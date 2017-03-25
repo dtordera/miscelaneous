@@ -1,0 +1,5 @@
+
+public class notes {
+// 	grid.populate : error si posem 9x9, 1,1,1,1,2,2,2,3,3,4,5 : desapareixen els de dos
+//  recordar condició bàsica docupacio
+}

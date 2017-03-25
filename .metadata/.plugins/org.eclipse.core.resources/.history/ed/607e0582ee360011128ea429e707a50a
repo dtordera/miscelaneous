@@ -1,0 +1,54 @@
+package meves.apps.android;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
+public class Ex4_1Activity extends Activity {
+	
+	final String TAG = "Ex4_1Activity";    	
+	
+	public void Toasting(String s){
+		Toast toast = Toast.makeText(getApplicationContext(), TAG + " en " + s + "...", Toast.LENGTH_LONG);
+		toast.show();
+	}
+	
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+    	   	
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+        Toasting("onCreate()");
+     }
+
+    @Override
+    public void onPause(){
+    	super.onPause();
+    	Toasting("onPause()");
+    }
+    
+    @Override
+    public void onResume(){
+    	super.onResume();
+    	Toasting("onResume()");
+    }
+    
+    @Override
+    public void onRestart(){
+    	super.onRestart();
+    	Toasting("onRestart()");
+    }
+    
+    @Override
+    public void onStop(){
+    	super.onStop();
+    	Toasting("onStop()");
+    }
+
+    @Override
+    public void onDestroy(){
+    	Toasting("onDestroy()");
+    	super.onDestroy();
+    }
+}

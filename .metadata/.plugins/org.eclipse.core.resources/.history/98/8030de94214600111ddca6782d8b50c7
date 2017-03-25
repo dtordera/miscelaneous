@@ -1,0 +1,8 @@
+
+public class Vaixells {
+	Vaixell[] Flota;
+	
+	public Vaixells(int[] v){
+		Flota = Array.copy
+	}
+}

@@ -1,0 +1,140 @@
+// BS10mainActivity : Activity inicial. menu.
+
+package dvtr.games.logic.BS10;
+
+import com.google.ads.AdRequest;
+import com.google.ads.AdSize;
+import com.google.ads.AdView;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.View;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
+import android.view.animation.TranslateAnimation;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+public class BS10mainActivity extends Activity {
+
+	SharedPreferences Settings; // preferencies, per agafar el set grafic
+
+	// onCreate
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+
+		System.gc(); // cridem gc per alliberar tota la memoria posible al iniciar
+
+		super.onCreate(savedInstanceState);
+		Settings = getSharedPreferences(BS10Constants.prefName, 0); // trobem settings
+
+
+		setContentView(R.layout.menu); // posem view
+	}
+
+	// onStop
+	@Override
+	protected void onStop() {
+		super.onStop();
+	}
+
+	// SetTitleBackGround : posem fons segons set grafic
+	public void SetTitleBackGround() {
+
+		// no guardem res a memoria per no excedir VM Budget
+
+		switch (Settings.getInt("GS", BS10Constants.GS_CLASSIC)) {
+		case BS10Constants.GS_CLASSIC:
+			((RelativeLayout)findViewById(R.id.mainLayout)).setBackgroundDrawable(getResources().getDrawable(R.drawable.menubkc)); break;
+		case BS10Constants.GS_WWII:
+			((RelativeLayout)findViewById(R.id.mainLayout)).setBackgroundDrawable(getResources().getDrawable(R.drawable.menubkw)); break;
+		case BS10Constants.GS_NOBMPS:
+			((RelativeLayout)findViewById(R.id.mainLayout)).setBackgroundDrawable(getResources().getDrawable(R.drawable.menubkn)); break;
+		}
+
+		// Posem altre cop el texte "new game" desde "loading..."
+		((TextView)findViewById(R.id.twOpcio1)).setText("new game");
+
+//		AdView adView = (AdView)findViewById(R.id.adView);
+
+		RelativeLayout parent = (RelativeLayout) findViewById(R.id.mainLayout);
+		AdView ad = new AdView(this, AdSize.BANNER, "a14fa5575108295");
+
+		parent.addView(ad);
+		AdRequest r = new AdRequest();
+		ad.loadAd(r);
+
+	    RotateAnimation rAnim = new RotateAnimation(0,-90, 25,25);
+
+        rAnim.setInterpolator(new LinearInterpolator());
+        rAnim.setFillAfter(true);
+        rAnim.setFillEnabled(true);
+        rAnim.setDuration(0);
+
+        ad.setAnimation(rAnim);
+        ad.startLayoutAnimation();
+
+        TranslateAnimation anim=new TranslateAnimation(0, 0, 20, 20);
+
+        anim.setFillAfter(true);
+        anim.setFillEnabled(true);
+        anim.setDuration(0);
+
+        ad.setAnimation(anim);
+        ad.startLayoutAnimation();
+	}
+
+	// onResume : posem fons
+	@Override
+	protected void onResume(){
+		super.onResume();
+
+		System.gc();
+
+		SetTitleBackGround();
+	}
+
+	// optionExit : click d'exit, sortim
+	public void optionExit(View V) {
+		setResult(RESULT_OK);
+		finish();
+	}
+
+	// optionNewGame : click de NewGame, iniciem BS10GameActivity
+	public void optionNewGame(View V) {
+
+		((TextView)findViewById(R.id.twOpcio1)).setText("loading...");
+
+		Intent intent = new Intent();
+		intent.setClass(getApplicationContext(), BS10GameActivity.class);
+
+		startActivity(intent);
+	}
+
+	// optionHowToPlay : click de howto, iniciem BS10HowToPlayActivity
+	public void optionHowToPlay(View V) {
+		Intent intent = new Intent();
+		intent.setClass(getApplicationContext(), BS10HowToPlayActivity.class);
+
+		startActivity(intent);
+	}
+
+	// optionSettings : click de settings, iniciem BS10SettingsActivity
+	public void optionSettings(View V) {
+
+		Intent intent = new Intent();
+		intent.setClass(getApplicationContext(), BS10SettingsActivity.class);
+
+		startActivity(intent);
+	}
+
+	// optionAbout : click d'about, iniciem BS10AboutActivity
+	public void optionAbout(View V) {
+		Intent intent = new Intent();
+		intent.setClass(getApplicationContext(), BS10AboutActivity.class);
+
+		startActivity(intent);
+	}
+}

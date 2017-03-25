@@ -1,0 +1,22 @@
+
+public class Yubotu01 {
+
+	public static void main(String[] args) {
+	
+		int[] 		SR = {2,0,2};
+		int[] 		SC = {2,0,2};
+		cella[]	 	C = {	new cella(1,2,k.S_)};
+		Vaixell[] 	V = { 	
+							new Vaixell(k.SUB),
+							new Vaixell(k.SUB),							
+							new Vaixell(k.SUB),							
+							new Vaixell(k.SUB)							
+					};
+				    
+		Puzzle P = new Puzzle(3,3,V,C,SR,SC);
+
+		P.Comproba();
+		P.Resol();
+	}
+
+}

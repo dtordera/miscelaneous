@@ -1,0 +1,98 @@
+import java.util.Arrays;
+import java.util.Collections;
+
+
+public class Flota {
+	Vaixell[] V;
+	byte C,R;
+	
+	public Flota(byte c,byte r,byte[] l){	
+		C=c;
+		R=r;
+	
+		V= new Vaixell[l.length];
+		
+		for (byte n=0;n<l.length;n++)
+		V[n] = new Vaixell(l[n]);
+		
+		Coloca();	
+		
+		String s;
+		
+		for (int j=0;j<R;j++)
+		{
+			s = "";
+			for (int i=0;i<C;i++)
+			{
+				char c = '·';
+				for (Vaixell v:V)
+					if (v.dintre(i,j)) c='X';
+					
+				s+=c;
+		}
+	}	
+	
+	public void Coloca(){
+	
+		boolean fet = false;
+		
+		while (!fet)
+		{	
+			Posicions P = ShufflePosicions();
+			
+			for (Vaixell v:V)
+				v = new Vaixell(v.L);
+		
+			for (Vaixell v:V) {							
+				for (Posicio p:P.P)
+					if (CheckPosicio(v,V,p)) {
+						v.ps = new Posicions(p);
+						treuVaixell(v,P);
+						break;
+					}
+			}
+			
+			fet = true;
+			
+			for (Vaixell v:V)
+				fet &= v.r()!=null;
+		}		
+	}
+	
+	public void treuVaixell(Vaixell v,Posicions P){
+	
+		if (v.r()==null) return;
+		
+		byte xo = (byte)(v.r().x-1),
+			 yo = (byte)(v.r().y-1),
+			 xf = (byte)(v.rf().x+1),
+			 yf = (byte)(v.rf().y+1);
+		
+		for (byte i=xo;i<xf;i++)
+		for (byte j=yo;j<yf;j++)
+			P.remove(i,j);
+	}
+	
+	public boolean CheckPosicio(Vaixell v,Vaixell[] V,Posicio p){
+		boolean r = false;
+				
+		for (Vaixell l:V)
+		r&=!v.choque(l);
+		
+		return r;
+	}
+	
+	public Posicions ShufflePosicions(){
+		int i,j;					
+		Posicions P = new Posicions();
+		
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+		{
+			P.add(i,j,K.HOR);
+			P.add(i,j,K.VER);
+		}
+	
+		return P.Shuffle();
+	}
+}

@@ -1,0 +1,14 @@
+import java.util.Arrays;
+
+
+public class Posicions {
+	Posicio[] p;
+	
+	public Posicions(Posicio[] l){
+		p = Arrays.copyOf(l,l.length)
+	}
+	
+	public Posicions(){
+		p = new Posicio[0];
+	}
+}

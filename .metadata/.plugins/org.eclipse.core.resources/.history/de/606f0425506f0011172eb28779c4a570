@@ -1,0 +1,706 @@
+package dvtr.games.logic.BS10.puzzle;
+
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+
+public class Puzzle {
+
+	public byte C,R;
+	public Vaixell[] B;
+	public int nB;
+	private final byte G[][];
+
+	public int dificultat = 0;
+
+	public boolean generant;
+	public boolean recursiu;
+
+	public long ms;
+
+	public byte[] SR,SC;
+	public CI[] I;
+
+	public Puzzle(byte[]sr,byte[]sc,CI[] i,int[] b,long t){
+		SR=sr.clone();
+		SC=sc.clone();
+		C=(byte) sr.length;
+		R=(byte) sc.length;
+		I=Arrays.copyOf(i,i.length);
+		G=novaGrid(C,R);
+		PosaInicials();
+		nB = b.length;
+		B=new Vaixell[nB];
+		for (int n=0;n<nB;n++)
+			B[n]=new Vaixell(b[n]);
+		ms = t;
+	}
+
+	public Puzzle(byte[]sr,byte[]sc,CI[] i,int[] b){
+		SR=sr.clone();
+		SC=sc.clone();
+		C=(byte) sr.length;
+		R=(byte) sc.length;
+		I=Arrays.copyOf(i,i.length);
+		G=novaGrid(C,R);
+		PosaInicials();
+		nB = b.length;
+		B=new Vaixell[nB];
+		for (int n=0;n<nB;n++)
+			B[n]=new Vaixell(b[n]);
+	}
+
+	public boolean aCI(byte i,byte j){
+		boolean r=false;
+
+		for (byte n=0;n<I.length;n++)
+		r|=I[n].i.x==i&&I[n].i.y==j;
+
+		return r;
+	}
+
+	public Puzzle(Puzzle P){
+		byte i,j;
+
+		C = P.C;
+		R = P.R;
+		B = Arrays.copyOf(P.B,P.B.length);
+		SR = P.SR.clone();
+		SC = P.SC.clone();
+
+		G = novaGrid(C,R);
+
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+		G[i][j] = P.G[i][j];
+
+		dificultat = P.dificultat;
+		generant = P.generant;
+	}
+
+	public boolean equals(Puzzle P){
+		boolean r=true;
+		byte i,j;
+
+		for (i=0;i<SR.length;i++)
+		r &= SR[i]==P.SR[i];
+
+		if (!r) return r;
+
+		for (j=0;j<SC.length;j++)
+		r &= SC[j]==P.SC[j];
+
+		if (!r) return r;
+
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+			r&=G[i][j]==P.G[i][j];
+
+		return r;
+	}
+	public byte[][] novaGrid(int C,int R){
+		byte[][]g = new byte[C][R];
+
+		for (byte i=0;i<C;i++)
+		{
+			g[i] = new byte[R];
+			Arrays.fill(g[i],K.I);
+		}
+
+		return g;
+	}
+
+	public Puzzle(int c,int r){
+		C  = (byte)c;
+		R  = (byte)r;
+
+		SR = new byte[C];
+		SC = new byte[R];
+
+		B  = new Vaixell[0];
+
+		G  = novaGrid(C,R);
+	}
+
+	public void Coloca(int []b){
+
+		byte n;
+		GridIndex In = new GridIndex(C,R);
+
+		In.shuffle();
+
+		for (n=0;n<b.length;n++)
+		{
+			
+		}
+	}
+
+/*	public boolean Coloca(int []b){
+
+		Vaixell[] V = new Vaixell[b.length];
+
+		for (int n=0;n<b.length;n++)
+			V[n] = new Vaixell(b[n]);
+
+		ArrayList<Index>I=new ArrayList<Index>();
+
+		for (int j=0;j<R;j++)
+		for (int i=0;i<C;i++)
+		I.add(new Index(i,j));
+
+		Collections.shuffle(I);
+
+		return Coloca(V,I);
+	}
+
+	public boolean Coloca(Vaixell[] V,ArrayList<Index> I){
+
+		if (V.length==0) return true;
+		if (I.size()==0) return false;
+
+		Collections.shuffle(I);
+
+		for (Index i:I)
+			if (Coloca(V[0],i)) return Coloca(Arrays.copyOfRange(V,1,V.length),I);
+
+		return false;
+	}
+
+	public boolean ColocaH(Vaixell V,Index i){
+		boolean r=true;
+		Index E=i;
+
+		for (int n=0;n<V.L;n++) {r&=i(E);E=E.E();}
+
+		E=i;
+
+		if (r) {
+			for(int n=0;n<V.L;n++) {
+				det(E,V.L==1?K.B:n==0?K.O:n==V.L-1?K.E:K.X);
+				E=E.E();
+			}
+			PatronsAigua();
+		}
+
+		return r;
+	}
+
+	public boolean ColocaV(Vaixell V,Index i){
+		boolean r=true;
+		Index S=i;
+
+		for (int n=0;n<V.L;n++){r&=i(S);S=S.S();}
+
+		S=i;
+
+		if (r) {
+			for(int n=0;n<V.L;n++) {
+				det(S,V.L==1?K.B:n==0?K.N:n==V.L-1?K.S:K.X);
+				S=S.S();
+			}
+			PatronsAigua();
+		}
+
+		return r;
+	}
+
+	public boolean Coloca(Vaixell V,Index i){
+		return ColocaH(V,i)||ColocaV(V,i);
+	}*/
+
+	public byte v(int x,int y){if(x<0||x>=C||y<0||y>=R) return K.A; return G[x][y];}
+	public byte v(Index i){return v(i.x,i.y);}
+
+	public boolean s(int x,int y){if(x<0||x>=C||y<0||y>=R) return false;return v(x,y)>K.A;}
+	public boolean s(Index i){return s(i.x,i.y);}
+
+	public boolean i(int x,int y){if(x<0||x>=C||y<0||y>=R) return false;return v(x,y)==K.I;}
+	public boolean i(Index i){return i(i.x,i.y);}
+
+	public boolean d(int x,int y){if(x<0||x>=C||y<0||y>=R) return true;return v(x,y)==K.A||v(x,y)>K.M;}
+	public boolean d(Index i){return d(i.x,i.y);}
+
+	public String r(int x,int y){if(x<0||x>=C||y<0||y>=R) return "·";return ""+K.REPR[v(x,y)+1];}
+	public String r(Index i){return r(i.x,i.y);}
+
+	public void reset(int x,int y){G[x][y]=K.I;}
+
+	public void PosaInicials(){for (int n=0;n<I.length;n++) det(I[n].i,I[n].v);}
+	public byte SC(int j){byte r=0;for(byte i=0;i<C;i++)if(s(i,j))r++;return r;}
+	public byte SR(int i){byte r=0;for(byte j=0;j<R;j++)if(s(i,j))r++;return r;}
+	public byte IC(int j){byte r=0;for(byte i=0;i<C;i++)if(i(i,j))r++;return r;}
+	public byte IR(int i){byte r=0;for(byte j=0;j<R;j++)if(i(i,j))r++;return r;}
+
+	@Override
+	public String toString(){String r="";for(int j=0;j<R;j++){for(int i=0;i<C;i++)r+=r(i,j)+" ";r+=" " + SC[j]+" "+SC(j)+" "+IC(j)+"\n";
+	}r+="\n";for(int i=0;i<C;i++)r+=SR[i]+" ";r+="\n";for(int i=0;i<C;i++)r+=SR(i)+" ";r+="\n";for(int i=0;i<C;i++)r+=IR(i)+" ";r+="\n";
+	for (int i=0;i<B.length;i++)r+="\n"+B[i].toString() + " " + (B[i].det()?"("+B[i].ro.x+","+B[i].ro.y+")("+B[i].rf.x+","+B[i].rf.y+")":"");return r;}
+
+	public boolean A(int x,int y){return det(x,y,K.A);}
+	public boolean A(Index i)	{return det(i.x,i.y,K.A);}
+	public boolean A(Index...I) {boolean r=true;for(Index i:I)r&=det(i.x,i.y,K.A); return r;}
+
+	public boolean M(int x,int y){return det(x,y,K.M);}
+
+	public boolean mV(Index i,byte v){return d(i)&&v(i)==v;}
+	public boolean mM(Index i){return v(i)==K.M;}
+	public boolean mA(Index i){return mV(i,K.A);}
+	public boolean mA(int x,int y){ return mA(new Index(x,y));}
+	public boolean mX(Index i){return mV(i,K.X);}
+	public boolean mN(Index i){return mV(i,K.N);}
+	public boolean mS(Index i){return mV(i,K.S);}
+	public boolean mE(Index i){return mV(i,K.E);}
+	public boolean mO(Index i){return mV(i,K.O);}
+	public boolean mB(Index i){return mV(i,K.B);}
+	public boolean mA(Index...I){boolean r=true;for(Index i:I)r&=mA(i);return r;}
+
+	public boolean det(Index i,byte v){return det(i.x,i.y,v);}
+	public boolean det(int x,int y,byte v){
+
+		if (v(x,y)>=v||d(x,y)) return false;
+
+		G[x][y] = v;
+		return true;
+	}
+
+	public void Reset(){
+		for (byte i=0;i<C;i++)
+        for (byte j=0;j<R;j++)
+        if (!aCI(i,j)) reset(i,j);
+	}
+
+	public boolean PatronsAigua() {
+
+		boolean r = false;
+		Index I = new Index();
+		byte x,y;
+
+		for (y=0;y<R;y++)
+		for (x=0;x<C;x++)
+		{
+			I.x = x;
+			I.y = y;
+
+			switch(v(x,y)){
+			case K.X :
+			case K.M : r|=A(I.NO(),I.NE(),I.SO(),I.SE()); break;
+			case K.B : r|=A(I.NO(),I.N(),I.NE(),I.O(),I.E(),I.SO(),I.S(),I.SE());break;
+			case K.N : r|=A(I.NO(),I.N(),I.NE(),I.O(),I.E(),I.SO(),I.SE(),I.SO().S(),I.SE().S()); break;
+			case K.S : r|=A(I.SO(),I.S(),I.SE(),I.O(),I.E(),I.NO(),I.NE(),I.NO().N(),I.NE().N()); break;
+			case K.O : r|=A(I.NO(),I.N(),I.NE(),I.NE().E(),I.O(),I.SO(),I.S(),I.SE(),I.SE().E()); break;
+			case K.E : r|=A(I.NO().O(),I.NO(),I.N(),I.NE(),I.E(),I.SO().O(),I.SO(),I.S(),I.SE()); break;
+			}
+		}
+		return r;
+	}
+
+	public boolean AiguaxSumes(){
+		boolean r=false;
+		byte i,j;
+
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+			if (SR[i]==SR(i)||SC[j]==SC(j)) r|=A(i,j);
+
+		return r;
+	}
+
+	public boolean Solidsxindeterminats(){
+		boolean r=false;
+		byte i,j;
+
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+			if(SR[i]-SR(i)==IR(i)||SC[j]-SC(j)==IC(j)) r|=det(i,j,K.M);
+
+		return r;
+	}
+
+	public boolean xEquis(){
+		boolean r = false;
+		byte i,j;
+		Index I = new Index();
+
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+		{
+			I.x=i;
+			I.y=j;
+
+			if (mX(I)&&SR[i]<3){r|=det(I.N(),K.A);r|= det(I.S(),K.A);}
+			if (mX(I)&&SC[j]<3){r|=det(I.O(),K.A);r|= det(I.E(),K.A);}
+		}
+
+		return r;
+	}
+
+	public boolean MarcaSolid(){
+		boolean r = false;
+		boolean M;
+		byte i,j;
+		Index I = new Index(),
+			  N,S,E,O;
+
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+		{
+			I.x = i;
+			I.y = j;
+
+			N=I.N();
+			S=I.S();
+			E=I.E();
+			O=I.O();
+
+			M = mS(S)||mN(N)||mE(E)||mO(O);
+
+			M |= mX(E)&&(mA(E.N())||mA(E.S()));
+			M |= mX(O)&&(mA(O.N())||mA(O.S()));
+			M |= mX(N)&&(mA(N.O())||mA(N.E()));
+			M |= mX(S)&&(mA(S.O())||mA(S.E()));
+
+			if (M) r|=det(I,K.M);
+		}
+
+		return r;
+	}
+
+	public boolean MarcaExtrems(){
+		boolean r=false;
+		byte i,j;
+		Index I = new Index(),
+			  N,S,E,O;
+
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+		{
+			I.x = i;
+			I.y = j;
+
+			N=I.N();
+			S=I.S();
+			E=I.E();
+			O=I.O();
+
+			if (!mM(I)) continue;
+
+			if (mA(N.O(),N,N.E(),E,O,S.O(),S,S.E())) r|=det(I,K.B);
+			else
+			if ((mS(S)||mM(S)||mX(S))&&mA(O,E,N)) r|=det(I,K.N);
+			else
+			if ((mN(N)||mM(N)||mX(N))&&mA(O,E,S)) r|=det(I,K.S);
+			else
+			if ((mE(E)||mM(E)||mX(E))&&mA(N,S,O)) r|=det(I,K.O);
+			else
+			if ((mO(O)||mM(O)||mX(O))&&mA(N,S,E)) r|=det(I,K.E);
+			else
+			if (s(S)&&s(N)) r|=det(I,K.X);
+			else
+			if (s(E)&&s(O)) r|=det(I,K.X);
+		}
+
+		return r;
+	}
+
+	public boolean HadeserAigua(){
+		boolean r=false,
+				nps;
+		byte i,j;
+		Index I = new Index();
+		int NO,SO,NE,SE;
+
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+		{
+			nps = false;
+			I.x = i;
+			I.y = j;
+
+			NO=i(I.NO())?1:0;
+			SO=i(I.SO())?1:0;
+			NE=i(I.NE())?1:0;
+			SE=i(I.SE())?1:0;
+
+			nps|=(NO==1||SO==1)&&(IR(i-1)-NO-SO<SR[i-1]-SR(i-1));
+			nps|=(NE==1||SE==1)&&(IR(i+1)-NE-SE<SR[i+1]-SR(i+1));
+			nps|=(NO==1||NE==1)&&(IC(j-1)-NO-NE<SC[j-1]-SC(j-1));
+			nps|=(SO==1||SE==1)&&(IC(j+1)-SO-SE<SC[j+1]-SC(j+1));
+
+			if (nps) r|=A(I);
+		}
+		return r;
+	}
+
+	public boolean TotesDeterminades(){
+		byte i,j;
+
+		for(j=0;j<R;j++)
+		for(i=0;i<C;i++)
+			if (v(i,j)==K.I||v(i,j)==K.M) return false;
+
+		return true;
+	}
+
+	public boolean RestaVaixells(){
+		boolean r = false;
+		byte n,i,j;
+		Index I = new Index(),
+			  T;
+
+		for (n=0;n<B.length;n++)
+		{B[n].ro.x=-1;B[n].ro.y=-1;B[n].rf.x=-1;B[n].rf.y=-1;}
+
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+		{
+			I.x=i;
+			I.y=j;
+
+			if (mB(I))
+			{
+				for(n=0;n<B.length;n++)
+				if((B[n].L==K.SUB)&&(!B[n].det())){
+					B[n].ro=I;
+					B[n].rf=I;
+					break;
+				}
+			}
+			else
+			if (mN(I))
+			{
+				T=I;
+				while(s(T)) T=T.S();
+
+				if (mS(T.N())) for (n=0;n<B.length;n++) if ((B[n].L==T.y-I.y)&&(!B[n].det())){B[n].ro=I;B[n].rf=T.N();break;}
+			}
+			else
+			if (mO(I))
+			{
+				T=I;
+				while(s(T)) T=T.E();
+
+				if (mE(T.O())) for (n=0;n<B.length;n++) if ((B[n].L==T.x-I.x)&&(!B[n].det())){B[n].ro=I;B[n].rf=T.O();break;}
+			}
+		}
+		return r;
+	}
+
+	public boolean CoherentSumes(){
+		boolean r = true;
+		byte n;
+
+		for (n=0;n<C;n++)r&=SR(n)<=SR[n];
+		for (n=0;n<R;n++)r&=SC(n)<=SC[n];
+
+		return r;
+	}
+
+	public boolean CoherentEspai(){
+		boolean r = true;
+		byte i,j;
+		Index I = new Index();
+
+		for (j=0;j<R&&r;j++)
+		for (i=0;i<C;i++)
+		{
+			I.x=i;
+			I.y=j;
+
+			if (s(I)) r&=!(s(I.NO())||s(I.NE())||s(I.SO())||s(I.SE()));
+		}
+
+		return r;
+	}
+
+	public boolean SumesResoltes(){
+		boolean r = true;
+		byte n;
+
+		for(n=0;n<C;n++)r&=SR(n)==SR[n];
+		for(n=0;n<R;n++)r&=SC(n)==SC[n];
+
+		return r;
+	}
+
+	public boolean Resolt(){
+		return CoherentEspai()&&TotesDeterminades()&&SumesResoltes()&&TotsVaixellsTrobats();
+	}
+
+	public boolean TotsVaixellsTrobats(){
+		return VaixellsTrobats() == B.length;
+	}
+
+	public int VaixellsTrobats(){
+		int r=0;
+		for(byte n=0;n<B.length;n++)
+			r+=B[n].det()?1:0;
+
+		return r;
+	}
+
+	public Puzzle ResolRecursivament(Puzzle P)
+	{
+		if (!P.CoherentSumes()) return null;
+		if (P.VaixellsTrobats() > P.B.length) return null;
+
+		if (P.TotesDeterminades() && !P.SumesResoltes()) return null;
+
+		Puzzle Ret = new Puzzle(P);
+
+		boolean falta = true;
+
+
+		while (falta)
+		{
+			falta=false;
+
+			falta|=Ret.PatronsAigua();
+			falta|=Ret.AiguaxSumes();
+			falta|=Ret.Solidsxindeterminats();
+			falta|=Ret.MarcaSolid();
+			falta|=Ret.HadeserAigua();
+			falta|=Ret.xCapacitat();
+			falta|=Ret.xEquis();
+
+			falta|=Ret.PatronsAigua();
+			falta|=Ret.AiguaxSumes();
+			falta|=Ret.Solidsxindeterminats();
+			falta|=Ret.MarcaSolid();
+			falta|=Ret.HadeserAigua();
+			falta|=Ret.xCapacitat();
+			falta|=Ret.xEquis();
+
+			falta|=Ret.MarcaExtrems();
+			falta|=Ret.RestaVaixells();
+
+			if (Ret.TotesDeterminades()) falta = false;
+		}
+
+		if (recursiu&&generant)
+		{
+			byte i,j;
+
+			for (j=0;j<Ret.R;j++)
+			for (i=0;i<Ret.C;i++)
+			{
+				if (Ret.v(i,j) != K.I) continue;
+
+				Ret.det(i,j,K.A);
+				Ret = ResolRecursivament(Ret);
+				if (Ret==null) {P.det(i,j,K.M); Ret = new Puzzle(P);}
+			}
+
+			if (Ret.Resolt()) return Ret;
+			else return null;
+		}
+
+		return Ret;
+	}
+
+	public void PosaH(Index I,int l,int[][] g){
+
+		boolean ok = true;
+
+		Index m = I;
+
+		byte s = 0;
+
+		for (byte n=0;n<l&&ok;n++)
+		{
+			ok &= !mA(m);
+			s += s(m)?1:0;
+			m = m.E();
+		}
+
+		ok &= SC(I.y)+(l-s)<=SC[I.y];
+
+		if (ok)
+		for (int n=0;n<l;n++)
+			if (g[I.x+n][I.y]<l) g[I.x+n][I.y]=l;
+	}
+
+	public void PosaV(Index I,int l,int[][] g){
+
+		boolean ok = true;
+
+		Index m = I;
+
+		byte s = 0;
+
+		for (byte n=0;n<l&&ok;n++)
+		{
+			ok &= !mA(m);
+			s += s(m)?1:0;
+			m = m.S();
+		}
+
+		ok &= SR(I.x)+(l-s)<=SR[I.x];
+
+		if (ok)
+		for (int n=0;n<l;n++)
+			if (g[I.x][I.y+n]<l) g[I.x][I.y+n]=l;
+	}
+
+	public boolean xCapacitat(){
+		boolean r = false;
+		Puzzle T = new Puzzle(this);
+		Index I = new Index();
+		byte n,i,j,l;
+
+		byte mL = 0;
+		for (n=0;n<B.length;n++)
+		mL = B[n].L>mL?(byte)B[n].L:mL;
+
+		int[] Ls = new int[mL+1];
+
+		for (n=0;n<B.length;n++)
+			Ls[B[n].L]++;
+
+		int [][]g = new int[C][R];
+
+		for (i=0;i<C;i++)
+		g[i] = new int[R];
+
+		for (n=1;n<mL+1;n++)
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+		{
+			I.x=i;
+			I.y=j;
+
+			T.PosaH(I,n,g);
+			T.PosaV(I,n,g);
+		}
+
+		int[] c = new int[mL+1];
+
+		for(j=0;j<R;j++)
+		for(i=0;i<C;i++)
+			c[g[i][j]]++;
+
+		for (l=0;l<c.length;l++)
+			if (Ls[l]*l<=c[l])
+				for (j=0;j<R;j++)
+				for (i=0;i<C;i++)
+					if (g[i][j]<=l&&i(new Index(i,j)))
+						T.det(i,j,K.M);
+
+		if (T.CoherentSumes()&&T.CoherentEspai())
+		{
+			for (j=0;j<R;j++)
+			for (i=0;i<C;i++)
+			G[i][j] = T.G[i][j];
+			r = true;
+		}
+
+		return r;
+	}
+
+	public Puzzle Resol(){
+
+		Puzzle r = ResolRecursivament(this);
+
+		return r;
+	}
+}

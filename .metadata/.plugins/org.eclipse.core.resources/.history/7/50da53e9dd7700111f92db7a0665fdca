@@ -1,0 +1,39 @@
+package comu;
+
+import java.util.Arrays;
+
+public class BSPuzzle {
+	byte 	C,R;
+	byte[] 	SR,SC;
+	byte[]	Ls;
+	
+	Mostrades[] M;
+	
+	boolean ModelGenerat;
+	boolean ModelResolt;
+	
+	public BSPuzzle(byte[] sr, byte[] sc,Mostrades[] m, byte[] ls){
+	
+		C = (byte)sr.length;
+		R = (byte)sc.length;
+	
+		SR=sr.clone();
+		SC=sc.clone();		
+		
+		Ls=ls.clone();
+		
+		M = Arrays.copyOf(m,m.length);			
+	}	
+	
+	public BSPuzzle(BSPuzzle P){
+		C = P.C;
+		R = P.R;
+		
+		SR=P.SR.clone();
+		SC=P.SC.clone();
+		
+		Ls=P.Ls.clone();
+		
+		M= Arrays.copyOf(P.M,P.M.length);
+	}
+}

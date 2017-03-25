@@ -1,0 +1,35 @@
+
+public class FactoriaPuzzle {
+
+	final static byte[] Ls={4,3,3,2,2,2,1,1,1,1};
+	final static int C=10,R=10;
+	
+	
+	int[] SR,SC;
+	
+	public void Genera(){
+	
+		Flota F = new Flota(C,R,Ls);
+		
+		byte i,j;
+		
+		SR = new int[C];
+		SC = new int[R];
+		
+		for (Vaixell v:F.V){
+			for (i=v.r().x;i<=v.rf().x;i++)
+			for (j=v.r().y;j<=v.rf().y;j++)
+			{
+				SR[i]++;
+				SR[j]++;
+			}
+		}		
+		
+				
+		for (i=0;i<C;i++)
+		System.out.print(SR[i]+" ");
+		
+		for (j=0;j<R;j++)
+		System.out.print(SC[j]+" ");
+	}
+}

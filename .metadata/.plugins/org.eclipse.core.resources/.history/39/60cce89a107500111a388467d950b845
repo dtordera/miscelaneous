@@ -1,0 +1,16 @@
+
+
+public class main {
+
+	public static void main(String[] args) {
+	
+		byte C = 10, R = 10;
+		byte[]L = {4,3,3,2,2,2,1,1,1,1};
+		
+		long t;
+	
+		Flota flota = new Flota(C,R,L);
+		
+	}
+}
+

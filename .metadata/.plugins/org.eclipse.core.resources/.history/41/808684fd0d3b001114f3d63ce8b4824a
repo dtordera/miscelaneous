@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/item1" android:menuCategory="Test1"></item>
+    <item android:id="@+id/item2" android:menuCategory="Test2"></item>
+    <group android:id="@+id/group1">
+        <item android:id="@+id/item3" android:menuCategory="Subitem(3)">
+            <menu>
+                <item android:id="@+id/item4" android:menuCategory="Subitem(4)"/>
+                <item android:id="@+id/item5" android:menuCategory="Subitem(5)"/>
+            </menu>
+        </item>
+    </group>
+    
+
+</menu>

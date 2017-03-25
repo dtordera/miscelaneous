@@ -1,0 +1,74 @@
+package meves.apps.Ex1101;
+
+import android.app.Activity;
+import android.media.MediaRecorder;
+import android.os.Bundle;
+import android.os.Environment;
+/*import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;*/
+import android.widget.Toast;
+
+public class Ex1101Activity extends Activity {
+
+	final MediaRecorder grabadora = new MediaRecorder();
+		
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+
+        grabadora.setOutputFile("/sdcard/test_audio");        
+        grabadora.setAudioSource(MediaRecorder.AudioSource.MIC);
+        grabadora.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
+        grabadora.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+        try {
+        grabadora.prepare();
+        } catch (Exception e) {
+        	Toast.makeText(Ex1101Activity.this,e.getMessage(),Toast.LENGTH_LONG).show();
+        }
+        
+        grabadora.start();
+        
+    }
+    
+    public void onStop() {
+    	grabadora.stop();
+    	grabadora.release();
+    }
+      
+                
+                
+//        final Button but = (Button)findViewById(R.id.button1);
+        
+        
+/*        but.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+						
+				if ("Grabar".equals(but.getText().toString())) {
+					try {
+						grabadora.prepare();
+						grabadora.start();
+						but.setText("Parar");
+						but.setBackgroundColor(0xFF00FF00);						
+					} catch(Exception e) {
+						Toast.makeText(Ex1101Activity.this,"Error intentant grabar : " + e.getMessage(),Toast.LENGTH_SHORT).show();
+					}
+				}
+				else
+				{	
+					try {
+						but.setBackgroundColor(0xFFFF0000);					
+						grabadora.stop();
+						grabadora.release(); //
+						but.setText("Grabar");
+					} catch(Exception e) {
+						Toast.makeText(Ex1101Activity.this,"Error tancant fitxer : " + e.getMessage(),Toast.LENGTH_SHORT).show();
+					}
+				
+				}								
+			}
+		});*/
+}

@@ -1,0 +1,16 @@
+
+public class TestArrayList {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		ArrayList
+
+	}
+	
+	public class Index {
+		int x,y;
+		
+	}
+}

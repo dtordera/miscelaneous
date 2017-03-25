@@ -1,0 +1,108 @@
+
+public class cella {
+		  		 
+	public final static int X  = 0,	// indeterminada
+							A  = 1,	// aigua
+							N  = 2,	// nord
+							S  = 3,	// sud
+							E  = 4,	// est
+							O  = 5,	// oest
+							P  = 6,	// part
+							B  = 7,	// submari
+							H  = 8,	// horitzontal
+							V  = 9;	// vertical
+					 
+	public final static int[9][5][5]
+				Patrons = { 
+						{ 
+						    {X, X, X, X, X}, // indeterminada
+						    {X, X, X, X, X},
+						    {X, X, X, X, X},
+						    {X, X, X, X, X},
+						    {X, X, X, X, X}
+						},
+						{ 
+							{X, X, X, X, X}, // Aigua
+							{X, X, X, X, X},
+							{X, X, A, X, X},
+							{X, X, X, X, X},
+							{X, X, X, X, X}
+						},
+						{ X, X, X, X, X, // Submari
+						  X, A, A, A, X, 
+						  X, A, B, A, X,
+						  X, A, A, A, X,
+						  X, X, X, X, X
+						},
+						{ X, X, X, X, X,
+						  X, A, A, A, A, // Oest
+						  X, A, O, X, X, 
+						  X, A, A, A, A, 
+						  X, X, X, X, X
+						},
+						{ X, X, X, X, X,
+						  A, A, A, A, X, // Est
+						  X, X, E, A, X,
+						  A, A, A, A, X,
+						  X, X, X, X, X,
+						},
+						{ X, X, X, X, X,
+						  X, A, A, A, X, // Nord
+						  X, A, N, A, X,
+						  X, A, X, A, X,
+						  X, A, X, A, X,
+						},
+						{ X, A, X, A, X,// Sud
+						  X, A, X, A, X,
+						  X, A, S, A, X,
+						  X, A, A, A, X,
+						  X, X, X, X, X
+						}, 
+						{ X, X, X, X, X,
+						  X, A, X, A, X,// Ocupat
+						  X, X, P, X, X,
+						  X, A, X, A, X,
+						  X, X, X, X, X
+						},
+						{ X, X, X, X, X,
+						  A, A, A, A, A, // Horitzontal
+						  X, X, H, X, X,
+						  A, A, A, A, A,
+						  X, X, X, X, X
+						},
+						{ X, A, X, A, X, // Vertical
+						  X, A, X, A, X,
+						  X, A, V, A, X,
+						  X, A, X, A, X,
+						  X, A, X, A, X
+						}
+				};
+
+	public boolean	Determinada  = false;
+	public int[] 	Orientacions = { X,H,V,B};
+	public int[] 	PartsVaixell = { X,P,N,S,E,O,B};
+	public int[] 	Vaixells;
+	
+	public boolean A_Array(int[] A,int X) {
+		boolean ret = false;
+		
+		for (int j=0;j<A.length;j++)
+			ret = ret || (A[j] == X);
+		
+		return ret;
+	}
+	
+	public boolean A_Orientacio(int X) {
+		return A_Array(Orientacions,X);
+	}
+	
+	public boolean A_PartsVaixell(int X){
+		return A_Array(PartsVaixell,X);
+	}
+	
+	public void Treure_de(int[] A, int x){
+		for (int i=0;i<A.length;i++)
+			if (A[i] == x) A[i] = X;
+	}
+}
+

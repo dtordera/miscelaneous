@@ -1,0 +1,27 @@
+import java.util.ArrayList;
+
+
+public class TestArrayList {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+			ArrayList<Index>I=new ArrayList<Index>();
+			
+			for (int i=0;i<10;i++)
+			for (int j=0;j<10;j++)
+			I.add(new Index(i,j));
+			
+
+	}
+	
+	public class Index {
+		int x,y;		
+		
+		public Index(int i,int j){
+		x=i;y=j;
+		}
+	}
+}
+

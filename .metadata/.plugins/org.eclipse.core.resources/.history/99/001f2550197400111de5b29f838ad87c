@@ -1,0 +1,71 @@
+
+public class Samples {
+
+		public CondicionsInicials CI(int i, int j, char v){
+		return CI(i,j,v);
+		}
+
+		byte[] SR = {0,3,3,1,1,3,0,1,5,3};
+		byte[] SC = {1,4,3,0,2,3,1,4,1,1};
+		byte[] Fs = {4,3,3,2,2,2,1,1,1,1};
+		CondicionsInicials[] CI = { CI(1,0,K.A),
+								  	CI(1,2,K.A),
+								  	CI(5,1,K.A),
+								  	CI(5,4,K.B),
+								  	CI(3,5,K.E),
+								  	CI(8,8,K.X)};		
+		
+		new ResoledorPuzzle(SR,SC,CI,Fs).Resol();
+		
+/*byte[] SR = {2,1,2,4,1,2,2,2,1,3};
+		byte[] SC = {5,3,2,0,3,3,0,2,0,2};
+		byte[] Fs = {4,3,3,2,2,2,1,1,1,1};
+		CondicionsInicials[] CI = { CI(0,2,K.A),
+								    CI(6,1,K.E),
+								    CI(3,5,K.X),
+								    CI(7,7,K.O)};
+		
+	new ResoledorPuzzle(SR,SC,CI,Fs).Resol();
+		
+/*		byte[] SR = {2,1,2,1,0,3};
+		byte[] SC = {0,2,0,3,1,3};
+		byte[] Fs = {3,2,2,1,1};
+		CondicionsInicials[] CI = { CI(2,5,K.B),
+									CI(2,1,K.E)};
+		
+		new ResoledorPuzzle(SR,SC,CI,Fs).Resol();*/
+		
+/*		byte[] SR = {1,1,1};
+		byte[] SC = {2,0,1};
+		byte[] Fs = {2,1};
+		CondicionsInicials[] CI = { CI(2,0,K.A)};
+		
+		new ResoledorPuzzle(SR,SC,CI,Fs).Resol();*/
+		
+		/*byte[] SR = {2,2,2,3,3,2,1,3,2};
+		byte[] SC = {2,1,4,1,4,1,2,5,0};
+		byte[] Fs = {4,3,3,2,2,2,1,1,1,1};
+		CondicionsInicials[] CI = {CI(1,2,K.B),
+								   CI(5,2,K.A),
+								   CI(3,4,K.X),
+								   CI(7,3,K.S),
+								   CI(6,5,K.B)};
+								   
+		new ResoledorPuzzle(SR,SC,CI,Fs).Resol();
+										   
+		/*byte[] SR = {5,0,3,3,1,4,1,3,0};
+		byte[] SC = {1,2,5,0,1,4,1,2,4};
+		byte[] Fs = {4,3,3,2,2,2,1,1,1,1};
+		CondicionsInicials[] CI = {CI(2,0,K.B),
+								   CI(0,2,K.S),
+								   CI(4,2,K.A),
+								   CI(0,4,K.A),
+								   CI(5,4,K.A),
+								   CI(4,5,K.A),
+								   CI(7,5,K.E),
+								   CI(0,6,K.X),
+								   CI(6,8,K.A)};
+								   								   
+		new ResoledorPuzzle(SR,SC,CI,Fs).Resol();*/								   
+
+}

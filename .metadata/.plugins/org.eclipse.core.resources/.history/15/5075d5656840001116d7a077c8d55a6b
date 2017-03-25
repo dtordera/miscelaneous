@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="meves.apps.Exemple9_2smsreceived"
+      android:versionCode="1"
+      android:versionName="1.0">
+    <uses-sdk android:minSdkVersion="10" />
+    <uses-permission android:name = "android.permission.RECEIVE_SMS" />
+
+    <application android:icon="@drawable/ic_launcher" android:label="Exercici 2, unitat 2, sms received">
+        <activity android:name=".Exemple9_2smsreceivedActivity"
+                  android:label="Exercici 2, unitat 2, sms received">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+    </application>
+</manifest>

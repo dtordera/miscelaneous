@@ -1,0 +1,14 @@
+package dvtr.games.logic.BS10.puzzle;
+
+public class GridIndex {
+
+	Index[] I;
+	
+	public GridIndex(int C,int R){
+	
+		I = new Index[C*R];
+	
+	}
+
+
+}

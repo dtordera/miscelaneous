@@ -1,0 +1,10 @@
+package dvtr.games.logic.BS10.puzzle;
+
+public class Gridindex {
+
+	Index[] I;
+	
+	public Grindindex(int C,int R){
+	
+	}
+}

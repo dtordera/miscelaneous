@@ -1,0 +1,63 @@
+package dvtr.games.logic.BS10;
+
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
+
+public class BS10HowToPlayActivity extends Activity {
+
+	SharedPreferences Settings;
+	int currentView;
+	String[] Text;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+
+		super.onCreate(savedInstanceState);
+
+		Settings = getSharedPreferences(BS10Constants.prefName, 0);
+
+		currentView = 0;
+
+		setContentView(R.layout.howtoplay);
+
+		setText(0);
+	}
+
+	@Override
+	public void onResume(){
+		super .onResume();
+
+		setBackGround();
+	}
+
+	public void nextClick(View V){
+	}
+
+	public void previousClick(View V){
+	}
+
+	public void setBackGround(){
+		LinearLayout L = (LinearLayout)findViewById(R.id.howto);
+
+		Resources res = getResources();
+		Drawable d = res.getDrawable(R.drawable.menubkc);
+
+		switch (Settings.getInt("GS", BS10Constants.GS_CLASSIC)) {
+		case BS10Constants.GS_WWII:
+			d = res.getDrawable(R.drawable.menubkw);
+			break;
+		case BS10Constants.GS_NOBMPS:
+			d = res.getDrawable(R.drawable.menubkn);
+			break;
+		default:
+			d = res.getDrawable(R.drawable.menubkc);
+		}
+
+		L.setBackgroundDrawable(d);
+	}
+}

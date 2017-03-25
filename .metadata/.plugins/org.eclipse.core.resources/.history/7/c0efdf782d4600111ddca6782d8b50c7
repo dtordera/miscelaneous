@@ -1,0 +1,79 @@
+import java.util.ArrayList;
+import java.util.Collections;
+
+
+public class Indexs {
+
+	public final static int NV = -99999;
+
+	Index[] I;
+	int 	mc,
+			mr;
+	
+	public Indexs(int cl,int rw)
+	{	
+		mc = cl;
+		mr = rw;
+	
+		I = new Index[cl*rw];
+		
+		for (int j=0;j<rw;j++)
+		for (int i=0;i<cl;i++)
+		I[i + j*cl] = new Index(i,j);
+	}
+	
+	public void Shuffle(){
+	
+		ArrayList<Index> R = new ArrayList<Index>(I.length);
+		
+		Index ia[] = new Index[R.size()]; 							
+									
+		for (int i=0;i<I.length;i++)
+			R.add(I[i]);
+				
+		Collections.shuffle(R);
+								
+		ia = R.toArray(ia); 					
+		
+		System.out.printf("p.Shuffle()");		
+	}
+	
+	public void BorraColumna(int c){
+		for(int i=0;i<I.length;i++)
+			if (I[i].y == c) { I[i].x = NV; I[i].y = NV; }
+	}
+	
+	public void BorraFila(int f){
+		for (int i=0;i<I.length;i++)
+			if (I[i].x == f) { I[i].x = NV; I[i].y = NV; }
+	}
+	
+	public void Borra(int x,int y){
+		for (int i=0;i<I.length;i++)
+			if ((I[i].x == x) && (I[i].y == y)) 
+				Borra(i);
+	}
+	
+	public void Borra(int m){
+		I[m].x = NV;
+		I[m].y = NV;
+	}
+	
+	
+	public String toString(){
+		String ret = "";
+	
+		for (int i=0;i<I.length;i++)
+		{
+			if ((I[i].x != NV) && (I[i].y != NV))
+			ret += "(" + I[i].x + ", " + I[i].y + ")\n";
+			else
+			ret += "(deleted)\n";
+		}
+		
+		return ret;
+	}
+	
+}
+
+

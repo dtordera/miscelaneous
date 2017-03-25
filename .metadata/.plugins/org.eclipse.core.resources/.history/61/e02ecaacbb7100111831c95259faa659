@@ -1,0 +1,34 @@
+
+public class Vaixell {
+	byte L;
+	Posicions ps;
+	
+	public Vaixell(byte l){
+		L=l;
+		ps = new Posicions();
+	}
+	
+	public Vaixell(byte l,Posicio...r){	
+		L=l;
+		ps = new Posicions(r);		
+	}
+	
+	public Posicio r(){
+		if (ps.quantitat()>1) return null;
+		return ps[0];
+	}
+	
+	public String toString(){
+		return "L="+L+":\n"+ps.toString();
+	}
+	
+	public char cela(byte i,byte j){
+		char R='·';
+		
+		if (ps.quantitat()>1) return R;
+		
+		
+		
+		return R;
+	}
+}

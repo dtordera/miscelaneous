@@ -1,0 +1,7 @@
+package dvtr.ulib.views;
+
+import com.google.ads.AdView;
+
+public class AdView2 extends AdView {
+
+}

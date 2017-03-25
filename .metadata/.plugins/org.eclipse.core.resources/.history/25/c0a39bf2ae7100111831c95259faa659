@@ -1,0 +1,8 @@
+
+public class Vaixell {
+	byte L;
+	Posicions ps;
+	
+	public Vaixell(byte l){
+	}
+}

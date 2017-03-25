@@ -1,0 +1,15 @@
+package dvtr.logicgames.yubotu;
+
+public class Zona {
+	Index 	o,
+			f;
+			
+	public Zona(Index I,Index F) {
+		o=I;
+		f=F;
+	}
+		
+	public boolean conte(Index r) {
+		return (o.x>=r.x&&f.x<=r.x&&o.y>=r.y&&f.y<=r.y);
+	}
+}

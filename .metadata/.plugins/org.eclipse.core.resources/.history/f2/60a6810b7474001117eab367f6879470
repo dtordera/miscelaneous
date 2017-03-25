@@ -1,0 +1,415 @@
+package dvtr.games.logic.yubotu.shipmodel;
+import java.util.Arrays;
+
+
+public class ResoledorPuzzle {
+	byte C,R;
+	byte[] SR,SC;
+	byte[] L;
+	CondicionsInicials[] CI;
+	Vaixell[][] S;
+	Vaixell[] B;
+	
+	public ResoledorPuzzle(byte[] sr,byte[] sc,CondicionsInicials[] ci, byte[] l){
+	
+		C = (byte)sr.length;
+		R = (byte)sc.length;
+		
+		L = l.clone();
+		
+		SR = sr.clone();
+		SC = sc.clone();
+		
+		if (ci!=null)
+		CI = Arrays.copyOf(ci,ci.length);
+		else
+		CI = new CondicionsInicials[0];	
+		
+		B = new Vaixell[L.length];		
+		for (byte n=0;n<L.length;n++) B[n] = new Vaixell(L[n]);
+
+	}
+	
+	public boolean ComprobaCombinacio(Vaixell[] V){
+		
+		return CheckejaSumes(V)&&!CheckejaChocs(V)&&CheckejaCI(V);
+	}
+	
+	public ResoledorPuzzle CI(CondicionsInicials[] ci){
+	
+		if (ci!=null) CI = Arrays.copyOf(ci,ci.length);
+		else     	  CI = new CondicionsInicials[0];
+		
+		return this;
+	}	
+	
+	public void toScreen(Vaixell[] V){
+	
+		System.out.print("\n");
+	
+		for (Vaixell v:V)
+		System.out.print(v.toString());
+		
+		System.out.print("\n");
+	}
+	
+	public boolean SolucioNoInclosa(Vaixell[] c){
+		
+		int L = 0;
+		
+		for (Vaixell v:c)
+			L = v.L>L?v.L:L;
+				
+		Posicions[] pc = new Posicions[L];
+		
+		for (int n=0;n<pc.length;n++) pc[n] = new Posicions();
+		
+		for (Vaixell v:c)
+			pc[v.L-1].add(v.ps.r());
+		
+		for (Vaixell[] s:S){			
+				
+			Posicions[] ps = new Posicions[L];
+			
+			for (int n=0;n<ps.length;n++) ps[n] = new Posicions();
+		
+			for (Vaixell v:s)
+				ps[v.L-1].add(v.ps.P);
+				
+			if (IgualCombinacio(pc,ps)) return false;
+		}
+				
+		return true;
+	}
+	
+	public boolean IgualCombinacio(Posicions[] p1,Posicions[] p2){
+		boolean r = true;
+		
+		for (int n=p1.length;n!=0;n--)
+			r &= p1[n-1].mateixoselements(p2[n-1]); 		
+		
+		return r;
+	}
+	
+	public void toScreenGrid(Vaixell[] V){
+	
+		String s="\n";
+		
+		for (byte j=0;j<R;j++)
+		{
+			for (byte i=0;i<C;i++)
+			{
+				char m='·';
+				
+				for (Vaixell v:V)
+					if (v.c(i,j)!=K.I) m=v.c(i,j);
+					
+				s+=m+" ";
+			}
+			s+=" " + SC[j] + "\n";
+		}
+		
+		s+="\n";
+		
+		for (byte i=0;i<C;i++)
+			s+=SR[i] + " ";
+			
+		System.out.println(s + "\n");				
+	}
+	
+	public char c(byte i,byte j,Vaixell[] V){
+	
+		char k;
+	
+		for (Vaixell v:V){
+			
+			k = v.c(i,j);
+			if (k!=K.I&&k!=K.A) return k;
+		}
+		
+		return K.A;
+	}
+	
+	public boolean CorrecteAmbCI(Vaixell[] c){
+				
+		for (CondicionsInicials ci:CI)
+			if (ci.v==K.I) continue;
+			else		
+			if (c(ci.x,ci.y,c)!=ci.v) return false;
+		
+		return true;
+	}	
+				
+	public void Combinacio(Vaixell[] check, Vaixell[] ori,int maxS){
+	
+		if (maxS!=0&&S.length>=maxS) return;
+	
+		int idx = check.length;
+		
+		check = Arrays.copyOf(check,idx+1);
+		
+		for (Posicio p:ori[idx].ps.P) {
+			check[idx] = new Vaixell(ori[idx].L,p);
+			
+			if (ComprobaCombinacio(check)) 
+				if (check.length==ori.length)
+				{							
+					if (SolucioNoInclosa(check)&&CorrecteAmbCI(check)){
+									
+						S = Arrays.copyOf(S,S.length+1);
+									
+						S[S.length-1] = new Vaixell[check.length];
+										
+						for (int n=0;n<check.length;n++)
+							S[S.length-1][n] = new Vaixell(check[n]);					
+					}
+				}
+				else
+				Combinacio(check,ori,maxS);
+		}	
+		
+		check = Arrays.copyOf(check,check.length-1);		
+	}		
+		
+	public boolean CheckejaSumes(Vaixell[] V){
+		
+		byte[] SRs,SCs;
+		byte i,j;
+		boolean r = true;		
+		
+		SRs = new byte[C];
+		SCs = new byte[R];
+	
+		for (Vaixell v:V)
+			for (i=v.r().x;i<=v.rf().x;i++)		
+			for (j=v.r().y;j<=v.rf().y;j++)		
+			{
+				SRs[i]++;
+				SCs[j]++;
+			}					
+		
+		for (i=0;i<C;i++)
+		r&=SRs[i]<=SR[i];
+		
+		for (j=0;j<R;j++)
+		r&=SCs[j]<=SC[j];
+		
+		return r;
+	}
+	
+	public boolean CheckejaChocs(Vaixell[] V){
+		boolean r = false;
+		
+		for (Vaixell v:V)
+		for (Vaixell l:V)
+			if (v!=l) r|=v.choca(l);		
+		
+		return r;	
+	}
+	
+	public boolean CheckejaCI(Vaixell[] V){
+	
+		boolean r=true;
+		char c;
+	
+		for (CondicionsInicials ci:CI)
+			if (ci.v==K.I) continue;
+			else
+			for (Vaixell v:V)
+			{
+				c = v.c(ci.x,ci.y);
+				r &= (c==K.I||c==ci.v);
+			}
+			
+		return r;
+	}
+	
+	public int Resol(int maxS){		
+	
+		S = new Vaixell[0][0];
+		Vaixell[] V = Arrays.copyOf(B,B.length);	
+		
+		
+		
+		long t = System.currentTimeMillis();		
+		
+		PosiblesxSumes(V);
+		EliminaxAigua(V);		
+		TrobaSubmarins(V);		
+		EliminaRepeticions(V);
+		TreuVaixellsTrobats(V);
+				
+		Combinacio(new Vaixell[0],V,maxS);		
+		
+		System.out.println(System.currentTimeMillis()-t);
+/*		System.out.println(S.length + " solucio:");
+								
+		for (Vaixell[] s:S)
+		{
+			System.out.println();
+			toScreenGrid(s);
+		}*/		
+		
+		return S.length;										
+	}
+		
+	public void TrobaSubmarins(Vaixell[] V){
+		for (CondicionsInicials ci:CI)	
+		{
+			if (ci.v!=K.B) continue;
+			
+			for (Vaixell v:V) {
+				if (v.L!=1) continue;
+				if (v.r()!=null) continue;				
+					
+				v.ps.neteja();
+				v.ps.add(ci.x,ci.y,K.HOR);
+				
+				break;
+			}
+		}
+	}
+	
+	public void TreuVaixellsTrobats(Vaixell[] V){
+		byte i,j;
+	
+		for (Vaixell v:V)
+		{
+			if (v.r()!=null)
+			{
+				for (j=v.r().y;j<v.rf().y;j++)
+				for (i=v.r().x;i<v.rf().x;i++)
+				for (Vaixell l:V)
+					if (l!=v)
+					l.ps.treu(i,j,l.L);
+			}
+		}
+	}
+	
+	public void EliminaxAigua(Vaixell[] V){
+	
+		for (CondicionsInicials ci:CI){
+			switch(ci.v){
+			case K.A : for (Vaixell v:V) v.ps.treu(ci.x,ci.y,v.L); break;
+			case K.B : for (Vaixell v:V) {
+							v.ps.treu(ci.x-1,ci.y-1,v.L);
+							v.ps.treu(ci.x,ci.y-1,v.L);
+							v.ps.treu(ci.x+1,ci.y-1,v.L);
+							v.ps.treu(ci.x-1,ci.y,v.L);
+							v.ps.treu(ci.x+1,ci.y,v.L);
+							v.ps.treu(ci.x-1,ci.y+1,v.L);
+							v.ps.treu(ci.x+1,ci.y+1,v.L);
+							if (v.L!=1) v.ps.remove(ci.x,ci.y);
+						}
+						break;
+			case K.N : for (Vaixell v:V) {
+							v.ps.treu(ci.x-1,ci.y-1,v.L);
+							v.ps.treu(ci.x,ci.y-1,v.L);
+							v.ps.treu(ci.x+1,ci.y-1,v.L);
+							v.ps.treu(ci.x-1,ci.y,v.L);
+							v.ps.treu(ci.x+1,ci.y,v.L);
+							v.ps.treu(ci.x-1,ci.y+1,v.L);
+							v.ps.treu(ci.x+1,ci.y+1,v.L);
+							v.ps.treu(ci.x-1,ci.y+2,v.L);
+							v.ps.treu(ci.x+1,ci.y+2,v.L);
+							v.ps.remove(ci.x,ci.y+1);
+						}break;
+			case K.S : for (Vaixell v:V) {
+							v.ps.treu(ci.x-1,ci.y+1,v.L);
+							v.ps.treu(ci.x,ci.y+1,v.L);
+							v.ps.treu(ci.x+1,ci.y+1,v.L);
+							v.ps.treu(ci.x-1,ci.y,v.L);
+							v.ps.treu(ci.x+1,ci.y,v.L);
+							v.ps.treu(ci.x-1,ci.y-1,v.L);
+							v.ps.treu(ci.x+1,ci.y-1,v.L);
+							v.ps.treu(ci.x-1,ci.y-2,v.L);
+							v.ps.treu(ci.x+1,ci.y-2,v.L);		
+						}break;
+			case K.O : for (Vaixell v:V) {
+							v.ps.treu(ci.x-1,ci.y-1,v.L);
+							v.ps.treu(ci.x-1,ci.y,v.L);
+							v.ps.treu(ci.x-1,ci.y+1,v.L);
+							v.ps.treu(ci.x,ci.y-1,v.L);
+							v.ps.treu(ci.x,ci.y+1,v.L);
+							v.ps.treu(ci.x+1,ci.y-1,v.L);
+							v.ps.treu(ci.x+1,ci.y+1,v.L);
+							v.ps.treu(ci.x+2,ci.y-1,v.L);
+							v.ps.treu(ci.x+2,ci.y+1,v.L);
+							v.ps.remove(ci.x+1,ci.y);						
+						}break;
+			case K.E : for (Vaixell v:V) {
+							v.ps.treu(ci.x+1,ci.y-1,v.L);
+							v.ps.treu(ci.x+1,ci.y,v.L);
+							v.ps.treu(ci.x+1,ci.y+1,v.L);
+							v.ps.treu(ci.x,ci.y-1,v.L);
+							v.ps.treu(ci.x,ci.y+1,v.L);
+							v.ps.treu(ci.x-1,ci.y-1,v.L);
+							v.ps.treu(ci.x-1,ci.y+1,v.L);
+							v.ps.treu(ci.x-2,ci.y-1,v.L);
+							v.ps.treu(ci.x-2,ci.y+1,v.L);
+					
+						}break;
+			default : for (Vaixell v:V) {
+			
+							v.ps.remove(ci.x,ci.y);
+			
+							v.ps.treu(ci.x-1,ci.y-1,v.L);
+							v.ps.treu(ci.x+1,ci.y-1,v.L);
+							v.ps.treu(ci.x-1,ci.y+1,v.L);
+							v.ps.treu(ci.x+1,ci.y+1,v.L);
+							
+							if (v.L<3) 
+							{
+								v.ps.treu(ci.x-1,ci.y,v.L);
+								v.ps.treu(ci.x+1,ci.y,v.L);
+								v.ps.treu(ci.x,ci.y-1,v.L);
+								v.ps.treu(ci.x,ci.y+1,v.L);
+							}
+						}						
+			}
+		}
+	}
+		
+	public void EliminaRepeticions(Vaixell[] V){
+		for (Vaixell v:V)
+			if (v.L==1) v.ps.Compacta();	
+	}
+	
+	public void PosiblesxSumes(Vaixell[] V){
+	
+		byte i,j,k,m;
+		boolean z;
+		
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+		for (Vaixell v:V)
+		{
+			if (v.L<=SC[j]&&i+v.L-1<C)
+			{
+				z=false;
+				for (k=i;k<i+v.L;k++) z|=SR[k]==0;
+				
+				if (!z)
+				v.ps.add(i,j,K.HOR);
+			}
+			
+			if (v.L<=SR[i]&&j+v.L-1<R) 
+			{
+				z=false;
+				for (m=j;m<j+v.L;m++) z|=SC[m]==0;
+				
+				if (!z)
+				v.ps.add(i,j,K.VER);
+			}
+		}		
+	}
+		
+	public long NumeroCombinacions(Vaixell[] V){
+		long r=V.length==0?0:1;
+				
+		for (Vaixell v:V)
+			r*=v.ps.quantitat();
+			
+		return r;
+	}
+}

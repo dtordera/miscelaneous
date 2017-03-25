@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Battleship Solitarie 1.0</string>
+    <string name="Titol">Battleship Solitarie</string>
+    <string name="Versio">v1.0</string>
+    <string name="Opcio1">new game</string>
+    <string name="Opcio2">saved games</string>
+    <string name="Opcio3">settings</string>
+    <string name="Opcio4">how to play</string>
+    <string name="Opcio5">exit</string>   
+    <string name="GS_NOBMPS">Graphical set : no pictures</string>
+    <string name="GS_WWII">Graphical set : World War II</string>
+    <string name="GS_CLASSICAL">Graphical set : classical</string>
+    <string name="DF_TINY">Size : beginner (6x6)</string>
+    <string name="DF_SMALL">Size : easy (8x8)</string>
+    <string name="DF_NORMAL">Size : normal (10x10)</string>
+    <string name="DF_BIG">Size : hard (15x15)</string>
+    <string name="RS_TRUE">Generate puzzle using recursivitily</string>
+    <string name="RS_FALSE">Generate puzzle using only human techniques</string>
+    <string name="ST_TRUE">Show play time</string>
+    <string name="ST_FALSE">Don\'t show play time</string>
+    <string name="BT_NEW_GAME">New</string>
+    <string name="BT_RESET_GAME">Reset</string>
+    <string name="BT_SOLVE">Solve</string>
+    <string name="BT_HINT">Hint</string>
+    <string name="BT_SAVE">Save</string>
+    <string name="BT_FILLCELL">Fill cell</string>
+    <string name="BT_FILLCOL">Fill col.</string>
+    <string name="BT_FILLROW">Fill row</string>
+    <string name="HT_NEXT">Next ></string>
+    <string name="HT_PREVIOUS">&lt; Previous </string>
+</resources>

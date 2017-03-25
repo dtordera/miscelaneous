@@ -1,0 +1,44 @@
+package comu;
+
+public class main {
+
+	public static void main(String[] args) {
+			
+		//BSPuzzle B = new FactoriaPuzzle(10,10,new byte[]{4,3,3,2,2,2,1,1,1,1}).Genera();
+
+		BSPuzzle B = new FactoriaPuzzle(6,6,new byte[]{3,2,2,1}).Genera();
+		
+		shipmodel.Resoledor R = new shipmodel.Resoledor(B);
+		
+		R.Resol(1);
+		
+		System.out.println();
+		
+		for (shipmodel.Vaixell[] s:R.S){
+			
+				String r="";
+		
+				for (byte j=0;j<R.R;j++) {
+		
+					for (byte i=0;i<R.C;i++){
+					
+						char m='·';
+		
+						for (shipmodel.Vaixell v:s)
+							if (v.c(i,j)!=K.I) m=v.c(i,j);					
+					 
+						r+=m + " ";
+					}
+				
+					r += R.SC[j] + "\n";
+				}		
+		
+				r+="\n";
+				for (byte i=0;i<R.C;i++)
+					r+=R.SR[i] + " ";
+					
+				System.out.println(r);					
+			}						
+	}
+}
+

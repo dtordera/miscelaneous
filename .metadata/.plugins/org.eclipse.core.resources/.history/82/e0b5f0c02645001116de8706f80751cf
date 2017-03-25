@@ -1,0 +1,24 @@
+
+public class yubotu_main {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		int[] V = { k.PORTAVIONS,
+				    k.ACOIRASSAT,
+					k.CREUER,
+					k.CREUER,
+					k.DESTRUCTOR,
+					k.DESTRUCTOR,
+					k.DESTRUCTOR,
+					k.SUBMARI,
+					k.SUBMARI,
+					k.SUBMARI,
+					k.SUBMARI
+				};
+				
+		grid g = new grid(9,9, V);
+		
+		System.out.printf(g.toString());
+	}
+
+}

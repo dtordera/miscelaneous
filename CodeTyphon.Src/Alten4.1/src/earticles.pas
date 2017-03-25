@@ -1,0 +1,326 @@
+unit earticles;
+
+interface
+
+uses Classes, UDBAlter, Controls, ExtCtrls, StdCtrls, UText, ULabel,
+  UDBLabel, LlistCfg, UDBView, Dialogs, Gradient, Forms, estilcolor, ADOdb, sysutils, graphics;
+
+type
+  T_earticles = class(TForm)
+    UDBAlterForm: TUDBAlterForm;
+    btAnterior: TUText;
+    btSeguent: TUText;
+    btEntrar: TUText;
+    UText1: TUText;
+    UText2: TUText;
+    UText4: TUText;
+    UText5: TUText;
+    UText6: TUText;
+    UText7: TUText;
+    UText10: TUText;
+    dDESCR: TTLabel;
+    dPREC: TNLabel;
+    dPBASE: TNLabel;
+    dPVP: TNLabel;
+    dPMIN: TNLabel;
+    dSTOCK: TBLabel;
+    dFAMILIA: TUDBLabel;
+    dMARCA: TUDBLabel;
+    dPCOST: TNLabel;
+    dDATA_REGISTRE: TDLabel;
+    UText3: TUText;
+    UText8: TUText;
+    dMARGE: TNLabel;
+    dMARGE_MAR: TNLabel;
+    dID: TNLabel;
+    GradientNC1: TGradientNC;
+    dLINIA: TTLabel;
+    dID_FAM: TNLabel;
+    dID_MAR: TNLabel;
+    dID_LIN: TNLabel;
+    Panel1: TPanel;
+    Shape1: TShape;
+    UText9: TUText;
+    UText11: TUText;
+    UText12: TUText;
+    UText13: TUText;
+    UText14: TUText;
+    UText15: TUText;
+    dCODI_BARRES: TTLabel;
+    procedure dID_LINChange(Sender: TObject);
+    procedure UDBAlterFormGetNewId(sender: TObject; var Id: Integer);
+    procedure UDBAlterFormAfterLoadValues(Sender: TObject);
+    procedure dPBASEChange(Sender: TObject);
+    procedure dPMINChange(Sender: TObject);
+    procedure dPRECChange(Sender: TObject);
+    procedure dMARGEChange(Sender: TObject);
+    procedure dMARGE_MARChange(Sender: TObject);
+    procedure UDBAlterFormLoadDefValues(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormCreate(Sender: TObject);
+    procedure dID_FAMSetInnerCaption(Sender: TObject);
+    procedure dID_MARSetInnerCaption(Sender: TObject);
+    procedure dID_LINSetInnerCaption(Sender: TObject);
+    procedure dPBASESetInnerCaption(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure UText2React(Sender: TObject);
+    procedure dMARCAShowPickForm(sender: TObject; F: TCustomForm;
+      U: TUDBView);
+    procedure dFAMILIAShowPickForm(sender: TObject; F: TCustomForm;
+      U: TUDBView);
+  private
+  public
+    procedure CanviaPreus; overload;
+    procedure CanviaPreus(V : double); overload;
+    procedure ColorBanda;
+  published
+     procedure Nou;
+     function  Nou_ : TModalresult;     
+     procedure Modificar;
+     procedure Eliminar;
+  end;
+
+implementation
+
+uses articles, dmsrc, global, ventesA, families, marques;
+
+{$R *.DFM}
+
+procedure T_earticles.Nou;
+begin
+     Nou_;
+end;
+
+function T_earticles.Nou_ : TModalresult;
+begin
+     result := UDBAlterForm.New;
+end;
+
+procedure T_earticles.Modificar;
+begin
+     if _articles.v.Data.DataSet.RecordCount > 0
+     then UDBAlterForm.Modify
+     else mDlg('No hi han registres a modificar',mtInformation,[mbOk]);
+end;
+
+procedure T_earticles.Eliminar;
+begin
+     if _articles.v.Data.DataSet.RecordCount > 0
+     then UDBAlterForm.Delete
+     else mDlg('No hi han registres a eliminar',mtInformation,[mbOk]);
+end;
+
+procedure T_earticles.dID_LINChange(Sender: TObject);
+var
+     q : TADOQuery;
+begin
+     if dID_LIN.Caption = '' then exit;
+
+     q := TADOQuery.Create(self);
+     q.Connection := dm.CG;
+
+     try
+     q.Active := false;
+     q.SQL.Text := 'select * from linies where id = ' + dID_LIN.Caption;
+     q.Active := true;
+
+     dLINIA.Caption := q.FieldByName('descr').AsString;
+     finally
+     q.Free;
+     end;
+end;
+
+procedure T_earticles.UDBAlterFormGetNewId(sender: TObject;
+  var Id: Integer);
+var
+     q : TADOQuery;
+begin
+     q := TADOQuery.Create(nil);
+     q.Connection := dm.CG;
+
+     q.Active := false;
+     q.SQL.Text := 'select min(id) - 1 as minim from articles where id < 1';
+     q.Active := true;
+
+     Id := q.FieldByName('minim').AsInteger;
+
+     if id = 0 then id := -1;
+
+     q.Free;
+end;
+
+procedure T_earticles.CanviaPreus(V : double);
+begin
+     if (csLoading in ComponentState) or (not Visible) or (UDBAlterForm.State = asLoading) then exit;
+
+     dPCost.Value := dPBASE.Value*(1 + strtoint(dm.CR['IVA_ARTICLES'])/100);
+
+     dPVP.Value := Max([dPMin.Value,dPRec.Value]);;
+
+     if dPCost.Value > dPVP.Value then dPVP.Value := dPCost.Value / (1 - dMARGE_MAR.Value/100);
+     if dPCost.Value = dPVP.Value then dPVP.Value := dPCost.Value / (1 - V/100);
+
+     if dPVP.Value <> 0 then
+     dMARGE.Value := -100*(dPCost.Value / dPVP.Value) + 100;
+
+     ColorBanda;
+end;
+
+procedure T_earticles.CanviaPreus;
+begin
+     CanviaPreus(strtofloat(dm.CR['MARGE_DEFECTE']));
+end;
+
+procedure T_earticles.ColorBanda;
+var
+     c : TColor;
+     s : string;
+begin
+     c := clBtnFace;
+
+     if dId.Value < 0 then
+     begin
+          c := C_ENTRADADIRECTA;
+          s := 'article d''entrada directa';
+     end
+     else
+     if (dPMin.Value = 0) and (dPRec.Value = 0) and (dPCost.Value = 0)
+     then
+     begin
+           c := C_OBSOLET;
+           s := 'article obsolet';
+     end
+     else
+     if (dPVP.Value <> 0) and (dPcost.Value > dPMin.Value) and (dPcost.Value > dPRec.Value) and (dMarge_mar.Value = 0)
+     then
+     begin
+           c := C_MARGEDEFECTE;
+           s := 'P.V.P. aplicant marge per defecte';
+     end
+     else
+     if (dPcost.Value > dPMin.Value) and (dPCost.Value > dPRec.Value) and (dPVP.Value <> 0)
+     then
+     begin
+          c := C_MARGEMARCA;
+          s := 'P.V.P. aplicant marge de marca';
+     end
+     else
+     if (dMarge.Value <= 0) then
+     begin
+          c := C_MARGENOVALID;
+          s := 'Atenció! Marge no vàlid o negatiu. P.V.P. menor o igual que el preu de cost';
+     end;
+
+     Panel1.Visible := c <> clBtnFace;
+     Panel1.Font.Color := NegLumColor(c);
+     Panel1.Color := c;
+     Panel1.caption := s;
+end;
+
+procedure T_earticles.UDBAlterFormAfterLoadValues(Sender: TObject);
+begin
+     ColorBanda;
+end;
+
+procedure T_earticles.dPBASEChange(Sender: TObject);
+begin
+     CanviaPreus;
+end;
+
+procedure T_earticles.dPMINChange(Sender: TObject);
+begin
+     CanviaPreus;
+end;
+
+procedure T_earticles.dPRECChange(Sender: TObject);
+begin
+     CanviaPreus;
+end;
+
+procedure T_earticles.dMARGEChange(Sender: TObject);
+begin
+     CanviaPreus(dMARGE.Value);
+end;
+
+procedure T_earticles.dMARGE_MARChange(Sender: TObject);
+begin
+     CanviaPreus;
+end;
+
+procedure T_earticles.UDBAlterFormLoadDefValues(Sender: TObject);
+begin
+     dPBASE.Value := 0;
+     dPCOST.Value := 0;
+     dPMIN.Value  := 0;
+     dPREC.Value  := 0;
+     dPVP.Value   := 0;
+     dMARGE.Value := strtofloat(dm.CR['MARGE_DEFECTE']);
+     dMARGE_MAR.Value := 0;
+     dSTOCK.Value := false;
+
+     dDATA_REGISTRE.Date := Date;
+
+     ColorBanda;
+end;
+
+procedure T_earticles.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+     case Key of
+     27 : close;
+     end;
+end;
+
+procedure T_earticles.FormCreate(Sender: TObject);
+begin
+     UDBAlterForm.UDBView := _articles.v;
+
+     _estilcolor.Apply(sender as TCustomForm);
+end;
+
+procedure T_earticles.dID_FAMSetInnerCaption(Sender: TObject);
+begin
+     dID_FAM.Left := dFAMILIA.Left + dFAMILIA.Width;
+end;
+
+procedure T_earticles.dID_MARSetInnerCaption(Sender: TObject);
+begin
+     dID_MAR.Left := dMARCA.Left + dMARCA.Width;
+end;
+
+procedure T_earticles.dID_LINSetInnerCaption(Sender: TObject);
+begin
+     dID_LIN.Left := dLINIA.Left + dLINIA.Width;
+end;
+
+procedure T_earticles.dPBASESetInnerCaption(Sender: TObject);
+begin
+     CanviaPreus;
+end;
+
+procedure T_earticles.FormActivate(Sender: TObject);
+begin
+     if ActiveControl is TCustomUText then (Activecontrol as TCustomUText).ApplyMouseOverStyle;
+end;
+
+procedure T_earticles.UText2React(Sender: TObject);
+begin
+     dMARCA.BringToFront;
+end;
+
+procedure T_earticles.dMARCAShowPickForm(sender: TObject; F: TCustomForm;
+  U: TUDBView);
+begin
+     U.Look.Assign(_marques.v.Look);
+     U.AssignColumnInfo(CInfo[ctMarques],VisFields[ctMarques]);
+end;
+
+procedure T_earticles.dFAMILIAShowPickForm(sender: TObject; F: TCustomForm;
+  U: TUDBView);
+begin
+     U.Look.Assign(_families.v.Look);
+     U.AssignColumnInfo(CInfo[ctFamilies],VisFields[ctFamilies]);
+end;
+
+end.

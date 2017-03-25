@@ -1,0 +1,463 @@
+package meves.apps.logic;
+
+import java.util.Random;
+
+import meves.apps.logic.puzzle.FactoriaPuzzle;
+import meves.apps.logic.puzzle.K;
+import meves.apps.logic.puzzle.Puzzle;
+import android.app.Activity;
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.view.Display;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Toast;
+
+public class BSViewActivity extends Activity {
+
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+//        BSView B = new BSView(this,new FactoriaPuzzle(10,10,new int[]{4,3,3,2,2,2,1,1,1,1},true).Genera().Resol());
+        BSView B = new BSView(this,new FactoriaPuzzle(10,10,new int[]{},false).Genera().Resol());
+
+        getWindow().getAttributes().format = android.graphics.PixelFormat.RGBA_8888;
+                     
+        setContentView(B);
+    }
+    
+    
+    public class BSView extends View {
+
+    	final static byte MIN_CELLES_DIBUIXADES=4;
+
+    	Puzzle P;
+    	Bitmap[] bmps;
+    	Bitmap 	 fonsmar;
+    	Bitmap 	 PuzzleBitmap;
+    	Canvas   PuzzleCanvas;
+    	Paint mPaint,ind;
+    	Context ctx;    	
+    	
+    	int textsizeX,textsizeY;
+    	int  maxcellSize,
+    		 mincellSize,
+    		 currentcellSize;
+    	int screenHeight,screenWidth;
+    	int PuzzleX;
+    	
+    	int idX,idY;
+    	int cdX,cdY;
+    	
+    	GestureDetector mlongpressDetector;
+    	Random rndgen;
+
+    	public BSView(Context context,Puzzle p) {
+    		super(context);
+    		
+    		ctx = context;
+    		P = p;//.Resol();
+    		
+    		rndgen = new Random();    		
+
+    		InitView();				
+    		InitGame();
+    	}
+	
+    	public void InitView(){
+    	
+    		Rect TextSize = new Rect();    	
+    		Resources r = this.getContext().getResources();		    		
+    		    	    		    	
+    		mPaint = new Paint();
+    		mPaint.setColor(Color.WHITE);
+    		mPaint.setAlpha(0xaa);
+    		mPaint.setAntiAlias(true);
+    		mPaint.setTextSize(24);
+    		
+    		ind = new Paint();    		
+    		ind.setColor(0x000044);
+    		ind.setAlpha(0xff);
+    		ind.setAntiAlias(true);     		
+    		    		
+    		mPaint.getTextBounds("0",0,1,TextSize);    		
+    		
+    		textsizeX = TextSize.right - TextSize.left;
+    		textsizeY = TextSize.bottom - TextSize.top;    		    		    		    		
+    		
+    		WindowManager wm = (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE);
+    		Display display = wm.getDefaultDisplay();    		    		
+    		
+    		screenHeight = display.getHeight();
+    		screenWidth  = display.getWidth();    		    		
+    		   		    		
+    		mincellSize = (screenHeight - textsizeY - 2) / P.R;
+    		maxcellSize = (screenHeight - textsizeY - 2) / MIN_CELLES_DIBUIXADES;    		    		
+    		
+    		currentcellSize = mincellSize;
+    		
+    		idX = 0;
+    		idY = 0;
+    	
+    		cdX = P.C;
+    		cdY = P.R;
+    		    		    		    	    		    		    		    		    		
+    		bmps = new Bitmap[8];        
+                        
+    		loadTile(K.A,r.getDrawable(R.drawable.pa));
+    		loadTile(K.M,r.getDrawable(R.drawable.pp));
+    		loadTile(K.X,r.getDrawable(R.drawable.px));
+    		loadTile(K.N,r.getDrawable(R.drawable.pn));
+    		loadTile(K.S,r.getDrawable(R.drawable.ps));
+    		loadTile(K.E,r.getDrawable(R.drawable.pe));
+    		loadTile(K.O,r.getDrawable(R.drawable.po));
+    		loadTile(K.B,r.getDrawable(R.drawable.pb));  
+    		
+    		fonsmar = FonsMar();
+    		    		
+    		mScaleDetector = new ScaleGestureDetector(ctx, new ScaleListener());    		  		
+    		    		
+    		setFocusable(true);    		
+    	}
+	
+    	public void InitGame(){
+    		
+    		Toast.makeText(ctx,"Puzzle created ("+P.ms + "ms)",Toast.LENGTH_SHORT).show();
+    		
+    		PuzzleBitmap = Bitmap.createBitmap(mincellSize*P.C+textsizeX*2,screenHeight,Bitmap.Config.ARGB_8888);
+    		PuzzleCanvas = new Canvas(PuzzleBitmap);
+    		
+    		PuzzleX = (screenWidth - PuzzleCanvas.getWidth())/2;    		    		    		
+    		
+    		drawPuzzle();
+    	}
+	
+    	public void loadTile(byte key, Drawable tile) {
+    		Bitmap bitmap = Bitmap.createBitmap(mincellSize,mincellSize,Bitmap.Config.ARGB_8888);
+    		Canvas canvas = new Canvas(bitmap);
+    		tile.setBounds(0,0,mincellSize,mincellSize);
+    		tile.draw(canvas);
+    		
+    		bmps[key] = bitmap;
+    	}	
+		
+    	public void drawPuzzle(){
+    	
+    		Paint l = new Paint();
+    		
+    		l.setColor(0x000000);
+    		l.setAlpha(0xff);
+    	    		
+    		PuzzleCanvas.drawRect(new Rect(0,0,PuzzleCanvas.getWidth(),PuzzleCanvas.getHeight()),l);    		
+    	
+    		int i,j;
+    		
+    		for (j=idY;j<idY+cdY;j++)
+    		for (i=idX;i<idX+cdX;i++)
+    			if (P.v(i,j)>-1)
+    			{
+    				if (P.v(i,j)!=K.A)
+    				PuzzleCanvas.drawBitmap(bmps[P.v(i,j)],null,
+    				new Rect((i-idX)*currentcellSize,(j-idY)*currentcellSize,
+    						 (i+1-idX)*currentcellSize-1,
+    						 (j+1-idY)*currentcellSize-1),mPaint);
+    				else
+    				PuzzleCanvas.drawBitmap(fonsmar,
+    				new Rect(i*mincellSize,j*mincellSize,
+    				(i+1)*mincellSize-1,
+    				(j+1)*mincellSize-1),
+    				new Rect((i-idX)*currentcellSize,(j-idY)*currentcellSize,
+    						 (i+1-idX)*currentcellSize-1,
+    						 (j+1-idY)*currentcellSize-1),mPaint);
+    			}
+    			else
+    				PuzzleCanvas.drawRect(new Rect((i-idX)*currentcellSize,(j-idY)*currentcellSize,(i-idX+1)*currentcellSize - 1,(j-idY+1)*currentcellSize - 1),ind);    		
+    				    				    			
+    		for (i=idX;i<idX+cdX;i++)
+    			PuzzleCanvas.drawText(""+P.SR[i],(i-idX)*currentcellSize+currentcellSize/2-textsizeX/2,screenHeight,mPaint);
+    			
+    		for (j=idY;j<idY+cdY;j++)
+    			PuzzleCanvas.drawText(""+P.SC[j],currentcellSize*cdX+5,(j-idY+1)*currentcellSize-currentcellSize/2+textsizeY/2, mPaint);
+    			
+   			Paint p = new Paint();
+   			p.setColor(Color.CYAN);
+   			p.setAlpha(0xaa);
+    			
+    		if (idX==0)   		
+    			PuzzleCanvas.drawLine(0,0,0,cdY*currentcellSize-1,p);
+    			
+    		if (idX+cdX==P.C)
+    			PuzzleCanvas.drawLine(cdX*currentcellSize-1,0,cdX*currentcellSize-1,cdY*currentcellSize-1,p);    		
+    			
+    		if (idY==0)
+    			PuzzleCanvas.drawLine(0,0,cdX*currentcellSize-1,0,p);
+    			
+    		if (idY+cdY==P.R)
+    			PuzzleCanvas.drawLine(0,cdY*currentcellSize-1,cdX*currentcellSize-1,cdY*currentcellSize-1,p);    		    			    		
+    	}
+    	
+    	public void Plasma(float[][] g,float xo,float yo,float xf,float yf) {
+    		
+    		float dx = xf-xo;
+    		float dy = yf-yo;    		
+    		
+    		if (dx<1||dy<1) return;    		    		    		    		
+    		    		
+    		float mx = xo + dx/2,
+    			  my = yo + dy/2;    		
+    			      			  
+    		int ixo=Math.round(xo),
+    			ixf=Math.round(xf),
+    			iyo=Math.round(yo),
+    			iyf=Math.round(yf),
+    			imx=Math.round(mx),
+    			imy=Math.round(my);
+    			
+    		g[ixo][imy] = (g[ixo][iyo]+g[ixo][iyf]) / 2 + (dy)/2 - rndgen.nextInt((int)dy);
+    		g[ixf][imy] = (g[ixf][iyo]+g[ixf][iyf]) / 2 + (dy)/2 - rndgen.nextInt((int)dy);
+    		g[imx][iyo] = (g[ixo][iyo]+g[ixf][iyo]) / 2 + (dx)/2 - rndgen.nextInt((int)dx);
+    		g[imx][iyf] = (g[ixo][iyf]+g[ixf][iyf]) / 2 + (dx)/2 - rndgen.nextInt((int)dx);
+    			      		
+    		g[imx][imy] = (g[ixo][iyo]+g[ixo][iyf]+g[ixf][iyo]+g[ixf][iyf]) / 4 + (dx*dy)/4 - rndgen.nextInt((int)(dx*dy));
+    		    		
+    		Plasma(g,xo,yo,mx,my);
+    		Plasma(g,mx,yo,xf,my);
+    		Plasma(g,xo,my,mx,yf);
+    		Plasma(g,mx,my,xf,yf);    		
+    	}
+    	    	    	    	
+    	public Bitmap FonsMar(){
+    		Paint l = new Paint();    		
+    		
+    		float[][]g = new float[screenHeight][screenHeight];
+    		
+    		for (int i=0;i<screenHeight;i++)
+    		g[i] = new float[screenHeight];
+    		
+    		g[0][0] = rndgen.nextInt(0xff);
+    		g[screenHeight-1][0] = rndgen.nextInt(0xff);
+    		g[0][screenHeight-1] = rndgen.nextInt(0xff);
+    		g[screenHeight-1][screenHeight-1] = rndgen.nextInt(0xff);
+    		
+    		Plasma(g,0,0,screenHeight-1,screenHeight-1);
+    		
+    		l.setStrokeWidth(0);
+    		l.setStyle(Style.STROKE);
+    		l.setAntiAlias(true);
+    		l.setDither(true);
+    		
+    		Bitmap A = Bitmap.createBitmap(screenHeight,screenHeight,Bitmap.Config.ARGB_8888);
+    		Canvas canvas = new Canvas(A);
+    		
+    		for (int j=0;j<screenHeight;j++)
+    		for (int i=0;i<screenHeight;i++)
+    		{
+    			l.setARGB(0xff,0,0,(int)g[i][j]);
+    			canvas.drawPoint(i,j,l);
+    		}
+    		    		    		
+    		return A;
+    	}
+	
+    	@Override protected void onDraw(Canvas canvas){    	
+    		super .onDraw(canvas);
+    		canvas.drawBitmap(PuzzleBitmap,PuzzleX,0,mPaint);    		    		
+    	}    			
+    	    	   	
+    	private static final int INVALID_POINTER_ID = -1;
+
+    	private float mPosX;
+    	private float mPosY;
+
+    	private float mLastTouchX;
+    	private float mLastTouchY;
+
+    	private int mActivePointerId=INVALID_POINTER_ID;
+    	private long clicktime = 0;
+    	
+    	@Override
+    	public boolean onTouchEvent(MotionEvent ev) {
+    	    		    		
+    		mScaleDetector.onTouchEvent(ev);    		
+    		    		
+    		switch (ev.getAction() & MotionEvent.ACTION_MASK) {    		
+    		
+    			case MotionEvent.ACTION_DOWN: {
+    				final float x = ev.getX();
+    				final float y = ev.getY();  				
+    				    				    				    				
+    				mPosX = 0;
+    				mPosY = 0;
+    				mLastTouchX = x;
+    				mLastTouchY = y;
+    				
+    				mActivePointerId = ev.getPointerId(0);    				
+    				
+    				clicktime = System.currentTimeMillis(); 
+    				    				
+    				break;    				
+    			}
+
+    			case MotionEvent.ACTION_MOVE: {    				
+
+    				// Only move if the ScaleGestureDetector isn't processing a gesture.
+   					if (mActivePointerId == INVALID_POINTER_ID) break;
+    				
+    				if (!mScaleDetector.isInProgress()) {
+    				
+   					final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+    				
+   					final float x = ev.getX(pointerIndex);
+   					final float y = ev.getY(pointerIndex);
+    				
+   					final float dx = x - mLastTouchX;
+   					final float dy = y - mLastTouchY;
+    					
+   					mPosX+=dx;
+   					mPosY+=dy;
+    					
+   					if (mPosX > currentcellSize) {
+   						mPosX = 0;
+   						if (idX > 0) idX--;    					
+   					}
+    					
+   					if (mPosX < -currentcellSize) {
+   						mPosX = 0;
+   						if (idX + cdX< P.C) idX++;
+   					}    		
+    					
+   					if (mPosY > currentcellSize) {
+   						mPosY = 0;  						
+   						if (idY > 0) idY--;    					    						    						
+   					}			
+    					
+   					if (mPosY < -currentcellSize) {
+   						mPosY = 0;
+   						if (idY + cdY < P.R) idY++;
+   					}    		    					
+    					    				    					    					
+   					drawPuzzle();
+   					invalidate();
+
+   					mLastTouchX = x;
+   					mLastTouchY = y;
+    			
+    					break;
+    				}
+    			}
+
+    			case MotionEvent.ACTION_UP: {
+    			    			
+    				if (System.currentTimeMillis() - clicktime < 250) 
+    				{
+    					if (mScaleDetector.isInProgress()) return false;                
+                                	
+                	float x = ev.getX();
+                	float y = ev.getY();
+                	                	
+                	x -= PuzzleX;
+                	
+                	if (x>0&&x<currentcellSize*cdX){
+                		
+                		int i,j;
+                		
+                		x /= currentcellSize;
+                		y /= currentcellSize;
+                		
+                		i = idX + (int)x;
+                		j = idY + (int)y;
+            
+                		switch(P.v(i,j)){
+                		case K.A : P.reset(i,j);P.det(i,j,K.M); break;
+                		case K.I : P.det(i,j,K.A); break;
+                		default  : P.reset(i,j);
+                		}
+                		
+                		drawPuzzle();
+                		invalidate();    				
+    				}
+    				}
+    				clicktime = 0;    				
+    				mActivePointerId = INVALID_POINTER_ID;
+    				break;
+    			}
+
+    			case MotionEvent.ACTION_CANCEL: {
+    				clicktime = 0;    			
+    				mActivePointerId = INVALID_POINTER_ID;
+    				break;
+    			}
+
+    			case MotionEvent.ACTION_POINTER_UP: {
+    				clicktime = 0;    			
+    				final int pointerIndex = (ev.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) 
+    					>> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+    				final int pointerId = ev.getPointerId(pointerIndex);
+    				if (pointerId == mActivePointerId) {
+    					// This was our active pointer going up. Choose a new
+    					// active pointer and adjust accordingly.
+    					final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+    					mLastTouchX = ev.getX(newPointerIndex);
+    					mLastTouchY = ev.getY(newPointerIndex);
+    					mActivePointerId = ev.getPointerId(newPointerIndex);                
+    					
+    				}
+    				break;
+    			}
+    		}
+    		return true;
+    	}    	
+    	
+    	private ScaleGestureDetector mScaleDetector;
+    	
+
+    	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        
+        @Override        
+        	public boolean onScale(ScaleGestureDetector detector) {
+        	                          
+        		float   cs = detector.getCurrentSpan(),
+        				ps = detector.getPreviousSpan();
+        				
+        		int delta=0;		
+        		
+        		if (cs!=ps) delta=cs<ps?-1:1;
+        			        	        	
+        		if (delta<0) 
+        		{
+    				if (cdY < P.R) cdY++;
+    				if (cdX < P.C) cdX++;
+    				
+    				if (idX + cdX>P.C) idX=P.C-cdX;
+    				if (idY + cdY>P.R) idY=P.R-cdY;        		
+        		}
+        		else           
+        		if (delta>0)
+        		{
+        			if (cdX>MIN_CELLES_DIBUIXADES) cdX--;
+        			if (cdY>MIN_CELLES_DIBUIXADES) cdY--;
+        		}
+        			
+   				currentcellSize = (screenHeight - textsizeY) / cdY;            	    						        			
+
+        		drawPuzzle();
+        		invalidate();
+        	
+        		return true;
+    		}
+    	
+    	}       
+    }
+}

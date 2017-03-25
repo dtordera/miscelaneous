@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>Debug_dawafire</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.cdt.core.cnature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>dawafire</name>
+			<type>1</type>
+			<location>/home/nnn/code/optimum-1.0/dawafire/dawafire</location>
+		</link>
+	</linkedResources>
+</projectDescription>

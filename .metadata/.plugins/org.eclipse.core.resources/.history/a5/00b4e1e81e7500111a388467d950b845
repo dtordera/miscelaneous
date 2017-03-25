@@ -1,0 +1,8 @@
+package comu;
+
+public class BSPuzzle {
+	byte[] SR,SC;
+	byte[] Ls;
+	Mostrades[] M;
+
+}

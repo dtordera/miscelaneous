@@ -1,0 +1,272 @@
+package meves.apps.logic;
+
+import meves.apps.logic.puzzle.FactoriaPuzzle;
+import meves.apps.logic.puzzle.K;
+import meves.apps.logic.puzzle.Puzzle;
+import android.app.Activity;
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.view.Display;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Toast;
+
+public class BSViewActivity extends Activity {
+
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        BSView B = new BSView(this);
+                        
+        setContentView(B);
+    }
+    
+    public class BSView extends View {
+
+    	Puzzle P;
+    	Bitmap[] bmps;
+    	Bitmap 	 PuzzleBitmap;
+    	Canvas   PuzzleCanvas;
+    	Paint mPaint,ind;
+    	Context ctx;
+    	
+    	int INITIAL_PR = 10;
+    	
+    	int textsizeX,textsizeY;
+    	int maxcellSize,
+    		 mincellSize,
+    		 currentcellSize;
+    	int screenHeight,screenWidth;
+    	int PuzzleX;
+    	
+
+    	public BSView(Context context,Puzzle p) {
+    		super(context);
+    		
+    		ctx = context;
+    		p = P;
+
+    		InitView();				
+    		InitGame();
+    	}
+	
+    	public void InitView(){
+    	
+    		Rect TextSize = new Rect();    	
+    		Resources r = this.getContext().getResources();		    		
+    		    	
+    		System.out.println("1");
+    		    	
+    		mPaint = new Paint();
+    		mPaint.setColor(Color.WHITE);
+    		mPaint.setAlpha(0xaa);
+    		mPaint.setAntiAlias(true);
+    		mPaint.setTextSize(24);
+    		
+    		ind = new Paint();    		
+    		ind.setColor(0x000044);
+    		ind.setAlpha(0xff);
+    		ind.setAntiAlias(true); 
+    		
+    		System.out.println("2");    		   		    		    	        		    		    		
+    		    		
+    		mPaint.getTextBounds("0",0,1,TextSize);    		
+    		
+    		textsizeX = TextSize.right - TextSize.left;
+    		textsizeY = TextSize.bottom - TextSize.top;    		    		    		    		
+    		
+    		WindowManager wm = (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE);
+    		Display display = wm.getDefaultDisplay();    		    		
+    		
+    		screenHeight = display.getHeight();
+    		screenWidth  = display.getWidth();    		    		
+    		   		    		
+    		mincellSize = (screenHeight - textsizeY - 2) / INITIAL_PR;
+    		
+    		System.out.println("mincellSize " + mincellSize);
+    		currentcellSize = mincellSize;
+    		maxcellSize = (screenHeight - textsizeY - 2) / 5;    		    		
+    		    		    		    	    		    		    		    		    		
+    		bmps = new Bitmap[8];        
+                        
+    		loadTile(K.A,r.getDrawable(R.drawable.pa));
+    		loadTile(K.M,r.getDrawable(R.drawable.pp));
+    		loadTile(K.X,r.getDrawable(R.drawable.px));
+    		loadTile(K.N,r.getDrawable(R.drawable.pn));
+    		loadTile(K.S,r.getDrawable(R.drawable.ps));
+    		loadTile(K.E,r.getDrawable(R.drawable.pe));
+    		loadTile(K.O,r.getDrawable(R.drawable.po));
+    		loadTile(K.B,r.getDrawable(R.drawable.pb));    		
+    		
+    		System.out.println("6");    		
+    		
+    		setFocusable(true);    		
+    		
+    		mScaleDetector = new ScaleGestureDetector(ctx, new ScaleListener());    		
+    	}
+	
+    	public void InitGame(){
+    		long t = System.currentTimeMillis();
+    		P = new FactoriaPuzzle(10,10,new int[]{4,3,3,2,2,2,1,1,1,1},true).Genera();                	
+    		
+    		Toast.makeText(ctx,"Puzzle created ("+(System.currentTimeMillis()-t) + "ms)",Toast.LENGTH_SHORT).show();
+    		
+    		PuzzleBitmap = Bitmap.createBitmap(mincellSize*P.C+textsizeX*2,screenHeight,Bitmap.Config.ARGB_8888);
+    		PuzzleCanvas = new Canvas(PuzzleBitmap);
+    		
+    		PuzzleX = (screenWidth - PuzzleCanvas.getWidth())/2;    		    		    		
+    		
+    		drawPuzzle();
+    	}
+	
+    	public void loadTile(byte key, Drawable tile) {
+    		Bitmap bitmap = Bitmap.createBitmap(mincellSize,mincellSize,Bitmap.Config.ARGB_8888);
+    		Canvas canvas = new Canvas(bitmap);
+    		tile.setBounds(0,0,mincellSize,mincellSize);
+    		tile.draw(canvas);
+    		
+    		bmps[key] = bitmap;
+    	}	
+		
+    	public void drawPuzzle(){
+    		byte i,j;
+    		
+    		for (j=0;j<P.R;j++)
+    		for (i=0;i<P.C;i++)
+    			if (P.v(i,j) > -1)
+    				PuzzleCanvas.drawBitmap(bmps[P.v(i,j)],i*currentcellSize,j*currentcellSize,mPaint);
+    			else
+    				PuzzleCanvas.drawRect(new Rect(i*currentcellSize,j*currentcellSize,(i+1)*currentcellSize - 1,(j+1)*currentcellSize - 1),ind);    		
+    				    			
+    		for (i=0;i<P.C;i++)
+    			PuzzleCanvas.drawText(""+P.SR[i],i*currentcellSize+currentcellSize/2-textsizeX/2,screenHeight,mPaint);
+    			
+    		for (j=0;j<P.R;j++)
+    			PuzzleCanvas.drawText(""+P.SC[j],currentcellSize*P.C+5,(j+1)*currentcellSize-currentcellSize/2+textsizeY/2, mPaint);
+    	}
+	
+    	@Override protected void onDraw(Canvas canvas){
+    	
+    		PuzzleCanvas.save();
+    		PuzzleCanvas.scale(mScaleFactor,mScaleFactor);
+    		PuzzleCanvas.restore();
+    	
+//    		canvas.save();
+//    		canvas.translate(mPosX,mPosY);
+//    		canvas.scale(mScaleFactor,mScaleFactor);
+    		canvas.drawBitmap(PuzzleBitmap,PuzzleX,0,mPaint);    		    		
+//    		canvas.restore();    		
+    		
+    		
+    	}    			
+    	    	   	
+    	private static final int INVALID_POINTER_ID = -1;
+
+    	private float mPosX;
+    	private float mPosY;
+
+    	private float mLastTouchX;
+    	private float mLastTouchY;
+    	private int mActivePointerId = INVALID_POINTER_ID;
+
+    	private ScaleGestureDetector mScaleDetector;
+    	private float mScaleFactor = 1.f;
+
+
+    	@Override
+    	public boolean onTouchEvent(MotionEvent ev) {
+    		// Let the ScaleGestureDetector inspect all events.
+    		mScaleDetector.onTouchEvent(ev);
+
+    		final int action = ev.getAction();
+    		switch (action & MotionEvent.ACTION_MASK) {
+    		case MotionEvent.ACTION_DOWN: {
+    			final float x = ev.getX();
+    			final float y = ev.getY();
+
+    			mLastTouchX = x;
+    			mLastTouchY = y;
+    			mActivePointerId = ev.getPointerId(0);
+    			break;
+    		}
+
+    		case MotionEvent.ACTION_MOVE: {
+    			final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+    			final float x = ev.getX(pointerIndex);
+    			final float y = ev.getY(pointerIndex);
+
+    			// Only move if the ScaleGestureDetector isn't processing a gesture.
+    			if (!mScaleDetector.isInProgress()) {
+    				final float dx = x - mLastTouchX;
+    				final float dy = y - mLastTouchY;
+
+    				mPosX += dx;
+    				mPosY += dy;
+
+    				invalidate();
+    			}
+
+    			mLastTouchX = x;
+    			mLastTouchY = y;
+
+    			break;
+    		}
+
+    		case MotionEvent.ACTION_UP: {
+    			mActivePointerId = INVALID_POINTER_ID;
+    			break;
+    		}
+
+    		case MotionEvent.ACTION_CANCEL: {
+    			mActivePointerId = INVALID_POINTER_ID;
+    			break;
+    		}
+
+    		case MotionEvent.ACTION_POINTER_UP: {
+    			final int pointerIndex = (ev.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) 
+    					>> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+    			final int pointerId = ev.getPointerId(pointerIndex);
+    			if (pointerId == mActivePointerId) {
+                // This was our active pointer going up. Choose a new
+                // active pointer and adjust accordingly.
+                final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+                mLastTouchX = ev.getX(newPointerIndex);
+                mLastTouchY = ev.getY(newPointerIndex);
+                mActivePointerId = ev.getPointerId(newPointerIndex);
+            }
+            break;
+    		}
+        }
+
+        return true;
+    }
+
+    	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            mScaleFactor *= detector.getScaleFactor();
+
+            // Don't let the object get too small or too large.
+            mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 10.0f));
+
+            invalidate();
+            return true;
+        }
+    }
+    	
+    }
+    
+    
+    
+}

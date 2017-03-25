@@ -1,0 +1,82 @@
+package dvtr.games.logic.BS10.puzzle;
+
+import java.util.Arrays;
+import java.util.Random;
+
+public class FactoriaPuzzle {
+	int C,R;
+	int[] B;
+	boolean Recursiu;
+
+	Random rnd;
+
+	public FactoriaPuzzle(int c,int r,int[] b, boolean rec){
+	C = c;
+	R = r;
+
+	rnd = new Random();
+
+	Recursiu = rec;
+	B = b.clone();
+	}
+
+	public Puzzle Genera(){
+
+		CI[] I = new CI[1];
+		boolean Totfet = false;
+		byte i,j;
+		byte x,y;
+		long t;
+		int z;
+
+		Puzzle P = null;
+		t = System.currentTimeMillis();
+
+		while (!Totfet){
+
+			P = new Puzzle(C,R);
+			P.Coloca(B);
+
+			P.recursiu = Recursiu;
+			P.generant = true;
+
+			for (j=0;j<P.R;j++)
+				for (i=0;i<P.C;i++)
+					if (P.i(i,j)) P.A(i,j);
+
+			for (j=0;j<P.R;j++)
+				P.SC[j]=P.SC(j);
+
+			for (i=0;i<P.C;i++)
+				P.SR[i] = P.SR(i);						
+
+/*			boolean minimcelles = false;
+
+			while(!minimcelles)
+			{
+				x = (byte)rnd.nextInt(C);
+				y = (byte)rnd.nextInt(R);
+
+				I[I.length-1] = new CI(x,y,P.v(x,y));
+				minimcelles = new Puzzle(P.SR,P.SC,I,B).Resol().equals(P);
+
+				if (!minimcelles)  I=Arrays.copyOf(I,I.length+1);
+			}
+
+			for (z=0;z<I.length;z++)
+			{
+				if (I[z].v==K.A&&(P.SR[I[z].i.x]==0||P.SC[I[z].i.y]==0)) I[z]=new CI(-1,-1,K.A);
+
+				CI[] bak = Arrays.copyOf(I,I.length);
+
+				I[z]=new CI(-1,-1,K.A);
+
+				if (!new Puzzle(P.SR,P.SC,I,B).Resol().equals(P)) I[z]=bak[z];
+			}*/
+
+			Totfet = true;
+		}
+
+		return new Puzzle(P.SR,P.SC,I,B,System.currentTimeMillis()-t);
+	}
+}

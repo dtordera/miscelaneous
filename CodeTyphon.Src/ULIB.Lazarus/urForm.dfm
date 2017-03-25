@@ -1,0 +1,104 @@
+object _urForm: T_urForm
+  Left = 698
+  Top = 365
+  BorderStyle = bsToolWindow
+  Caption = '_urForm'
+  ClientHeight = 125
+  ClientWidth = 141
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -13
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnCreate = FormCreate
+  PixelsPerInch = 120
+  TextHeight = 16
+  object u1: TLabel
+    Left = 20
+    Top = 80
+    Width = 33
+    Height = 5
+    Cursor = crHandPoint
+    AutoSize = False
+    Color = clSilver
+    ParentColor = False
+    OnClick = uClick
+  end
+  object u2: TLabel
+    Tag = 2
+    Left = 54
+    Top = 80
+    Width = 33
+    Height = 5
+    Cursor = crHandPoint
+    AutoSize = False
+    Color = clSilver
+    ParentColor = False
+    OnClick = uClick
+  end
+  object u3: TLabel
+    Tag = 1
+    Left = 88
+    Top = 80
+    Width = 33
+    Height = 5
+    Cursor = crHandPoint
+    AutoSize = False
+    Color = clSilver
+    ParentColor = False
+    OnClick = uClick
+  end
+  object b1: TButton
+    Left = 20
+    Top = 95
+    Width = 51
+    Height = 20
+    Caption = '&<'
+    TabOrder = 0
+    OnClick = b1Click
+  end
+  object b2: TButton
+    Left = 71
+    Top = 95
+    Width = 51
+    Height = 20
+    Caption = '&>'
+    TabOrder = 1
+    OnClick = b2Click
+  end
+  object Titol: TEdit
+    Left = 20
+    Top = 10
+    Width = 100
+    Height = 22
+    Ctl3D = False
+    ParentCtl3D = False
+    TabOrder = 2
+    Text = 'Titol'
+    OnChange = TitolChange
+  end
+  object Format: TEdit
+    Left = 20
+    Top = 30
+    Width = 100
+    Height = 22
+    Ctl3D = False
+    ParentCtl3D = False
+    TabOrder = 3
+    Text = 'Edit1'
+    OnChange = FormatChange
+  end
+  object Ample: TEdit
+    Left = 20
+    Top = 50
+    Width = 100
+    Height = 22
+    Ctl3D = False
+    ParentCtl3D = False
+    TabOrder = 4
+    Text = 'Edit1'
+    OnChange = AmpleChange
+  end
+end

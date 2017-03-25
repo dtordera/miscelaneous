@@ -1,0 +1,19 @@
+package meves.apps.android;
+
+import android.app.Activity;
+import android.os.Bundle;
+
+public class Ex4_1Activity extends Activity {
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+    	
+    	final String TAG = "Ex4_1Activity";    	
+    	
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+        
+        log.i(TAG,"onCreate()");
+        log.d(TAG,"onCreate()");
+    }
+}

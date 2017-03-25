@@ -1,0 +1,22 @@
+package dvtr.games.logic.BS10;
+
+import android.app.ProgressDialog;
+import android.widget.TextView;
+
+public class BS10BuildPuzzleThread extends Thread {
+	ProgressDialog pd;
+	TextView in;
+	boolean DF;
+
+	public BS10BuildPuzzleThread(ProgressDialog d,TextView i, boolean df){
+		super();
+
+		pd = d;
+		in = i;
+		DF = df;
+	}
+
+	@Override
+	public void run(){
+	}
+}

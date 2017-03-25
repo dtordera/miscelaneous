@@ -1,0 +1,21 @@
+
+public class Main {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+	
+		byte C=10,R=10;
+		byte[] B={4,3,3,2,2,2,1,1,1,1};
+	
+		Puzzle P = new Puzzle(C,R);
+	
+		long t = System.currentTimeMillis();
+		
+			P.Coloca(B);
+				
+		System.out.println(System.currentTimeMillis()-t);
+	}
+
+}

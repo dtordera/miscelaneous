@@ -1,0 +1,10 @@
+
+public class Posicio {
+	Index r;
+	boolean o;
+	
+	public Posicio(byte i, byte j, boolean h){
+		r = new Index(i,j);
+		o = h; 	
+	}
+}

@@ -1,0 +1,80 @@
+package dvtr.games.logic.BS10;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+
+public class BS10mainActivity extends Activity {
+
+	SharedPreferences Settings;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		Settings = getSharedPreferences(BS10Settings.prefName, 0);
+
+		setContentView(R.layout.menu);
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+	}
+
+	public View SetTitleBackGround() {
+
+		Resources res = getResources();
+		Drawable d = res.getDrawable(R.drawable.menubkc);
+		LinearLayout L = (LinearLayout)findViewById(R.id.mainLayout);
+
+		switch (Settings.getInt("GS", BS10Settings.GS_CLASSIC)) {
+		case BS10Settings.GS_CLASSIC:
+			d = res.getDrawable(R.drawable.menubkc);
+			break;
+		case BS10Settings.GS_WWII:
+			d = res.getDrawable(R.drawable.menubkw);
+			break;
+		case BS10Settings.GS_NOBMPS:
+			d = res.getDrawable(R.drawable.menubkn);
+			break;
+		}
+
+		V.setBackgroundDrawable(d);
+
+		return V;
+	}
+
+	@Override
+	protected void onResume(){
+		super.onResume();
+		setContentView(SetTitleBackGround());
+	}
+
+	public void optionExit(View V) {
+		setResult(RESULT_OK);
+		finish();
+	}
+
+	public void optionNewGame(View V) {
+	}
+
+	public void optionSavedGames(View V) {
+	}
+
+	public void optionHowToPlay(View V) {
+	}
+
+	public void optionSettings(View V) {
+
+		Intent intent = new Intent();
+		intent.setClass(getApplicationContext(), BS10SettingsActivity.class);
+
+		startActivity(intent);
+	}
+}

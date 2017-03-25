@@ -1,0 +1,16 @@
+package dvtr.games.logic.BS10;
+
+public class BS10Settings {
+
+	public final static byte GS_CLASSIC=0,
+						     GS_WWII=1,
+						     GS_NOBMPS=2,
+						     GS_RANDOM=3;
+
+	public final byte GraphicalSet = GS_CLASSIC;
+	
+	
+	public void LoadPreferences(){
+	
+	}
+}

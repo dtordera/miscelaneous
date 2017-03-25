@@ -1,0 +1,46 @@
+package comu;
+
+public class Index {
+	
+	public byte x,y;
+	
+	public Index(){
+		x=0;
+		y=0;
+	}
+	
+	public Index(int i,int j){
+		x = (byte)i;
+		y = (byte)j;
+	}
+	
+	public Index(Index I){
+		x = I.x;
+		y = I.y;		
+	}
+	
+	public String toString(){
+		return "("+x+","+y+")";
+	}
+	
+	public Index N(){return new Index(x,y-1);}
+	public Index S(){return new Index(x,y+1);}
+	public Index E(){return new Index(x+1,y);}
+	public Index O(){return new Index(x-1,y);}
+	
+	public Index NE(){return new Index(x+1,y-1);} 
+	public Index NO(){return new Index(x-1,y-1);}
+	public Index SE(){return new Index(x+1,y+1);}
+	public Index SO(){return new Index(x-1,y+1);}
+	
+	public Index NNE(){return new Index(x+1,y-2);}
+	public Index NNO(){return new Index(x-1,y-2);}
+	public Index SSE(){return new Index(x+1,y+2);}
+	public Index SSO(){return new Index(x-1,y+2);}
+	
+	public Index ENE(){return new Index(x+2,y-1);}
+	public Index ESE(){return new Index(x+2,y+1);}
+	public Index ONO(){return new Index(x-2,y-1);}
+	public Index OSO(){return new Index(x-2,y+1);}
+	
+}

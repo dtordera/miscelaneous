@@ -1,0 +1,11 @@
+package dvtr.games.logic.BS10;
+
+import java.util.Random;
+
+public class BS10Util {
+	public Random rnd;
+	
+	public BS10Util(){
+		rnd = new Random();
+	}
+}

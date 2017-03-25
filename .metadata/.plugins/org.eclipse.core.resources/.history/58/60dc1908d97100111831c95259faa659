@@ -1,0 +1,40 @@
+
+public class Posicio extends Index {
+	boolean o;
+	
+	public Posicio(byte i, byte j, boolean h){
+		super (i,j);
+		o = h; 	
+	}
+	
+	public Posicio(Index i,boolean h){
+		super(i);
+		o = h;
+	}
+	
+	public Posicio(Posicio p){
+		x=p.x;
+		y=p.y;
+		o=p.o;
+	}
+	
+	private byte Px(){
+		return o?(byte)1:0;
+	} 
+	
+	private byte Py(){
+		return !o?(byte)1:0;
+	}
+	
+	public Index J(byte L){
+		return new Index(x+L*Px()+Px(),y+L*Py()+Py());
+	}
+	
+	public String toString(){
+		return "("+x+","+y+","+(o?"-":"|")+")";
+	}
+	
+	public boolean equals(Posicio r){
+		return (x==r.x&&y==r.y&&o==r.o);
+	}	
+}

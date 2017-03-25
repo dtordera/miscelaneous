@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Exercici 2, unitat 5</string>
+    <string-array name="ArrayDeStrings">
+        <item >Primer element</item>
+        <item >Segon element</item>
+        <item >Tercer element</item>
+        <item >Quart element</item>
+        <item >Cinque element</item>
+    </string-array>
+
+</resources>

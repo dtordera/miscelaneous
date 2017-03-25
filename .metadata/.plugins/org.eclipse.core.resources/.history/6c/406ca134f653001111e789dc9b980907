@@ -1,0 +1,14 @@
+#include "SDL/SDL.h"
+
+#define __cplusplus
+
+int main( int argc, char* args[] )
+{
+    //Start SDL
+    SDL_Init(0x0000FFF);
+    
+    //Quit SDL
+    SDL_Quit();
+    
+    return 0;    
+}

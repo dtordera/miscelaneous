@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Exercici 2, unitat 4</string>
+    <string name="buto1text">Activitat 1</string>
+    <string name="buto2text">Activitat 2</string>
+    <string name="buto3text">Finalitzar</string>
+
+</resources>

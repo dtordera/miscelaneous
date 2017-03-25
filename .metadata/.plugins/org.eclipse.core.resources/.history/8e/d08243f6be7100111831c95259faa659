@@ -1,0 +1,33 @@
+
+public class Puzzle {
+
+	byte C,R;
+	Vaixell[] V;
+	Index[] DS;
+	byte[] SR,SC;
+		
+	public String toString(){
+		String s = "";
+		
+		s+="C="+C+";R="+R;
+		s+="\nSR=";
+		for (byte b:SR)
+		s+= " "+b;
+				
+		s+="\nSC=";
+		for (byte b:SC)
+		s+= " "+b;
+			
+		s+="\nDS=\n";
+		
+		for (Index i:DS)
+		s+= i.toString() + "\n";
+		
+		s+="V=\n";
+		
+		for (Vaixell v:V)
+		s+= v.toString() + "\n";		
+				
+		return "\n"+s;
+	}		
+}

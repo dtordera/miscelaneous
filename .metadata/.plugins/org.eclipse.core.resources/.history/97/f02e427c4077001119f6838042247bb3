@@ -1,0 +1,21 @@
+package comu;
+import shipmodel.Flota;
+
+
+public class main {
+
+	public static void main(String[] args) {
+	
+		byte C = 10, R = 10;
+		byte[]L = {4,3,3,2,2,2,1,1,1,1};
+		
+		long t = System.currentTimeMillis();
+	
+		Flota flota = new Flota(C,R,L);
+		
+		System.out.println(System.currentTimeMillis()-t);
+		
+		System.out.println(flota.toString());
+	}
+}
+

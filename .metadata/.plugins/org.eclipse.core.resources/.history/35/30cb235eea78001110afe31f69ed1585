@@ -1,0 +1,7 @@
+package cellmodel;
+
+public class Resoledor {
+
+	public Resoledor(BSPuzzle P){
+	}
+}

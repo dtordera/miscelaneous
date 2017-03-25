@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent" 
+  android:background="@drawable/menubkn" 
+      android:gravity="right|center_vertical" 
+    android:orientation="vertical">
+    	    
+    <TextView android:id="@+id/twTitol"
+        style="@style/titlestyle"
+        android:text="@string/title_menu" />
+    <TextView android:id="@+id/swVersio"
+        style="@style/versionstyle"        
+    	android:text="@string/version_menu" />
+    <TextView android:id="@+id/twPlay"
+		style="@style/optionsstyle"                
+        android:text="@string/play_menu"
+    	android:onClick="" />
+    <TextView android:id="@+id/twSettings"
+		style="@style/optionsstyle"        
+        android:text="@string/settings_menu" 
+        android:onClick="" />
+    <TextView android:id="@+id/twHowtoPlay"
+		style="@style/optionsstyle"         
+        android:onClick=""
+        android:text="@string/how_menu" />
+    
+</LinearLayout>

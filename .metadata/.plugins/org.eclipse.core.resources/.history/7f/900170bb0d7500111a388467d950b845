@@ -1,0 +1,12 @@
+package comu;
+
+public class Mostrades extends Index {
+	char v;
+	
+	public Mostrades(int i,int j,char c){
+		v=c;
+		x=(byte)i;
+		y=(byte)j;
+	}
+
+}

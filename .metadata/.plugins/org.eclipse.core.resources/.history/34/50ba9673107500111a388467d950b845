@@ -1,0 +1,14 @@
+package dvtr.games.logic.yubotu.shipmodel;
+
+public class K {
+
+	final static boolean HOR=true,VER=false;
+	final static char 	I='·',
+						A='~',
+						N='A',
+						S='V',
+						O='<',
+						E='>',
+						X='X',
+						B='O';
+}

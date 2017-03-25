@@ -1,0 +1,500 @@
+unit tickprn;
+
+interface
+
+     procedure ImprimirTicket_A;
+     procedure ImprimirTicket_B;
+     procedure VeureTicket_A;
+     procedure VeureTicket_B;
+
+
+implementation
+
+uses escpos, dialogs, ventesA,ventesB,URaw, dmsrc, classes, db, global, sysutils, ADOdb, forms, controls, stdctrls;
+
+var
+     sTitol,
+     sEstab,
+     sInfo,
+     sCapcel,
+     sConcep,
+     sTotal,
+     sIVADesc,
+     sPeu : TStrings;
+     AmpleChar : integer;
+     m : TDataset;
+     c : string;
+
+procedure CreaStrings;
+begin
+     sTitol   := TStringList.Create;
+     sEstab   := TStringList.Create;
+     sInfo    := TStringList.Create;
+     sCapcel  := TStringList.Create;
+     sConcep  := TStringList.Create;
+     sTotal   := TStringList.Create;
+     sIVADesc := TStringList.Create;
+     sPeu     := TStringList.Create;
+end;
+
+procedure AlliberaStrings;
+begin
+     sTitol.Free;
+     sEstab.Free;
+     sInfo.Free;
+     sCapcel.Free;
+     sConcep.Free;
+     sTotal.Free;
+     sIVADesc.Free;
+     sPeu.Free;
+end;
+
+procedure FerTitolEstabPeuEscPos;
+var
+     ss : TStrings;
+     ep : string;
+begin
+     ss := TStringList.Create;
+
+     /// Falta centrat.
+
+     ss.LoadFromFile(BINDIR + 'STP\\tl.tck');
+
+     ep := EscPos_([mFontB,mEmphasized,mDoubleHeight,mDoubleWidth]) + Justification(jCenter);
+     ss[0] := ep + ss[0];
+     sTitol.Clear;
+     sTitol.AddStrings(ss);
+
+     ss.LoadFromFile(BINDIR + 'STP\\es.tck');
+     ep := EscPos_([mFontB]) + Justification(jCenter);
+     ss[0] := ep + ss[0];
+     sEstab.Clear;
+     sEstab.AddStrings(ss);
+     sEstab.Add('');
+
+     ss.LoadFromFile(BINDIR + 'STP\\pe.tck');
+     ss[0] := EscPos_([mFontB]) + Justification(jCenter) + ss[0];
+     sPeu.Clear;
+     sPeu.AddStrings(ss);
+     sPeu.Add('');
+     sPeu.Add('');
+     sPeu.Add('');
+     sPeu.Add('');
+
+     ss.Free;
+end;
+
+procedure FerInfoEscPos;
+var
+     id,dt,nm : string;
+begin
+     id := EscPos_([]) + Justification(jLeft) + '  Ref.#' + FormatFloat('000000', m.FieldByName('id').AsInteger);
+     dt := 'data ' + FormatDateTime('ddddd',m.FieldByName('data').AsDateTime);
+     nm := '  ' + Copy(m.FieldByName('NOM_CLI').AsString,0,AmpleChar - 2);
+
+     sInfo.Clear;
+     sInfo.Add(id + RC(' ',AmpleChar - length(dt) - length(id) - 1) + dt + #13#10 + nm);
+end;
+
+procedure FerConcepEscPos;
+var
+     s : string;
+     pr,
+     ut,
+     im : string;
+     q : TADOQuery;
+begin
+     s := '  ref.# concepte';
+
+     pr := '   preu'; { 00000.00}
+     ut := ' uts.';     {+0.0}
+     im := '  import'; { 00000.00}
+
+     sCapcel.Clear;
+     sCapcel.Add(EscPos_([mFontB,mUnderlined]) + RC(' ',AmpleChar));
+     sCapcel.Add(EscPos_([mFontB,mUnderLined]) + s + RC(' ',AmpleChar - length(s+pr+ut+im) - 1) + ut + pr + im + ' ' + EscPos_([mFontB]));
+
+     q := TADOQuery.Create(nil);
+     q.Connection := dm.CG;
+
+     q.Active := false;
+     q.SQL.Text := 'select * from ' + c + ' where id_ref = ' + m.FieldByName('id').AsString;
+     q.Active := true;
+     q.First;
+
+     sConcep.Clear;
+
+     while not q.Eof do
+     begin
+          s := '  ' + FormatFloat('00000',q.FieldByName('id_elem').AsInteger) + ' ' + q.FieldByName('concepte').AsString;
+          if Length(s) > AmpleChar then s := Copy(s,0,AmpleChar - 5 - 2) + '(...)';
+          s := s + #13#10;
+
+          pr := FormatFloat('0.00',q.FieldByName('preu').AsFloat);
+          pr := RC(' ',8-length(pr)) + pr;
+
+          if Round(q.FieldByName('uts').AsFloat) = q.FieldByName('uts').AsFloat
+          then
+          ut := FormatFloat('0',q.FieldByName('uts').AsFloat)
+          else
+          ut := FormatFloat('0.0', q.FieldByName('uts').AsFloat);
+
+          ut := RC(' ',4-length(ut)) + ut;
+
+          im := FormatFloat('0.00',q.FieldByName('import').AsFloat);
+          im := RC(' ',8-length(im)) + im;
+
+          s := s + RC(' ',AmpleChar - length(pr + ut + im) - 2) + ut + ' ' + pr + im;
+
+          sConcep.Add(s);
+          q.Next;
+     end;
+
+     q.Free;
+end;
+
+procedure FerTotalIvaDescEscPos;
+var
+     im,
+     s : string;
+     d : integer;
+begin
+     im := FormatFloat('0.00',m.FieldByname('TOTAL').AsFloat);
+     s := '   TOTAL';
+
+     d := Length(s + im);
+
+     if m.FieldByName('TOTAL').AsFloat < 0 then
+     im := #27+'r'+#1 + im + #27 + 'r' + #0;
+
+     s := s + RC(' ',AmpleChar - 6 - d - 1) + im;
+
+     sTotal.Clear;
+     sTotal.Add(EscPos_([mFontB,mUnderlined])+RC(' ',AmpleChar));
+     sTotal.Add(EscPos_([mEmphasized,mDoubleHeight])+ s);
+
+     sIVADesc.Clear;
+
+     s  := EscPos_([]) + '   I.V.A.('+FormatFloat('0%',m.FieldByName('IVA_P').AsFloat)+')';
+     im := FormatFloat('0.00',m.FieldByName('IVA').AsFloat);
+     s  := s + RC(' ',AmpleChar - 4 - length(s + im)) + im;
+
+     sIVADesc.Add(s);
+
+     if m.FieldByName('DESCOMPTE').AsFloat <> 0 then
+     begin
+          s  := '   Descompte('+FormatFloat('0.00%',m.FieldByName('DESCOMPTE_P').AsFloat)+')';
+          im := FormatFloat('0.00',m.FieldByName('DESCOMPTE').AsFloat);
+          s := s + RC(' ',AmpleChar - 7 - length(s + im)) + im;
+          sIVADesc.Add(s);
+     end;
+
+     sIVADesc.Add(EscPos_([mFontB, mUnderlined])+RC(' ',AmpleChar));
+end;
+
+procedure FerTicketEscPos;
+begin
+     FerTitolEstabPeuEscpos;
+     FerInfoEscpos;
+     FerConcepEscpos;
+     FerTotalIVADescEscpos;
+end;
+
+procedure FerTitolEstabPeuRaw;
+var
+     i : integer;
+begin
+     sTitol.LoadFromFile(BINDIR + 'STP\\tl.tck');
+     sEstab.LoadFromFile(BINDIR + 'STP\\es.tck');
+     sPeu.LoadFromFile(BINDIR + 'STP\\pe.tck');
+
+     for i := 0 to sTitol.Count - 1 do
+          sTitol[i] := RC(' ',(AmpleChar - Length(sTitol[i])) div 2 + 1) + sTitol[i];
+
+     for i := 0 to sEstab.Count - 1 do
+          sEstab[i] := RC(' ',(AmpleChar - Length(sEstab[i])) div 2 + 1) + sEstab[i];
+
+     for i := 0 to sPeu.Count - 1 do
+          sPeu[i] := RC(' ',(AmpleChar - Length(sPeu[i])) div 2 + 1) + sPeu[i];
+
+     sEstab.Add('');
+     sPeu.Add('');
+     sPeu.Add('');
+
+     sPeu.Add('');
+end;
+
+procedure FerInfo;
+var
+     id,dt,nm : string;
+begin
+     id := '  Ref.#' + FormatFloat('000000', m.FieldByName('id').AsInteger);
+     dt := 'data ' + FormatDateTime('ddddd',m.FieldByName('data').AsDateTime);
+     nm := '  ' + Copy(m.FieldByName('NOM_CLI').AsString,0,AmpleChar - 2);
+
+     sInfo.Clear;
+     sInfo.Text := id + RC(' ',AmpleChar - length(dt) - length(id) - 1) + dt + #13#10 + nm;
+end;
+
+procedure FerConcepRaw;
+var
+     s : string;
+     pr,
+     ut,
+     im : string;
+     q : TADOQuery;
+begin
+     s := '  ref.# concepte';
+
+     pr := '   preu';  { 00000.00}
+     ut := ' uts.';    {+0.0}
+     im := '  import'; { 00000.00}
+
+     sCapcel.Text := '  ' + RC('-',AmpleChar - 3) + #13#10 + s + RC(' ',AmpleChar - length(s+pr+ut+im) - 1) + ut + pr + im + ' ' + #13#10 +
+                              '  ' + RC('-',AmpleChar - 3);
+
+     q := TADOQuery.Create(nil);
+     q.Connection := dm.CG;
+
+     q.Active := false;
+     q.SQL.Text := 'select * from ' + c + ' where id_ref = ' + m.FieldByName('id').AsString;
+     q.Active := true;
+     q.First;
+
+     sConcep.Clear;
+
+     while not q.Eof do
+     begin
+          s := '  ' + FormatFloat('00000',q.FieldByName('id_elem').AsInteger) + ' ' + q.FieldByName('concepte').AsString;
+          if Length(s) > AmpleChar then s := Copy(s,0,AmpleChar - 5 - 2) + '(...)';
+          s := s + #13#10;
+
+          pr := FormatFloat('0.00',q.FieldByName('preu').AsFloat);
+          pr := RC(' ',8-length(pr)) + pr;
+
+          if Round(q.FieldByName('uts').AsFloat) = q.FieldByName('uts').AsFloat
+          then
+          ut := FormatFloat('0',q.FieldByName('uts').AsFloat)
+          else
+          ut := FormatFloat('0.0', q.FieldByName('uts').AsFloat);
+
+          ut := RC(' ',4-length(ut)) + ut;
+
+          im := FormatFloat('0.00',q.FieldByName('import').AsFloat);
+          im := RC(' ',8-length(im)) + im;
+
+          s := s + RC(' ',AmpleChar - length(pr + ut + im) - 2) + ut + ' ' + pr + im;
+
+          sConcep.Add(s);
+          q.Next;
+     end;
+
+     q.Free;
+end;
+
+procedure FerTotalIvaDescRaw;
+var
+     im,
+     s : string;
+begin
+     im := FormatFloat('0.00',m.FieldByname('TOTAL').AsFloat);
+     s := '   TOTAL';
+     s := s + RC(' ',AmpleChar - length(s + im) - 2) + im;
+
+     sTotal.Clear;
+     sTotal.Add('  ' + RC('-',AmpleChar - 3));
+     sTotal.Add(s);
+
+     s  := '   I.V.A.('+FormatFloat('0%',m.FieldByName('IVA_P').AsFloat)+')';
+     im := FormatFloat('0.00',m.FieldByName('IVA').AsFloat);
+     s  := s + RC(' ',AmpleChar - length(s + im) - 2) + im;
+
+     sIVADesc.Add(s);
+
+     if m.FieldByName('DESCOMPTE').AsFloat <> 0 then
+     begin
+          s  := '   Descompte('+FormatFloat('0.00%',m.FieldByName('DESCOMPTE_P').AsFloat)+')';
+          im := FormatFloat('0.00',m.FieldByName('DESCOMPTE').AsFloat);
+          s := s + RC(' ',AmpleChar - length(s + im) - 2) + im;
+          sIVADesc.Add(s);
+     end;
+
+     sIVADesc.Add('  ' + RC('-',AmpleChar - 3));
+end;
+
+procedure FerTicketRaw;
+begin
+     FerTitolEstabPeuRaw;
+     FerInfo;
+     FerConcepRaw;
+     FerTotalIvaDescRaw;
+end;
+
+procedure Imprimir;
+var
+     ss : TStrings;
+     xPrn : TRawPrint;
+     i : integer;
+begin
+     ss := TStringList.Create;
+
+     ss.Clear;
+     if dm.CR['ESCPOS'] = 'SI'
+     then ss.Add(#27 +'@' + #27 + 't' + Char(0));
+
+     ss.AddStrings(sTitol);
+     ss.AddStrings(sEstab);
+     ss.AddStrings(sInfo);
+     ss.AddStrings(sCapcel);
+     ss.AddStrings(sConcep);
+     ss.AddStrings(sTotal);
+     ss.AddStrings(sIVADesc);
+     ss.AddStrings(sPeu);
+     ss.Add('');
+     ss.Add('');
+
+     if dm.CR['ESCPOS'] = 'SI'
+     then ss.Add(#27 +'@')
+     else
+     ss.Add(#13#10);
+
+     xPrn := TRawPrint.Create;
+     xPrn.PrinterName := dm.CR['IMPRESORA_2'];
+     xPrn.Document := 'Alten41_venta_'+m.FieldByName('id').AsString;
+
+     if xPrn.Open = False then
+     raise exception.Create('Error a impresora.');
+
+     for i := 0 to ss.Count do
+     try
+          xPrn.Write(ss[i] + #13#10);
+     except
+     end;
+
+     xPrn.Close;
+     xPrn.Free;
+
+     ss.Free;
+end;
+
+procedure VeureTicket;
+var
+     f  : TForm;
+     m1 : TMemo;
+begin
+     f := TForm.Create(Application);
+     f.Font.Name := 'courier';
+     f.Font.Size := 9;
+
+     m1 := TMemo.Create(F);
+     m1.Parent := f;
+     m1.Align := alTop;
+     m1.Ctl3D := false;
+     m1.BorderStyle := bsNone;
+     m1.ReadOnly := true;
+     m1.Lines.Clear;
+     m1.Lines.Add('');
+     m1.Lines.AddStrings(sTitol);
+     m1.Lines.AddStrings(sEstab);
+     m1.Lines.AddStrings(sInfo);
+     m1.Lines.AddStrings(sCapcel);
+     m1.Lines.AddStrings(sConcep);
+     m1.Lines.AddStrings(sTotal);
+     m1.Lines.AddStrings(sIVADesc);
+     m1.Lines.AddStrings(sPeu);
+     m1.Lines.Add('');
+
+     m1.Height := m1.Lines.Count * f.Canvas.TextHeight('X');
+
+     f.ClientWidth := f.Canvas.TextWidth('X') * AmpleChar;
+     f.ClientHeight := m1.Height;
+
+     f.Position := poDesktopCenter;
+
+     f.ShowModal;
+     m1.Free;
+     f.Release;
+end;
+
+procedure ImprimirTicket_A;
+var
+     copies,
+     i : integer;
+begin
+     CreaStrings;
+
+     m := _ventesA.v.Data.Dataset;
+     c := 'c_ventesA';
+
+     AmpleChar := strtoint(dm.CR['AMPLE_TICKET_C']);
+
+     if dm.CR['ESCPOS'] = 'SI'
+     then FerTicketEscPos
+     else FerTicketRaw;
+
+     copies := strtoint(dm.CR['COPIES_TCK']);
+     for i := 0 to copies - 1 do
+     begin
+          Imprimir;
+          if copies > 1 then
+          mDlg('Còpia ' + inttostr(i+1) + ' impressa',mtInformation,[mbOk]);
+     end;
+
+     AlliberaStrings;
+end;
+
+procedure ImprimirTicket_B;
+begin
+     CreaStrings;
+
+     m := _ventesB.v.Data.Dataset;
+     c := 'c_ventesB';
+
+     AmpleChar := strtoint(dm.CR['AMPLE_TICKET_C']);
+
+     if dm.CR['ESCPOS'] = 'SI'
+     then FerTicketEscPos
+     else FerTicketRaw;
+
+     Imprimir;
+
+     AlliberaStrings;
+end;
+
+procedure Veureticket_A;
+begin
+     CreaStrings;
+
+     m := _ventesA.v.Data.Dataset;
+     c := 'c_ventesA';
+
+     AmpleChar := strtoint(dm.CR['AMPLE_TICKET_C']);
+
+     if dm.CR['ESCPOS'] = 'SI'
+     then FerTicketEscPos
+     else FerTicketRaw;
+
+     VeureTicket;
+
+     AlliberaStrings;
+end;
+
+procedure Veureticket_B;
+begin
+     CreaStrings;
+
+     m := _ventesB.v.Data.Dataset;
+     c := 'c_ventesB';
+
+     AmpleChar := strtoint(dm.CR['AMPLE_TICKET_C']);
+
+     if dm.CR['ESCPOS'] = 'SI'
+     then FerTicketEscPos
+     else FerTicketRaw;
+
+     VeureTicket;
+
+     AlliberaStrings;
+end;
+
+end.

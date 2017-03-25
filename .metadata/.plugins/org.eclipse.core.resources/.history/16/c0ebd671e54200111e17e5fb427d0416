@@ -1,0 +1,13 @@
+package meves.apps.Ex1002;
+
+import android.app.Activity;
+import android.os.Bundle;
+
+public class Ex1002Activity extends Activity {
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+    }
+}

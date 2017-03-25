@@ -1,0 +1,93 @@
+package dvtr.games.logic.BS10;
+
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+public class BS10GameActivity extends Activity {
+
+	public static String BT_SOLID,
+				      	 BT_WATER,
+				      	 BT_UNKNOW,
+				      	 BT_FILLCOL,
+				      	 BT_FILLROW;
+
+	SharedPreferences Settings;
+	SharedPreferences.Editor SettingsEditor;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+
+		super.onCreate(savedInstanceState);
+
+		Settings = getSharedPreferences(BS10Constants.prefName, 0);
+
+		setStrings();
+		setContentView(R.layout.game);
+	}
+
+	@Override
+	public void onResume(){
+		super .onResume();
+		setBackGround();
+	}
+
+	public void setStrings(){
+		Resources res = getResources();
+
+		BT_SOLID   = res.getString(R.string.BT_SOLID);
+		BT_WATER   = res.getString(R.string.BT_WATER);
+		BT_UNKNOW  = res.getString(R.string.BT_UNKNOW);
+		BT_FILLCOL = res.getString(R.string.BT_FILLCOL);
+		BT_FILLROW = res.getString(R.string.BT_FILLROW);
+	}
+
+	public void setBackGround() {
+
+		Resources res = getResources();
+		Drawable d = res.getDrawable(R.drawable.menubkc);
+		LinearLayout L = (LinearLayout)findViewById(R.id.gameLayout);
+
+		switch (Settings.getInt("GS", BS10Constants.GS_CLASSIC)) {
+		case BS10Constants.GS_CLASSIC:
+			d = res.getDrawable(R.drawable.menubkc);
+			break;
+		case BS10Constants.GS_WWII:
+			d = res.getDrawable(R.drawable.menubkw);
+			break;
+		case BS10Constants.GS_NOBMPS:
+			d = res.getDrawable(R.drawable.menubkn);
+			break;
+		}
+
+		L.setBackgroundDrawable(d);
+	}
+
+	public void gameCellPiece(View V){
+
+		int d;
+
+		switch(Settings.getInt("CP",BS10Constants.BT_WATER)){
+			case BS10Constants.BT_SOLID : d=BS10Constants.BT_WATER; break;
+			case BS10Constants.BT_WATER : d=BS10Constants.BT_FILLCOL; break;
+			case BS10Constants.BT_FILLCOL : d=BS10Constants.BT_FILLROW; break;
+			case BS10Constants.BT_FILLROW : d=BS10Constants.BT_IND; break;
+			default : d=BS10Constants.BT_SOLID;
+
+		}
+
+		SettingsEditor.putInt("CP",d);
+		SettingsEditor.commit();
+
+		setgameCellPiece();
+	}
+
+	public byte APosar(){
+
+	}
+}

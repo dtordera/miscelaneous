@@ -1,0 +1,6 @@
+package comu;
+
+public class BSPuzzle {
+	byte[] SR,SC;
+
+}

@@ -1,0 +1,134 @@
+public class Flota {
+	Vaixell[] V;
+	byte C,R;
+	byte[] SR;
+	byte[] SC;
+	
+	public Flota(int c,int r,byte[] l){	
+		C=(byte)c;
+		R=(byte)r;
+		
+		SR = new byte[C];
+		SC = new byte[R];		
+		
+		V = new Vaixell[l.length];
+		
+		for (byte n=0;n<l.length;n++)
+		V[n] = new Vaixell(l[n]);
+		
+		Coloca();			
+	}	
+	
+	public void Coloca(){
+	
+		boolean fet = false;
+		byte i,j;				
+					
+		Posicions S = new Posicions(C,R),
+		P;		
+				
+		while (!fet)
+		{	
+			P = S.Shuffle();
+					
+			for (Vaixell v:V) 								
+				for (Posicio p:P.P)								
+					if (DintreLimits(v,p)&&CheckPosicio(v,V,p)) {
+					
+						v.ps = new Posicions(p);
+						treuVaixell(v,P);						
+
+						break;						
+					}				
+			
+			fet = true;		
+			
+			for (Vaixell v:V)
+				fet &= v.r()!=null;
+		}		
+			
+		for (i=(byte)(C-1);i!=0;i--) SR[i]=0;
+		for (j=(byte)(R-1);j!=0;j--) SC[j]=0;						
+		
+		for (Vaixell v:V)
+			for (i=v.r().x;i<=v.rf().x;i++)		
+			for (j=v.r().y;j<=v.rf().y;j++)		
+			{
+				SR[i]++;
+				SC[j]++;
+			}													
+	}
+	
+	public char c(int i,int j){
+		char k;
+	
+		for (Vaixell v:V){
+			
+			k = v.c((byte)i,(byte)j);
+			if (k!=K.I&&k!=K.A) return k;
+		}
+		
+		return K.A;	
+	}
+	
+	public boolean notocavaixell(byte i,byte j){
+		return c(i-1,j-1)==K.A&&c(i-1,j)==K.A&&c(i-1,j+1)==K.A&&c(i,j-1)==K.A&&c(i+1,j-1)==K.A&&c(i+1,j)==K.A&&c(i+1,j+1)==K.A&&
+		c(i,j+1)==K.A;
+	}
+	
+	public String toString(){
+		String s="";
+		
+		for (byte j=0;j<R;j++)
+		{
+			for (byte i=0;i<C;i++)
+			{
+				char m='·';
+				
+				for (Vaixell v:V)
+					if (v.c(i,j)!=K.I) m=v.c(i,j);
+					
+				s+=m+" ";
+			}
+			s+=" " + SC[j] + "\n";
+		}
+		
+		s+="\n";
+		
+		for (byte i=0;i<C;i++)
+			s+=SR[i] + " ";
+			
+		return s;
+	}
+	
+	public void treuVaixell(Vaixell v,Posicions P){
+	
+		if (v.r()==null) return;
+		
+		byte xo = (byte)(v.r().x-1),
+			 yo = (byte)(v.r().y-1),
+			 xf = (byte)(v.rf().x+1),
+			 yf = (byte)(v.rf().y+1);
+		
+		for (byte i=xo;i<=xf;i++)
+		for (byte j=yo;j<=yf;j++)
+			P.remove(i,j);
+	}
+	
+	public boolean DintreLimits(Vaixell v,Posicio p){
+	
+		return (p.x>=0&&p.J(v.L).x<C&&p.y>=0&&p.J(v.L).y<R);
+	}
+	
+	public boolean CheckPosicio(Vaixell v,Vaixell[] V,Posicio p){
+		boolean r = true;
+		
+		Vaixell d= new Vaixell(v.L,p);
+				
+		for (Vaixell l:V)
+			r&=!l.choca(d);
+		
+		return r;
+	}
+	
+}

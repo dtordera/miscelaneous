@@ -1,0 +1,117 @@
+public class Flota {
+	Vaixell[] V;
+	byte C,R;
+	byte[] SR,SC;
+	
+	public Flota(int c,int r,byte[] l){	
+		C=(byte)c;
+		R=(byte)r;
+		
+		SR = new byte[C];
+		SC = new byte[R];
+			
+		Coloca(l);			
+	}	
+	
+	public void Coloca(byte[] l){
+	
+		boolean fet = false;
+		byte i,j;		
+		
+		System.out.println("Coloca()");
+					
+		Posicions S = new Posicions(),P;
+		
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+		{
+			S.add(i,j,K.HOR);
+			S.add(i,j,K.VER);
+		}
+		
+		while (!fet)
+		{	
+			P = S.Shuffle();
+			
+			V = new Vaixell[l.length];
+			
+			for (byte n=0;n<V.length;n++)
+				V[n] = new Vaixell(l[n]);
+		
+			for (Vaixell v:V) {		
+							
+				for (Posicio p:P.P)
+				{									
+					if (DintreLimits(v,p)&&CheckPosicio(v,V,p)) {
+					
+						v.ps = new Posicions(p);
+						treuVaixell(v,P);						
+
+						break;						
+					}
+				}				
+			}
+			
+			fet = true;		
+			
+			for (Vaixell v:V)
+				fet &= v.r()!=null;
+		}		
+		
+		SR = new byte[C];
+		SC = new byte[R];
+		
+		for (Vaixell v:V)
+			for (i=v.r().x;i<=v.rf().x;i++)
+			for (j=v.r().x;j<=v.rf().y;j++)
+			{
+				SR[i]++;
+				SC[j]++;
+			}			
+	}
+	
+	public String toString(){
+		String s="";
+		
+		for (byte j=0;j<R;j++)
+		{
+			s="";
+			for (byte i=0;i<C;i++)
+			{
+				char m='·';
+				for (Vaixell v:V)
+					s+=
+		}
+	}
+	
+	public void treuVaixell(Vaixell v,Posicions P){
+	
+		if (v.r()==null) return;
+		
+		byte xo = (byte)(v.r().x-1),
+			 yo = (byte)(v.r().y-1),
+			 xf = (byte)(v.rf().x+1),
+			 yf = (byte)(v.rf().y+1);
+		
+		for (byte i=xo;i<=xf;i++)
+		for (byte j=yo;j<=yf;j++)
+			P.remove(i,j);
+	}
+	
+	public boolean DintreLimits(Vaixell v,Posicio p){
+	
+		return (p.x>=0&&p.J(v.L).x<C&&p.y>=0&&p.J(v.L).y<R);
+	}
+	
+	public boolean CheckPosicio(Vaixell v,Vaixell[] V,Posicio p){
+		boolean r = true;
+		
+		Vaixell d= new Vaixell(v.L,p);
+				
+		for (Vaixell l:V)
+			r&=!l.choca(d);
+		
+		return r;
+	}
+	
+}

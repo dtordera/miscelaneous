@@ -1,0 +1,88 @@
+
+public class Vaixell {
+	byte L;
+	Posicions ps;
+	
+	public Vaixell(byte l){
+		L=l;
+		ps = new Posicions();
+	}
+	
+	public Vaixell(byte l,Posicio...r){	
+		L=l;
+		ps = new Posicions(r);		
+	}
+	
+	public Posicio r(){
+		return ps.r();
+	}
+	
+	public Index rf(){
+		if (r()==null) return null;
+	
+		return ps.r().J(L);
+	}
+		
+	public String toString(){
+		return "L="+L+":\n"+ps.toString();
+	}	
+	
+	public boolean choque(Vaixell v){	
+		
+		if (v.r()==null||r()==null) return false;		
+		
+		for (byte i=0;i<L;i++)
+			if (v.dintre((byte)(r().x+r().J(i).x),(byte)(r().y+r().J(i).y))) return true;
+			
+		for (byte i=0;i<v.L;i++)
+			if (dintre((byte)(v.r().x+v.r().J(i).x),(byte)(v.r().y+r().J(i).y))) return true;
+			
+						
+		return false;
+	}
+	
+	public boolean dintre(byte i,byte j){
+		if (r()==null) return false;
+		
+		byte xo,yo,xf,yf;
+			
+		xo = (byte)(r().x-1);
+		yo = (byte)(r().y-1);
+		xf = (byte)(r().J(L).x+1);
+		yf = (byte)(r().J(L).y+1);
+										
+		return (xo<=i&&i<xf&&yo<=j&&j<yf);
+	}
+	
+	public char c(byte i,byte j){
+			
+		if (r()==null) return '·';
+					
+		byte xo,yo,xf,yf;
+		
+		xo = r().x;
+		yo = r().y;
+		xf = (byte)(rf().x+1);
+		yf = (byte)(rf().y+1);
+			
+		if (xo<=i&&i<xf&&yo<=j&&j<yf)
+			if (L==1) return 'O';
+			else
+			if (xo==i&&yo==i)
+				return r().o?'<':'A';		
+			else
+			if (xf-1==i&&yf-1==j)
+				return r().o?'>':'V';
+			else
+				return 'X';							
+				
+		xo--;
+		yo--;
+		xf++;
+		yf++;
+		
+		if (xo<=i&&i<xf&&yo<=j&&j<yf) return '~';
+		
+		return '·';				
+	}
+}

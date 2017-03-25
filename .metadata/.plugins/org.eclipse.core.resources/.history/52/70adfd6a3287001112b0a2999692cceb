@@ -1,0 +1,14 @@
+package cellmodel;
+
+import comu.BSPuzzle;
+
+public class Resoledor extends BSPuzzle {
+
+	public Resoledor(BSPuzzle P) {
+		super(P);
+	}
+	
+	public void Resol() {
+		
+	}
+}

@@ -1,0 +1,24 @@
+
+public class Yubotu01 {
+
+	public static void main(String[] args) {
+	
+		int[] 		SR = {1,3,0,2,1,1,3,0,2,1};
+		int[] 		SC = {2,1,2,1,1,2,1,2,1,1};
+		cella[]	 	C = {};//	new cella(1,2,k.S_)};
+		Vaixell[] 	V = { 	new Vaixell(1,0,k.CRE,k._v_), 
+							new Vaixell(1,0,k.CRE,k._v_), 		
+							new Vaixell(0,4,k.SUB,k._h_),
+							new Vaixell(0,4,k.SUB,k._h_),							
+							new Vaixell(3,2,k.DES,k._v_),
+							new Vaixell(3,2,k.DES,k._v_),							
+							new Vaixell(4,0,k.SUB,k._h_),
+							new Vaixell(4,0,k.SUB,k._h_)};
+				    
+		Puzzle P = new Puzzle(10,10,V,C,SR,SC);
+
+		P.Comproba();
+		P.Resol();
+	}
+
+}

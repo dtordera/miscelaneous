@@ -1,0 +1,228 @@
+import java.util.Arrays;
+import java.util.Random;
+
+public class Puzzle {
+	public int 	mc,
+				mr;
+	public Vaixell[] v;
+	public cella[]   c;
+	public boolean resolved;
+	int[] SR,SC;
+		
+	public Puzzle(Vaixell[] V,cella[] j,int[] SRo, int[] SCo){
+		mc = SRo.length;
+		mr = SCo.length;
+		v  = Arrays.copyOf(V,V.length);
+		c  = Arrays.copyOf(j,j.length);
+		SR = Arrays.copyOf(SRo,SRo.length);
+		SC = Arrays.copyOf(SCo,SCo.length);		
+		resolved = false;
+	}
+	
+	public boolean Resol() {
+	
+		int intents = 1;		
+		boolean Err,o;
+		
+		Indexs p = new Indexs(mc,mr);		
+								
+		while (!resolved)
+		{					
+			char[][] G = new char[mc][mr]; // grid					
+			Random  rnd = new Random();						
+			System.out.print("Intent #"+(intents++)+"\n");
+									
+			p.Shuffle(); // barrejem indexs			
+			
+			for (int i=0;i<v.length;i++)
+				v[i].fixat = false;
+					
+			for (int i=0;i<mc;i++)
+			for (int j=0;j<mr;j++)
+				G[i][j] = G[i][j] == 0 ? k.A_ : G[i][j];
+																	
+			System.out.println("\nEliminant inicis ja establerts...");
+			
+			for (int i=0;i<c.length;i++) 
+				switch(c[i].v) {
+					case k.B_ : for (int n=0;n<v.length;n++)
+								if ((v[n].l == k.SUB) && !v[n].fixat){
+									v[n].i.x = c[i].i.x;
+									v[n].i.y = c[i].i.y;
+									v[n].fixat = true;															
+							}			
+					case k.A_:
+					case k.P_: 
+					case k.S_:
+					case k.E_: p.Borra(c[i].i.x,c[i].i.y);		
+	
+					default  : G[c[i].i.x][c[i].i.y] = c[i].v;
+			} 
+			
+			System.out.println("Borrant columnes 0...");			
+			for (int i=0;i<SC.length;i++)
+				if (SC[i] == 0) p.BorraColumna(i);
+			
+			System.out.println("Borrant files 0...");						
+			for (int i=0;i<SR.length;i++)
+				if (SR[i] == 0) p.BorraFila(i);
+				
+			System.out.printf(p.toString() + "\n");
+														
+			for (int n=0;n<v.length;n++) // recorrem tots els vaixells
+			{
+				for (int m=0;m<mc*mr && !v[n].fixat;m++) // intentem a totes les posicions existents shufflejades(p.I)
+				{			
+					if (p.I[m].x == Indexs.NV) continue; // si el valor esta borrat, el saltem				
+					
+					System.out.println("Provant ("+p.I[m].x+","+p.I[m].y+")\n");
+								
+					o = rnd.nextBoolean();
+																						
+					Err = IntentaPosar(v,n,p.I[m],o);
+					if (Err) Err=IntentaPosar(v,n,p.I[m],!o);
+
+					if (!Err) { // es valida, el fixem, el dibuixem
+					
+						v[n].fixat = true;
+						v[n].toGrid(G);						
+						System.out.printf("#"+n+" colocat (" + (v[n].o?"|":"-") + ")\n");
+					}
+				}
+			}		
+
+			resolved = ComprobaSolucio(G);
+			try {
+				Thread.sleep(4000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}					
+						
+		System.out.println("\nSolució : ");
+		System.out.println(toString());
+				
+		return true;
+	}
+	
+	public boolean ComprobaSolucio(char[][] g){									
+		return ComprobaSumes(g) && ComprobaInicials(g);
+	}
+	
+	public boolean ComprobaSumes(char[][] g){
+	
+		boolean ret = true;
+		
+		int sR,sC;
+					
+		for (int i=0;i<mc;i++)
+		{	sR = 0;
+			for (int j=0;j<mr;j++)		
+				if (g[i][j] != k.A_) sR++;
+				
+			ret = ret && (sR == SR[i]);
+		}
+		
+		for (int j=0;j<mr;j++)
+		{
+			sC = 0;
+			for (int i=0;i<mc;i++)
+				if (g[i][j] != k.A_) sC++;
+				
+			ret = ret && (sC == SC[j]);
+		}			
+		
+		if (!ret) System.out.printf("->Error a comprobasumes()\n");
+		else	  System.out.printf("->comprobasumes() ok\n");			
+
+		return ret;	
+	}
+	
+	public boolean ComprobaInicials(char[][] g){
+	
+		boolean ret = true;
+	
+		for (int i=0;i<c.length && ret;i++) 
+			ret = ret && (g[c[i].i.x][c[i].i.y] == c[i].v);
+			
+		if (!ret) 
+			System.out.printf("->Error a comprobainicials()\n");			
+		else
+			System.out.printf("->comprobainicials() ok\n");
+		
+		return ret;
+	}
+	
+	public boolean IntentaPosar(Vaixell[] v,int n,Index i,boolean o){ // retorna true si hi ha error
+		
+		boolean ret = false;
+		
+		v[n].posa(i,o);		
+		
+		if ((v[n].F().x > mc) || (v[n].F().y > mr)) return true;
+				
+		for (int m=0;m<n;m++)
+			ret = ret || v[n].a_Area(v[m].Aigues());		
+		
+		return ret;				
+	}
+	
+	public void Comproba(){
+		String s="";
+		
+		s += "mc = " + mc + "; mr = " + mr + "\n";
+		
+		for (int i=0;i<v.length;i++)
+		s += "vaixell["+i+"] : i=("+v[i].i.x +","+v[i].i.y +"); l="+(int)v[i].l+"; o="+ v[i].o + "; fixat=" + v[i].fixat+"\n";
+		
+		s += "\n";
+		for (int i=0;i<c.length;i++)
+		s += "cella[" +i+ "] : i=("+c[i].i.x+","+c[i].i.y+"); v="+k.r[c[i].v] + "\n";
+		
+		
+		
+		s += "\n";
+		
+		System.out.println(s);
+	}
+	
+	public String toString(){
+		char G[][] = new char[mc][mr];
+		String ret = "";
+						
+		if (resolved) {
+			for (int j=0;j<mr;j++)
+			for (int i=0;i<mc;i++)
+				G[i][j] = k.r[k.A_];					
+		
+			for (int n=0;n<v.length;n++)				
+				v[n].toGrid(G);	
+		}
+		else {
+			for (int j=0;j<mr;j++)
+			for (int i=0;i<mc;i++)
+				G[i][j] = k.r[k.x_];
+
+			for (int n=0;n<c.length;n++)
+				G[c[n].i.x][c[n].i.y] = k.r[c[n].v];
+		}
+
+		for (int j=0;j<mr;j++)
+		{
+			for (int i=0;i<mc;i++)
+				ret += G[i][j] + " ";
+			
+			ret += " " + SC[j] + "\n";
+			
+		}
+				
+		for (int i=0;i<mc;i++)
+			ret += SR[i] + " ";
+			
+		ret += "\n";
+
+		return ret;
+	}
+
+}

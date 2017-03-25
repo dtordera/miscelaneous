@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Exercici 2, unitat 6</string>
+    <string name="nom">nom</string>    
+    <string name="cognoms">cognoms</string>    
+    <string name="direccio">direcció</string>    
+    <string name="poblacio">ciutat</string>    
+    <string name="telefon">telefon</string>    
+    <string name="email">email</string>
+    
+</resources>

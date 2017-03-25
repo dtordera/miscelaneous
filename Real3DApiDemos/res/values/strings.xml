@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Real3DApiDemos</string>
+    <string name="auto">Auto Detect(SEI) Video play</string>
+    <string name="manual_ss">Manual - Side by side video play</string>
+    <string name="manual_tb">Manual - Top-bottom video play</string>
+    <string name="real3d_on">Real3D on</string>
+    <string name="real3d_off">Real3D off</string>
+</resources>

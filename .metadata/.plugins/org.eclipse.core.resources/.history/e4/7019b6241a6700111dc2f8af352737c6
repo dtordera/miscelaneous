@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item>"android:layout_width">"wrap_content"</item> 
+        android:layout_height="wrap_content" 
+        android:gravity="center_horizontal" 
+        android:paddingRight="20dip" 
+        android:text="@string/Opcio1" 
+		android:textStyle="bold|italic"                
+        android:textColor="@drawable/titlemenuselect" 
+        android:clickable="true"           
+        android:paddingBottom="5dip"
+    	android:textSize="18dip" android:typeface="serif"/>
+    
+    
+</resources>

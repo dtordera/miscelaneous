@@ -1,0 +1,4 @@
+
+public class TestPuzzles {
+	final static Puzzle[] P = new Puzzle[1];
+}

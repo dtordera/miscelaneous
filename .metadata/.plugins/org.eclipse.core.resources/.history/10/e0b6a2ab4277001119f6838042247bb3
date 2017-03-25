@@ -1,0 +1,35 @@
+package comu;
+
+public class main {
+
+	public static void main(String[] args) {
+	
+/*		byte C = 10, R = 10;
+		byte[]L = {4,3,3,2,2,2,1,1,1,1};
+		
+		long t = System.currentTimeMillis();
+	
+		Flota flota = new Flota(C,R,L);
+		
+		System.out.println(System.currentTimeMillis()-t);
+		
+		System.out.println(flota.toString());*/
+		
+//		new FactoriaPuzzle(10,10,new byte[] {4,3,3,2,2,2,1,1,1,1}).Genera();
+
+		byte[] SR = {4,1,1,1,1,1,3,1,5,2};
+		byte[] SC = {1,3,2,2,1,5,2,1,0,3};
+		byte[] Fs = {4,3,3,2,2,2,1,1,1,1};
+		Mostrades[] CI = {new Mostrades(1,1,K.B),
+								   new Mostrades(4,2,K.B),
+								   new Mostrades(9,3,K.B),
+								   };
+								   
+		shipmodel.ResoledorPuzzle RP = new shipmodel.ResoledorPuzzle(SR,SC,CI,Fs);
+
+		System.out.println(RP.Resol(0));
+		RP.toScreenGrid(RP.S[0]);	
+
+	}
+}
+

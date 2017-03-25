@@ -1,0 +1,18 @@
+import java.util.Arrays;
+
+
+public class Puzzle {
+	byte C,R;
+	Vaixell[] V;
+	Index[] DS;
+	
+	public Puzzle(byte c,byte r,byte[] l,Index[] i){
+		C=c;
+		R=r;
+		DS = Arrays.copyOf(i,i.length);
+		V = new Vaixell[l.length];
+		for (int L:l){
+			
+		}
+	}		
+}

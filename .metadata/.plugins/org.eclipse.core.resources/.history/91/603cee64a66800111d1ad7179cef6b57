@@ -1,0 +1,77 @@
+package dvtr.games.logic.BS10;
+
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+public class BS10Bitmaps {
+	Bitmap 	O1,
+			O2,
+			E1,
+			E2,
+			H1,
+			H2,
+			M,
+			B1,
+			B2,
+			N1,
+			N2,
+			S1,
+			S2,
+			V1,
+			V2;
+
+	Context ctx;
+
+	public BS10Bitmaps(Context context){
+		ctx = context;
+	}
+
+	public void loadWWII(){
+   		Resources Res = ctx.getResources();
+
+   		E1 = BitmapFactory.decodeResource(Res,R.drawable.e1w);
+   		E2 = BitmapFactory.decodeResource(Res,R.drawable.e2w);
+   		O1 = BitmapFactory.decodeResource(Res,R.drawable.o1w);
+   		O2 = BitmapFactory.decodeResource(Res,R.drawable.o2w);
+   		N1 = BitmapFactory.decodeResource(Res,R.drawable.n1w);
+   		N2 = BitmapFactory.decodeResource(Res,R.drawable.n2w);
+   		S1 = BitmapFactory.decodeResource(Res,R.drawable.s1w);
+   		S2 = BitmapFactory.decodeResource(Res,R.drawable.s2w);
+   		H1 = BitmapFactory.decodeResource(Res,R.drawable.h1w);
+   		H2 = BitmapFactory.decodeResource(Res,R.drawable.h2w);
+   		V1 = BitmapFactory.decodeResource(Res,R.drawable.v1w);
+   		V2 = BitmapFactory.decodeResource(Res,R.drawable.v2w);
+   		M  = BitmapFactory.decodeResource(Res,R.drawable.mw);
+   		B1 = BitmapFactory.decodeResource(Res,R.drawable.b1w);
+   		B2 = BitmapFactory.decodeResource(Res,R.drawable.b2w);
+	}
+
+	public void loadClassic(){
+   		Resources Res = ctx.getResources();
+
+   		E1 = BitmapFactory.decodeResource(Res,R.drawable.e1c);
+   		E2 = BitmapFactory.decodeResource(Res,R.drawable.e2c);
+   		O1 = BitmapFactory.decodeResource(Res,R.drawable.o1c);
+   		O2 = BitmapFactory.decodeResource(Res,R.drawable.o2c);
+   		N1 = BitmapFactory.decodeResource(Res,R.drawable.n1c);
+   		N2 = BitmapFactory.decodeResource(Res,R.drawable.n2c);
+   		S1 = BitmapFactory.decodeResource(Res,R.drawable.s1c);
+   		S2 = BitmapFactory.decodeResource(Res,R.drawable.s2c);
+   		H1 = BitmapFactory.decodeResource(Res,R.drawable.h1c);
+   		H2 = BitmapFactory.decodeResource(Res,R.drawable.h2c);
+   		V1 = BitmapFactory.decodeResource(Res,R.drawable.v1c);
+   		V2 = BitmapFactory.decodeResource(Res,R.drawable.v2c);
+   		M  = BitmapFactory.decodeResource(Res,R.drawable.mc);
+   		B1 = BitmapFactory.decodeResource(Res,R.drawable.b1c);
+   		B2 = BitmapFactory.decodeResource(Res,R.drawable.b2c);
+	}
+
+	public void loadNoPictures(){
+
+		
+
+	}
+
+}

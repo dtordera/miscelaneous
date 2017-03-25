@@ -1,0 +1,100 @@
+// Clase shipmodel.FactoriaPuzzle : crea un BSPuzzle de dificultat alta, d'una unica solucio. Es basa en crear flotes
+// i anar donant mes condicions inicials fins que el puzzle tingui una unica solució. En una segona pasada s'eliminen
+// les condicions inicials redundants.
+// Bugs coneguts :
+// -Segons com, pot tardar en donar un resultat
+// -La dificultat depen del nº de combinacions limit colocat (1000)
+// -No es sap xq en pocs casos mes condicions inicials genera mes posibles combinacions, en comptes de reduirles, arreglat mitjançant cmbd
+
+package dvtr.games.logic.BS10.puzzle.shipmodel;
+
+import java.util.Arrays;
+import java.util.Collections;
+
+public class FactoriaPuzzle {
+
+	byte C,R;	// dimensions
+	byte[] Ls;	// Longituds dels vaixells
+
+	// Constructor
+	public FactoriaPuzzle(int c,int r,byte[] ls){
+		C=(byte)c;
+		R=(byte)r;
+		Ls=ls.clone();
+	}
+
+	// Genera
+	public BSPuzzle Genera(){	return GeneraShipModel();}
+
+	// GeneraShipModel :
+	BSPuzzle GeneraShipModel(){
+
+		long t = System.currentTimeMillis(); // Temps de generacio
+
+		Flota F;							 // Flota
+		Mostrades[] M;						 // Condicions inicials
+		shipmodel.Resoledor RP;				 // Resoledor tipus model vaixell
+		Index[] I;							 // Llista d'index per condicions inicials mostrades
+		int idx;							 // contador de llista
+
+		I = new Index[C*R];					 // Es dona tamany i s'omplena la llista de coordenades posibles
+
+		for (byte j=0;j<R;j++)
+		for (byte i=0;i<C;i++)
+			I[i*C+j]=new Index(i,j);
+
+		Collections.shuffle(Arrays.asList(I)); // Es canvia l'ordre
+
+		byte x,y;								// Coordenades
+		long cmb,cmbd;							// nº de combinacions posibles de posicions dels vaixells (proporcional
+												// al nombre de solucions). S'utilitza el nº de combinacions degut a no
+												// haver aixi de resoldre per trobar el nº de solucions, opt. temps gen.
+		do {
+			F = new Flota(C,R,Ls);				// Nova flota
+			M = new Mostrades[0];				// Reset de la llista de condicions inicials mostrades
+			RP = new shipmodel.Resoledor(new BSPuzzle(F.SR,F.SC,M,Ls,K.SHIP_MODEL,0)); // Nou resoledor
+
+			cmb = RP.prepara();					// Es prepara el resoledor, donant el nº de posibles combinacions de posicions
+			idx = 0;							// Reset del contador de llista
+
+			do {
+				x = I[idx].x;					// s'agafen noves coordenades de la llista
+				y = I[idx].y;
+
+				idx++;							// nou index
+
+				if (F.SR[x]==0||F.SC[y]==0) continue; // Si les coordenades correspon a una suma de zero, irrelevant
+
+				M = Arrays.copyOf(M,M.length+1); // S'amplia llista i s'inclou la nova c.i.
+				M[M.length-1] = new Mostrades(x,y,(byte)F.c(x,y));
+
+				RP.M(M);						// Es pasa la llista al resoledor
+				cmbd = RP.prepara();			// Es prepara, calculant les noves combinacions posibles
+
+				if (cmbd>=cmb) { M = Arrays.copyOf(M,M.length-1);} // Si per algun extrany motiu amb més c.i. hi han mes combinacions valides, s'anula aquella c.i.
+				else cmb=cmbd;					// S'agafa el nou numero com a guia
+
+			} while (cmb>1000&&idx<C*R); // Si el nombre de combinacions es menor a un limit treballable, continuem
+
+			RP.M(M);		// Pasem la llista.
+			RP.prepara();   // Preparem abans de resoldre
+
+		} while(RP.Resol(1)!=1); // Resolem per trobar una unica solucio, per a que sigui resoluble	humanament
+
+		// Eliminem les celles inicials redundants
+		byte bak;
+		for (int n=0;n<M.length;n++){
+
+			bak = M[n].v;
+			M[n].v = K.I;
+
+			RP.M(M);
+
+			if (RP.Resol(2)!=1) M[n].v = bak; // Si eliminant aquella cella hi han mes de dos solucions, la tornem a incloure
+		}
+
+		t = (System.currentTimeMillis()-t); // temps de generacio
+
+		return new BSPuzzle(F.SR,F.SC,M,Ls,K.SHIP_MODEL,t); // Creem BSPuzzle i sortim
+	}
+}

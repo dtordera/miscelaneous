@@ -1,0 +1,23 @@
+
+public class AResoldre {
+	public final static Vaixells Flota1 = new Vaixells(new char[]{ k.ACO,k.CRE,k.CRE,k.DES,k.DES,k.DES,k.DES,k.SUB,k.SUB,k.SUB,k.SUB });
+	
+
+	public final static Puzzle[] 
+				Puzzles = { new Puzzle(	Flota1.Flota,
+										new cella[] { 	new cella(0,0,k.B_),
+														new cella(7,3,k.B_),
+														new cella(1,4,k.B_),
+														new cella(2,8,k.P_),
+														new cella(4,1,k.A_),
+														new cella(5,5,k.A_),
+														new cella(5,8,k.A_) },
+										new int[]{1,4,2,3,2,3,1,2,2},
+										new int[]{2,4,1,1,1,5,2,0,4}),								   
+							new Puzzle(Flota1.Flota,
+										new cella[] {	new cella(4,0,k.A_),
+														new cella(6,0,k.N_)
+								
+	
+
+}

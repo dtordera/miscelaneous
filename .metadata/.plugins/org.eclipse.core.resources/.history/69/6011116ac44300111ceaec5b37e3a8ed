@@ -1,0 +1,73 @@
+
+public class cella {
+		  		 
+	final static int X  = 0,	// indeterminada
+					 A  = 1,	// aigua
+					 N  = 2,	// nord
+					 S  = 3,	// sud
+					 E	= 4,	// est
+					 O  = 5,	// oest
+					 P  = 6,	// part
+					 B  = 7,	// submari
+					 H  = 8,	// horitzontal
+					 V  = 9;	// vertical
+					 
+	final static int[][] 
+			Patrons = {
+						{ A, A, A,	// Submari
+						  A, B, A,
+						  A, A, A
+						},
+						{ A, A, A, A, // Oest
+						  A, O, X, X,
+						  A, A, A, A
+						},
+						{ A, A, A, A, // Est
+						  X, X, E, A,
+						  A, A, A, A
+						},
+						{ A, A, A, // Nord
+						  A, N, A,
+						  A, X, A, 
+						  A, X, A
+						},
+						{ A, X, A, // Sud
+						  A, X, A,
+						  A, S, A,
+						  A, A, A
+						}, 
+						{ A, X, A, // Ocupat
+						  X, P, X,
+						  A, X, A
+						},
+						{ A, A, A, A, A, // Horitzontal
+						  X, X, H, X, X,
+						  A, A, A, A, A
+						},
+						{ A, X, A,		 // Vertical
+						  A, X, A,
+						  A, V, A,
+						  A, X, A,
+						  A, X, A
+						}
+				};
+
+	boolean	Determinada  = false;
+	int[] 	Orientacions = { X,H,V,B};
+	int[] 	PartsVaixell = { X,P,N,S,E,O,B};
+	int[] 	Vaixells;
+	
+	public boolean A_Array(int[] A,int X) {
+		boolean ret = false;
+		
+		for (int j;j<A.length();j++)
+			ret = ret || (A[j] == X);
+		
+		return ret;
+	}
+	
+	public boolean A_Orientacio(int X) {
+
+	}
+}
+

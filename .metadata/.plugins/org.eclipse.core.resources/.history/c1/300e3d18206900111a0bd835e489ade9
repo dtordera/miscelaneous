@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Battleship Solitarie 1.0</string>
+    <string name="Titol">Battleship Solitarie</string>
+    <string name="Versio">v1.0</string>
+    <string name="Opcio1">new game</string>
+    <string name="Opcio2">saved games</string>
+    <string name="Opcio3">settings</string>
+    <string name="Opcio4">how to play</string>
+    <string name="Opcio5">exit</string>
+    <string name="TitleSettings">Settings...</string>    
+    <string name="Setting1">Graphical set : classical</string>
+    <string name="Setting2">Difficulty : normal (10x10)</string>
+    <string name="Setting3">Apply recursivity : true</string>
+    <string name="GS_NOBMPS">Graphical set : no pictures</string>
+    <string name="GS_WWII">Graphical set : World War II</string>
+    <string name="GS_CLASSICAL">Graphical set : classical</string>
+    <string name="DF_BEGGINER">Difficulty : begginer (6x6)</string>
+    <string name="DF_EASY">Difficulty : easy (8x8)</string>
+    <string name="DF_NORMAL">Difficulty : normal (10x10)</string>
+    <string name="DF_HARD">Difficulty : hard (15x15)</string>
+    <string name="DF_EXPERT">Difficulty : expert (20x20)</string>
+    
+</resources>

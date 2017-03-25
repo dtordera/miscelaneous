@@ -1,0 +1,82 @@
+
+
+public class Vaixell {
+	byte L;
+	Posicions ps;
+	
+	public Vaixell(byte l){
+		L=l;
+		ps = new Posicions();
+	}
+	
+	public Vaixell(byte l,Posicio...r){	
+		L=l;
+		ps = new Posicions(r);		
+	}
+	
+	public Vaixell(Vaixell v){
+		L=v.L;
+		ps = new Posicions(v.ps.P);
+	}
+	
+	public Posicio r(){
+		return ps.r();
+	}
+	
+	public Index rf(){
+		if (r()==null) return null;
+	
+		return r().J(L);
+	}
+		
+	public String toString(){
+		return "L="+L+":\n"+ps.toString();
+	}	
+	
+	public boolean choca(Vaixell v){
+	
+		if (r()==null||v.r()==null) return false;
+	
+		boolean r = false;
+		byte i,j;
+		
+		for (i=r().x;i<=rf().x;i++)
+		for (j=r().y;j<=rf().y;j++)
+			r|=v.dintre(i,j);			
+			
+		for (i=v.r().x;i<=v.rf().x;i++)
+		for (j=v.r().y;j<=v.rf().y;j++)
+			r|=dintre(i,j);
+			
+		return r;		
+	}		
+	
+	public boolean dintre(byte i,byte j){
+		if (r()==null) return false;
+		
+		return (r().x-1<=i&&i<=rf().x+1&&r().y-1<=j&&j<=rf().y+1);
+	}
+	
+	public boolean tocat(byte i,byte j){		
+		return (r().x<=i&&i<=rf().x&&r().y<=j&&j<=rf().y);		
+	}
+	
+	public char c(byte i,byte j){
+			
+		char r='·';
+			
+		if (r()==null) return r;
+		
+		r = dintre(i,j)?K.A:K.I;
+		
+		if (L==1&&i==r().x&&j==r().y) return K.B;
+		
+		if (i==r().x&&j==r().y) return r().o?K.O:K.N;
+		else
+		if (i==rf().x&&j==rf().y) return r().o?K.E:K.S;
+		else
+		if (tocat(i,j)) return K.X;		
+		
+		return r;								
+	}
+}

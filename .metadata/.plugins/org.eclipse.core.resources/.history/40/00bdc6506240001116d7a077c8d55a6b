@@ -1,0 +1,19 @@
+package meves.apps.Exemple0901;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.telephony.SmsManager;
+import android.widget.Toast;
+
+
+public class Exemple9_1smsActivity extends Activity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    	 SmsManager sms = SmsManager.getDefault();
+    	 sms.sendTextMessage("637354254", null, "Segueixes sent la dona més meravellosa del món.", null, null);
+    	 sms.sendTextMessage("677703749", null, "enviat", null, null);    	 
+    	 Toast.makeText(Exemple9_1smsActivity.this,"Enviat",Toast.LENGTH_LONG).show();
+    }            
+}

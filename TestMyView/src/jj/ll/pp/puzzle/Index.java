@@ -1,0 +1,18 @@
+package jj.ll.pp.puzzle;
+
+
+public class Index {
+	public byte x,y;
+	
+	public Index(int i,int j){x=(byte)i;y=(byte)j;}
+	public Index(){x=-1;y=-1;}
+	
+	public Index N(){return new Index(x,y-1);}
+	public Index S(){return new Index(x,y+1);}
+	public Index E(){return new Index(x+1,y);}
+	public Index O(){return new Index(x-1,y);}
+	public Index NE(){return new Index(x+1,y-1);}
+	public Index NO(){return new Index(x-1,y-1);}
+	public Index SE(){return new Index(x+1,y+1);}
+	public Index SO(){return new Index(x-1,y+1);}
+}

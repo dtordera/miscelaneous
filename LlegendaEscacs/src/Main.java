@@ -1,0 +1,18 @@
+
+public class Main {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+
+		long n=0;
+
+		for (byte l=1;l<65;l++)
+			n+= Math.pow(2,l);
+			
+		System.out.println(n); 
+
+	}
+
+}

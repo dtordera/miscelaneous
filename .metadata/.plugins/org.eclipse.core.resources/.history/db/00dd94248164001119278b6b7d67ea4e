@@ -1,0 +1,15 @@
+package dvtr.games.logic.BS10;
+
+import android.content.Context;
+import android.view.View;
+
+public class BS10MenuView extends View {
+
+	public BS10MenuView(Context context) {
+		super(context);
+	}
+	
+	public void onDraw(Canvas canvas){
+	}
+
+}

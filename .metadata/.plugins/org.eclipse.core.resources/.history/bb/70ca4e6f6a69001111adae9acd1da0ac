@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/gameLayout"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent" 
+  android:gravity="center|fill_horizontal" 
+  android:orientation="horizontal">
+    <LinearLayout 
+        android:id="@+id/LinearLayout1" 
+        android:layout_width="0dip" 
+        android:layout_height="match_parent"
+        android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+        
+        <Button android:id="@+id/btNewGame" style="@style/buttonstyle" android:text="@string/BT_NEW_GAME"/>
+        <Button android:id="@+id/btResetGame" style="@style/buttonstyle" android:text="@string/BT_RESET_GAME"/>
+        <Button android:id="@+id/btUndo" style="@style/buttonstyle" android:text="@string/BT_UNDO"/>
+        <Button android:id="@+id/btSolve" style="@style/buttonstyle" android:text="@string/BT_SOLVE"/>
+        <Button android:id="@+id/btSave" style="@style/buttonstyle" android:text="@string/BT_SAVE"/>
+    </LinearLayout>
+    <View
+        class="dvtr.games.logic.BS10.BS10GameView"
+        android:id="@+id/frameLayout1" 
+        android:layout_width="0dip" 
+        android:layout_height="match_parent"    
+        android:layout_weight="3">
+    </View>
+    <LinearLayout 
+        android:id="@+id/linearLayout2" 
+        android:layout_width="0dip" 
+        android:layout_height="match_parent"
+        android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+        <Button android:id="@+id/button5" style="@style/buttonstyle" android:text="Button"/>
+        <Button android:id="@+id/button6" style="@style/buttonstyle" android:text="Button"/>
+        <Button android:id="@+id/button7" style="@style/buttonstyle" android:text="Button"/>
+        <Button android:id="@+id/button8" style="@style/buttonstyle" android:text="Button"/>
+    </LinearLayout>
+    
+</LinearLayout>

@@ -1,0 +1,27 @@
+package meves.apps.Ex1002;
+
+import android.app.Activity;
+import android.gesture.Gesture;
+import android.gesture.GestureOverlayView;
+import android.gesture.GestureOverlayView.OnGesturePerformedListener;
+import android.os.Bundle;
+import android.widget.TextView;
+
+public class Ex1002Activity extends Activity implements OnGesturePerformedListener{
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+        
+        GestureOverlayView gestureView = (GestureOverlayView) findViewById(R.id.gestures);
+        TextView nombregesto = (TextView) findViewById(R.id.nomtexte);
+        
+    }
+
+	@Override
+	public void onGesturePerformed(GestureOverlayView arg0, Gesture arg1) {
+
+		
+	}
+}

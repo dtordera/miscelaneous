@@ -1,0 +1,15 @@
+package comu;
+
+public class FactoriaPuzzle {
+
+	byte C,R;
+	byte[] Ls;
+	
+	boolean Model;	
+
+	public FactoriaPuzzle(byte c,byte r,byte[] ls){
+		C=c;
+		R=r;
+		Ls=ls.clone();
+	}
+}

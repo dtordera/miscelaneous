@@ -1,0 +1,160 @@
+// Clase Flota : crea una flota de vaixells a un espai CxR, que no es toquin entre ells, i calcula les sumes
+
+package shipmodel;
+
+import comu.K;
+
+public class Flota {
+
+	Vaixell[] V;		// Llista de vaixells
+	byte C,R;			// Dimensions
+	public byte[] SR;	// Sumes files, columnes
+	public byte[] SC;
+	byte[] Ls;			// Longituds dels vaixells
+	
+	// Constructor : crea una colocació aleatoria inicial
+	public Flota(int c,int r,byte[] l){	
+		C=(byte)c;
+		R=(byte)r;
+		
+		SR = new byte[C];
+		SC = new byte[R];		
+		
+		Ls = l.clone();
+		
+		Coloca();			
+	}	
+	
+	// ResetV : Reseteja els vaixells (els considera no posicionats)
+	void ResetV(){V = new Vaixell[Ls.length]; for (byte n=0;n<V.length;n++)	V[n] = new Vaixell(Ls[n]);}
+	
+	// CalculaSumes: calcula les sumes de solids per columnes i per files
+	void CalculaSumes(){
+		byte i,j;
+	
+		for (i=0;i<SR.length;i++) SR[i]=0;
+		for (j=0;j<SC.length;j++) SC[j]=0;						
+		
+		for (Vaixell v:V)
+			for (i=v.r().x;i<=v.rf().x;i++)		
+			for (j=v.r().y;j<=v.rf().y;j++)		
+			{
+				SR[i]++;
+				SC[j]++;
+			}													
+	}
+	
+	// PosaGrid : Posa a una llista de posicions tot l'espai sencer CxR, amb les dues posibilitats HOR i VER
+	void PosaGrid(Posicions S){
+		byte i,j;
+	
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+		{
+			S.add(i,j,K.HOR);
+			S.add(i,j,K.VER);
+		}	
+	}
+		
+	// Coloca : troba posicions coherents per als vaixells
+	public void Coloca(){
+	
+		boolean fet = false;				
+					
+		Posicions S = new Posicions(),P; // Llistes de posicions 
+		PosaGrid(S);		// S original, P de treball. Es carrega S amb totes les posicions posibles
+		
+		while (!fet)
+		{	
+			P = S.Shuffle(); // P sera una combinacio aleatoria de S
+			
+			ResetV();	// Borrem posicions de tots els vaixells					
+			for (Vaixell v:V) // Per tots els vaixells...							
+			for (Posicio p:P.P) // Per totes les posicions a P...								
+				if (DintreLimits(v,p)&&CheckPosicio(v,V,p)) { // Si el vaixell v a la posicio p esta dintre limits
+					v.ps = new Posicions(p);				  // i no choca amb cap altre, li assignem la posicio
+					treuVaixell(v,P);						  // i treiem totes les posicions que el creuen (inclosa
+															  // aigua colindant)
+					break;									  // Vaixell colocat, anem al seguent
+				}			
+			
+			fet = true;					
+			for (Vaixell v:V) fet &= v.r()!=null; // Si s'ha recorregut tota la llista de posicions x cada vaixell i tot 
+												  // i aixi, ha quedat algun sense colocar, es busca una nova combinacio P
+		}		
+		
+		CalculaSumes();		// Es calculen les sumes
+	}
+	
+	// c : torna el valor a aquella posicio si esta inclos a un vaixell, aigua en cas contrari
+	public char c(int i,int j){
+		char k;
+	
+		for (Vaixell v:V){ // es recorren els vaixells i es comproba si algun conte i,j
+			
+			k = v.c((byte)i,(byte)j);
+			if (k!=K.I&&k!=K.A) return k;
+		}
+		
+		return K.A;	
+	}
+		
+	// toString
+	public String toString(){
+		String s="";
+		
+		for (byte j=0;j<R;j++)
+		{
+			for (byte i=0;i<C;i++)
+			{
+				char m='·';
+				
+				for (Vaixell v:V)
+					if (v.c(i,j)!=K.I) m=v.c(i,j);
+					
+				s+=m+" ";
+			}
+			s+=" " + SC[j] + "\n";
+		}
+		
+		s+="\n";
+		
+		for (byte i=0;i<C;i++)
+			s+=SR[i] + " ";
+			
+		return s;
+	}
+	
+	// treuVaixell : treu les posicions ocupades per v i les seves aigues
+	public void treuVaixell(Vaixell v,Posicions P){
+	
+		if (v.r()==null) return;
+		
+		byte xo = (byte)(v.r().x-1),
+			 yo = (byte)(v.r().y-1),
+			 xf = (byte)(v.rf().x+1),
+			 yf = (byte)(v.rf().y+1);
+		
+		for (byte i=xo;i<=xf;i++)
+		for (byte j=yo;j<=yf;j++)
+			P.remove(i,j);
+	}
+	
+	// DintreLimits : es comproba si aquell vaixell a aquella posicio no surt dels limits
+	public boolean DintreLimits(Vaixell v,Posicio p){
+	
+		return (p.x>=0&&p.J(v.L).x<C&&p.y>=0&&p.J(v.L).y<R);
+	}
+	
+	// CheckPosicio : es comprova que el vaixell v a la posicio p no xoca amb cap vaixell de la llista V
+	public boolean CheckPosicio(Vaixell v,Vaixell[] V,Posicio p){
+		boolean r = true;
+		
+		Vaixell d= new Vaixell(v.L,p);
+				
+		for (Vaixell l:V)
+			r&=!l.choca(d);
+		
+		return r;
+	}	
+}

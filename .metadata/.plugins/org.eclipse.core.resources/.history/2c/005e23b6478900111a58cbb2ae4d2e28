@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Battleship Solitarie 1.1</string>
+    <string name="title_menu">Battleship Solitarie</string>
+    <string name="version_menu">v1.1</string>
+    <string name="play_menu">play</string>
+    <string name="settings_menu">settings</string>
+    <string name="how_menu">how to play</string>
+</resources>

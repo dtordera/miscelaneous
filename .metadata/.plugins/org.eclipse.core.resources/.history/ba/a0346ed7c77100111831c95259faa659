@@ -1,0 +1,47 @@
+
+public class Vaixell {
+	byte L;
+	Posicions ps;
+	
+	public Vaixell(byte l){
+		L=l;
+		ps = new Posicions();
+	}
+	
+	public Vaixell(byte l,Posicio...r){	
+		L=l;
+		ps = new Posicions(r);		
+	}
+	
+	public Posicio r(){
+		return ps.r();
+	}
+		
+	public String toString(){
+		return "L="+L+":\n"+ps.toString();
+	}	
+	
+	public boolean choque(Vaixell v){	
+		
+		if (v.r()==null||r()==null) return false;
+		
+		boolean ret=false;
+						
+		return ret;	
+	}
+	
+	public boolean dintre(byte i,byte j){
+		if (r()==null) return false;
+			
+		xo = r().x-1;
+		yo = r().y-1;
+		xf = r().J(L).x+1;
+		yf = r().J(L).y+1;
+		
+		
+		
+		
+		
+		return ret;
+	}
+}

@@ -1,0 +1,79 @@
+// Clase Vaixell : Longitud i llista de posicions posibles
+
+package shipmodel;
+
+import comu.Index;
+import comu.K;
+
+
+public class Vaixell {
+	public byte L;
+	public Posicions ps;
+	
+	// Constructors
+	public Vaixell(byte l){	L=l;ps = new Posicions();}	
+	public Vaixell(byte l,Posicio...r){	L=l;ps = new Posicions(r);}	
+	public Vaixell(Vaixell v){L=v.L;ps = new Posicions(v.ps.P);}
+	
+	// r : si esta determinat (posicio unica), torna la posicio	
+	public Posicio r(){	return ps.r();}	
+	
+	// rf : torna index del final
+	public Index rf(){if (r()==null) return null;return r().J(L);}
+	
+	// toString		
+	public String toString(){return "L="+L+":\n"+ps.toString();}	
+	
+	// choca : comproba si choca amb el vaixell v
+	public boolean choca(Vaixell v){
+	
+		if (r()==null||v.r()==null) return false;
+	
+		boolean r = false;
+		byte i,j;
+		
+		for (i=r().x;i<=rf().x;i++)
+		for (j=r().y;j<=rf().y;j++)
+			r|=v.dintre(i,j);
+			
+			
+		for (i=v.r().x;i<=v.rf().x;i++)
+		for (j=v.r().y;j<=v.rf().y;j++)
+			r|=dintre(i,j);
+			
+		return r;		
+	}		
+	
+	// dintre : comproba si i,j esta al vaixell o es colindant
+	public boolean dintre(byte i,byte j){
+		if (r()==null) return false;
+		
+		return (r().x-1<=i&&i<=rf().x+1&&r().y-1<=j&&j<=rf().y+1);
+	}
+	
+	// tocat : comproba si i,j toca al vaixell
+	public boolean tocat(byte i,byte j){		
+		return (r().x<=i&&i<=rf().x&&r().y<=j&&j<=rf().y);		
+	}
+	
+	// c : torna el valor a i,j
+	public char c(byte i,byte j){
+			
+		byte r=K.I;
+			
+		if (r()==null) return (char)r;
+		
+		r = dintre(i,j)?K.A:K.I;
+		
+		if (L==1&&i==r().x&&j==r().y) return K.B;		
+
+		if (tocat(i,j))
+			if (i==r().x&&j==r().y) return r().o?(char)K.O:(char)K.N;
+			else
+				if (i==rf().x&&j==rf().y) return r().o?(char)K.E:(char)K.S;
+				else
+					return K.X;				
+		
+		return (char)r;								
+	}
+}

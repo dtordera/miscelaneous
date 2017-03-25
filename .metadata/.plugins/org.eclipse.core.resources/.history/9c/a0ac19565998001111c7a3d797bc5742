@@ -1,0 +1,165 @@
+// BS10GameActivity : activity del joc
+
+package dvtr.games.logic.BS10;
+
+import com.google.ads.AdView;
+
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Chronometer;
+import android.widget.LinearLayout;
+import android.view.ViewGroup;
+
+public class BS10GameActivity extends Activity{
+
+	public static String[] BT_LABELS;	// omplenar cella, columna o fila
+	BS10GameView V;						// View del tauler
+
+	SharedPreferences Settings;					// Settings
+	SharedPreferences.Editor SettingsEditor;	// es guarda l'estat de l'eina a preferencies
+
+	Chronometer chrono;							// cronometre
+
+	//onCreate
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+
+		super.onCreate(savedInstanceState);
+
+		Settings = getSharedPreferences(BS10Constants.prefName, 0);
+		SettingsEditor = Settings.edit();
+
+		// posem strings del buto eina
+		setStrings();
+
+		setContentView(R.layout.game);
+
+		// Apliquem settings al cronometre
+		chrono = (Chronometer)findViewById(R.id.time);
+
+/*		AdView av = (AdView)findViewById(R.id.adView);
+		
+
+		RotateAnimation r = new RotateAnimation(0,-270,20,20);
+		r.setInterpolator(new LinearInterpolator());
+		r.setFillAfter(true);
+		r.setFillEnabled(true);
+
+		av.startAnimation(r);*/
+
+		if (Settings.getBoolean("ST",true)) chrono.setVisibility(View.VISIBLE);
+		else								chrono.setVisibility(View.INVISIBLE);
+
+		// Creem vista i l'adjuntem
+		V = new BS10GameView(this);
+		AttachBSView();
+		V.ResetChrono();
+
+		// Format grafic de l'activity
+		getWindow().getAttributes().format = android.graphics.PixelFormat.RGBA_8888;
+
+		// Posem el valor inicial del boto eina a les preferencies
+		SettingsEditor.putInt("CP",BS10Constants.BT_FILLCELL);
+		SettingsEditor.commit();
+
+		// posem el valor del boto eina
+		setgameCellPiece();
+	}
+
+	// AttachBSView : busquem el layout que suportara el BSView i l'adjuntem
+	public void AttachBSView(){
+		((ViewGroup)findViewById(R.id.Frame)).addView(V);
+		V.drawThings();
+	}
+
+	// onResume : activem chrono (falta : recuperar de disc)
+	@Override
+	public void onResume(){
+		super .onResume();
+
+		setBackGround();
+		setgameCellPiece();
+
+		chrono.start();
+
+//		V.InitAdView(this,AdSize.BANNER,"a14fa5575108295");
+	}
+
+	// onStop : parem chrono (falta : guardar a disc)
+	@Override
+	public void onStop(){
+		chrono.stop();
+
+		super .onStop();
+	}
+
+	// setStrings : agafem les strings per al boto eina desde els recursos
+	public void setStrings(){
+
+		BT_LABELS = new String[3];
+
+		BT_LABELS[BS10Constants.BT_FILLCELL] = getResources().getString(R.string.BT_FILLCELL);
+		BT_LABELS[BS10Constants.BT_FILLCOL] = getResources().getString(R.string.BT_FILLCOL);
+		BT_LABELS[BS10Constants.BT_FILLROW] = getResources().getString(R.string.BT_FILLROW);
+	}
+
+	// setBackGround : posem background segons set grafic
+	public void setBackGround() {
+
+		// no guardem res a memoria per no excedir VM Budget
+
+		switch (Settings.getInt("GS", BS10Constants.GS_CLASSIC)) {
+		case BS10Constants.GS_CLASSIC:
+			((LinearLayout)findViewById(R.id.gameLayout)).setBackgroundDrawable(getResources().getDrawable(R.drawable.menubkc)); break;
+		case BS10Constants.GS_WWII:
+			((LinearLayout)findViewById(R.id.gameLayout)).setBackgroundDrawable(getResources().getDrawable(R.drawable.menubkw)); break;
+		case BS10Constants.GS_NOBMPS:
+			((LinearLayout)findViewById(R.id.gameLayout)).setBackgroundDrawable(getResources().getDrawable(R.drawable.menubkn)); break;
+		}
+	}
+
+	// gameCellPiece : click del boto eina
+	public void gameCellPiece(View V){
+
+		int d;
+
+		switch(Settings.getInt("CP",BS10Constants.BT_FILLCELL)){
+			case BS10Constants.BT_FILLCELL : d=BS10Constants.BT_FILLCOL; break;
+			case BS10Constants.BT_FILLCOL : d=BS10Constants.BT_FILLROW; break;
+			default : d=BS10Constants.BT_FILLCELL; break;
+		}
+
+		SettingsEditor.putInt("CP",d);
+		SettingsEditor.commit();
+
+		setgameCellPiece();
+	}
+
+	// NewGameClick : click del boto nou
+	public void NewGameClick(View v){
+
+   		V.NouPuzzle(); // Cridem a noupuzzle del BSView
+
+   		SettingsEditor.putInt("CP",BS10Constants.BT_FILLCELL);
+   		SettingsEditor.commit();
+   		setgameCellPiece();
+	}
+
+	// ResetGameClick : click del reset
+	public void ResetGameClick(View v){
+		V.ResetPuzzle(); // Resetejem puzzle
+	}
+
+	// SolveGameClick : click de solucionar
+	public void SolveGameClick(View v){
+		V.ResolPuzzle(); // Resolem puzzle
+	}
+
+	// setgameCellPiece : posem texte al boto eina
+	public void setgameCellPiece(){
+		((Button)findViewById(R.id.btPosa)).setText(BT_LABELS[Settings.getInt("CP",BS10Constants.BT_FILLCELL)]);
+	}
+}

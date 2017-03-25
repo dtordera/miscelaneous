@@ -1,0 +1,104 @@
+
+// Clase cellmodel.FactoriaPuzzle : crea un puzzle desde unes mides i uns vaixells representats per longituds.
+// Es genera mitjantçant la funció Genera, que torna un BSPuzzle. El métode es : 
+// es crea una flota i es crea un puzzle des d'aquella flota. Mitjançant un resoledor tipus cellmodel es va 
+// incrementant el nombre de celles mostrades inicials fins que el resoledor es capaç de trobar una solució coherent
+// Un cop trobada, s'eliminen les celles mostrades innecesaries.
+// Bugs coneguts : 
+//		-es poden generar puzzles de més d'una solució.
+// 		-degut a la aleatoritat de la creació de flota, no es té la seguretat 100x100 de generarse un puzzle en temps real.
+//
+// Ultima revisió:16/04/2012
+
+package cellmodel;
+
+import java.util.Arrays;
+import java.util.Collections;
+
+import shipmodel.Flota;
+
+import comu.BSPuzzle;
+import comu.Index;
+import comu.K;
+import comu.Mostrades;
+
+public class FactoriaPuzzle {
+
+	byte C,R;		// Columnes, rows
+	byte[] Ls;		// Longituds dels vaixells				
+
+	// Constructor
+	public FactoriaPuzzle(int c,int r,byte[] ls){
+		C=(byte)c;
+		R=(byte)r;
+		Ls=ls.clone();
+	}		
+		
+	// Genera
+	public BSPuzzle Genera(){ return GeneraCellModel(); }
+	
+	// GeneraCellModel
+	BSPuzzle GeneraCellModel(){
+	
+		long t = System.currentTimeMillis();	// per temps de generació		
+		
+		Flota F;								// Flota (vaixells colocats i sumes fetes)
+		Mostrades[] M;							// Celles mostrades inicials
+		dvtr.games.logic.BS10.puzzle.cellmodel.Resoledor RP;					// Resoledor tipus model de celles		
+		BSPuzzle B;								// Puzzle a generar/resoldre			
+		Index[] I;								// Llista d'index, per no repetir les celes mostrades
+		int idx;								// contador de la llista d'indexs
+		byte x,y;								// coordenades
+		
+		I = new Index[C*R];						// donem tamany a la llista i l'omplenem de les posibles
+				
+		for (byte j=0;j<R;j++)
+		for (byte i=0;i<C;i++)
+			I[i*C+j]=new Index(i,j);
+			
+		Collections.shuffle(Arrays.asList(I));	// canviem d'ordre la llista d'indexs
+						
+														
+		F = new Flota(C,R,Ls);								// Nova flota
+		M = new Mostrades[0];								// Reset de les mostrades
+		B = new BSPuzzle(F.SR,F.SC,M,Ls,K.CELL_MODEL,0);	// Nou puzzle (nomes sumes)
+		RP = new dvtr.games.logic.BS10.puzzle.cellmodel.Resoledor(B);					// Nou resoledor de B
+				
+		boolean resoluble = false;	
+		idx=0;					
+		
+		// Posem les celles inicials necesaries per resoldre	
+		while(!resoluble){
+			
+			x = I[idx].x;	// noves coordenades desde la llista
+			y = I[idx].y;
+			
+			idx++;			// augmentem index llista coordenades 
+				
+			if (F.SR[x]==0||F.SC[y]==0) continue; // Si pertany a columna/row amb suma zero, no dona informació
+						
+			M = Arrays.copyOf(M,M.length+1);					// Augmentem array i incloim la nova
+			M[M.length-1] = new Mostrades(x,y,(byte)F.c(x,y));
+			
+			RP.M(M);	   // Insertem al resoledor la nova llista de mostrades
+												
+			resoluble=RP.Resol();	// Si es pot resoldre sortim
+		}					
+		
+		// Treiem les celles innecesaries
+		byte bak;					
+		for (int n=0;n<M.length;n++){ // Recorrem la llista de les mostrades, testejant 
+				
+			bak = M[n].v;
+			M[n].v = K.I;
+			
+			RP.M(M);
+			
+			if (!RP.Resol()) M[n].v = bak; // Si sense aquesta no es pot resoldre, tornem a incloure-la
+		}						
+		
+		t = (System.currentTimeMillis()-t); // Calculem temps de generació
+		 
+		return new BSPuzzle(F.SR,F.SC,M,Ls,K.CELL_MODEL,t); // retornem puzzle		
+	}
+}

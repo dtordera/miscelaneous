@@ -1,0 +1,70 @@
+package comu;
+
+import java.util.Arrays;
+
+public class BSPuzzle {
+	protected byte 		C,R;
+	protected byte[] 	SR,SC;
+	protected byte[]	Ls;
+	
+	protected Mostrades[] M;
+	
+	boolean ModelGenerat;
+	boolean ModelResolt;
+	
+	public BSPuzzle(byte[] sr, byte[] sc,Mostrades[] m, byte[] ls, boolean mgenerat){
+	
+		C = (byte)sr.length;
+		R = (byte)sc.length;
+	
+		SR=sr.clone();
+		SC=sc.clone();		
+		
+		Ls=ls.clone();
+		
+		M = Arrays.copyOf(m,m.length);
+		
+		ModelGenerat = mgenerat;			
+	}	
+	
+	public String toGridString(){
+		long t = System.currentTimeMillis();
+		
+		char[][] G = new char[C][R];
+		
+		for (char[] g:G)
+		Arrays.fill(g,K.I);
+		
+		for (Mostrades ci:M)
+			G[ci.x][ci.y] = ci.v;
+			
+		String r="";
+		
+		for (byte j=0;j<R;j++) {
+		
+			for (byte i=0;i<C;i++) 
+				r+=G[i][j] + " ";
+				
+			r += SC[j] + "\n";
+		}		
+		
+		r+="\n";
+		for (byte i=0;i<C;i++)
+			r+=SR[i] + " ";
+	
+		r+=(System.currentTimeMillis()-t);
+		return r;
+	}
+	
+	public BSPuzzle(BSPuzzle P){
+		C = P.C;
+		R = P.R;
+		
+		SR=P.SR.clone();
+		SC=P.SC.clone();
+		
+		Ls=P.Ls.clone();
+		
+		M= Arrays.copyOf(P.M,P.M.length);
+	}
+}

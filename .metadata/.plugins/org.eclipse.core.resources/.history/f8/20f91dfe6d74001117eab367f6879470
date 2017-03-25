@@ -1,0 +1,22 @@
+package dvtr.games.logic.yubotu.shipmodel;
+
+public class FactoriaPuzzle {
+
+	public void Genera(int C,int R,byte[] Ls){
+	
+		Flota F = new Flota(C,R,Ls);
+		CondicionsInicials[] CI = new CondicionsInicials[0];
+		
+		System.out.println(F.toString());
+		
+		ResoledorPuzzle RP = new ResoledorPuzzle(F.SR,F.SC,null,Ls);
+		
+		boolean fet = false;
+		
+		while (!fet) {
+			int s = RP.Resol(2);
+		
+			
+		}
+	}
+}

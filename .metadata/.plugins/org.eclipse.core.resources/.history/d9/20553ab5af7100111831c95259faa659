@@ -1,0 +1,6 @@
+
+public class Puzzle {
+	byte C,R;
+	Vaixell[] V;
+	Index DS;
+}

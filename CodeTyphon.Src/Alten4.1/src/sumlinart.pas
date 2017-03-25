@@ -1,0 +1,171 @@
+unit sumlinart;
+
+interface
+
+uses Windows, LlistCfg, Controls, StdCtrls, UText, ULabel, Classes, Forms, Dialogs, sysutils, ComObj, ShellApi;
+
+type
+  T_sumlinart = class(TForm)
+    UText12: TUText;
+    UText1: TUText;
+    UText4: TUText;
+    btEntrar: TUText;
+    dLINIA: TMLabel;
+    dDATA_INICI: TDLabel;
+    dDATA_FINAL: TDLabel;
+    procedure FormCreate(Sender: TObject);
+    procedure Fcreate(sender : TObject);
+    procedure btEntrarReact(Sender: TObject);
+  private
+  public
+  end;
+
+implementation
+
+uses dmsrc, ADOdb, udbview, udbvaux, global, estilcolor, dbutils;
+
+{$R *.dfm}
+
+procedure T_sumlinart.FormCreate(Sender: TObject);
+var
+     y,m,d : word;
+     dt : TDateTime;
+begin
+     mDlg('Atenció : aquesta suma té en compte només les dades totals (TOTAL, UTS), això és, no té en compte si les ventes han estat o no pagades parcial o totalment.',mtInformation,[mbOk]);
+
+     _estilcolor.Apply(sender as TCustomForm,false);
+
+     DecodeDate(date,y,m,d);
+
+     y := y - 1;
+
+     dt := EncodeDate(y,1,1);
+     dDATA_INICI.Date := dt;
+     dt := EncodeDate(y,12,31);
+     dDATA_FINAL.Date := dt;
+end;
+
+procedure T_sumlinart.Fcreate(sender : TObject);
+begin
+     _estilcolor.Apply(sender as TCustomForm,false);
+end;
+
+procedure T_sumlinart.btEntrarReact(Sender: TObject);
+var
+     q : TADOQuery;
+     v : TUDBView;
+     f : TForm;
+     s : string;
+     sm : double;
+     r : integer;
+     excel : variant;
+begin
+     q := TADOQuery.Create(nil);
+     q.Connection := dm.CT;
+
+     if ETaula('suma_linart',q.Connection) then
+     begin
+          q.SQL.Text := 'drop table suma_linart';
+          q.ExecSQL;
+     end;
+
+     q.Connection := dm.CG;
+     q.Active := false;
+     q.SQL.Text := 'select * from ventes' + dLINIA.Caption + ' where (data >= ' + FormatSQLDate(dDATA_INICI.Date) + ') and (data < ' + FormatSQLDate(dDATA_FINAL.Date+1) + ')';
+     q.Active := true;
+     q.First;
+
+     s := '';
+     while not q.Eof do
+     begin
+          s := s + q.FieldByName('id').AsString + ',';
+          q.Next;
+     end;
+
+     if length(s) = 0 then
+     begin
+          mDlg('No hi han ventes de les que fer resum entre aquestes dades',mtError,[mbOk]);
+          exit;
+     end;
+
+     s[length(s)] := ' ';
+
+     q.Active := false;
+     q.Connection := dm.CT;
+     q.SQL.Text := 'select id_lin as id,(select descr from linies in ''' + dm.CR['DATABASE'] +
+                   ''' where linies.id = id_lin) as linia,sum(import) as total,sum(uts) as uts into suma_linart from c_ventes'+dLINIA.Caption + ' in ''' + dm.CR['database'] + ''' where id_ref in ('+s+') group by id_lin';
+     q.ExecSQL;
+     q.SQL.Text := 'update suma_linart set linia = ' + AnsiQuotedStr('<sense descripció>','''') + ' where linia is null';
+     q.ExecSQL;
+
+     q.SQL.Text := 'select sum(total) as sum_total from suma_linart';
+     q.Active := true;
+
+     sm := q.FieldByName('sum_total').AsFloat;
+
+     q.SQL.Text := 'select * from suma_linart';
+     q.Active := true;
+
+     r := q.RecordCount;
+
+     q.Free;
+
+     f := TForm.Create(Application);
+     f.Position := poScreenCenter;
+     f.Width  := 700;
+     f.Height := 500;
+
+     v := TUDBView.Create(f);
+     v.Parent := f;
+     v.Align := alClient;
+     v.Data.Table := 'suma_linart';
+     v.Data.PrimaryKey := 'id';
+     v.Data.OrderBy := 'id asc';
+     v.Data.Connection := dm.CT;
+     v.Data.Active := true;
+     v.Caption.Fixed := 'Suma segons articles';
+     v.AssignColumnInfo(CInfo[ctSumArt],VisFields[ctSumArt]);
+
+     f.ClientWidth := v.TotalWidth;
+
+     FCreate(f);
+     f.ShowModal;
+
+     Screen.Cursor := crHourGlass;
+
+     s := v.ExportToXLS('',rwNoRaw,false);
+
+     f.Free;
+
+     if s = '' then
+     begin
+          Screen.Cursor := crDefault;
+          modalresult := mrCancel;
+          exit;
+     end;
+
+     try    Excel := CreateOleObject('Excel.Application');
+     except raise exception.Create('Es requereix Excel instal·lat.');
+     end;
+
+     Excel.WorkBooks.Open(s);
+     Excel.Visible := false;
+
+     Excel.Cells[7 + r + 2,4].Font.Bold := true;
+     Excel.Cells[7 + r + 2,4].Value := sm;
+     
+     Excel.Cells[7 + r + 2,3].Font.Bold := true;
+     Excel.Cells[7 + r + 2,3].Value := 'Suma totals : ';
+
+     Excel.WorkBooks[1].Save;
+     Excel.Quit;
+
+     Screen.Cursor := crDefault;
+
+     if (s <> '') and (mDLG('Obrir arxiu ' + s + ' a Excel ara?',mtInformation,[mbYes,mbNo]) = mrYes) then
+     ShellExecute(Handle, 'open', PChar('explorer'),PChar(s), PChar(s),SW_SHOWNORMAL);
+
+     modalresult := mrOk;
+end;
+
+end.

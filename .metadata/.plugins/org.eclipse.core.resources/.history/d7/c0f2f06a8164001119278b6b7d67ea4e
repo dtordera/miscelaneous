@@ -1,0 +1,9 @@
+package dvtr.games.logic.BS10;
+
+public class BS10Settings {
+
+	public final static byte BMP_CLASSIC_SET = 0,
+						     BMP_WW2_SET=1,
+						     BMP_NODRAWS_SET=2;
+
+}

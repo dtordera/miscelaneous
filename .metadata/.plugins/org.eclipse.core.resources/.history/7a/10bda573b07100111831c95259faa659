@@ -1,0 +1,38 @@
+import java.util.Arrays;
+
+
+public class Posicions {
+	Posicio[] P;
+	
+	public Posicions(Posicio[] l){
+		P = Arrays.copyOf(l,l.length);
+	}
+	
+	public Posicions(){
+		P = new Posicio[0];
+	}
+	
+	public String toString(){
+		String s="";
+		
+		for (Posicio p:P)
+		s += p.toString() + "\n";
+		
+		return s; 		
+	}
+	
+	public void add(int i,int j,boolean h){
+		add(new Posicio((byte)i,(byte)j,h));
+	}
+	
+	public void add(Posicio r){
+		if (indexOf(r)==-1) {
+			p = Arrays.copyOf(p,p.length+1);
+			p[p.length-1] = r;
+		}	
+	}
+	
+	public byte indexOf(Posicio r){
+		for (Posicio 
+	}
+}

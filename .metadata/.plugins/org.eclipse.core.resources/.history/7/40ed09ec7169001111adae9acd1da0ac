@@ -1,0 +1,62 @@
+package dvtr.games.logic.BS10;
+
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
+
+public class BS10GameActivity extends Activity {
+
+	public static String BT_SOLID,
+				      	 BT_WATER,
+				      	 BT_UNKNOW,
+				      	 BT_FILLCOL,
+				      	 BT_FILLROW;
+
+	SharedPreferences Settings;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+
+		super.onCreate(savedInstanceState);
+
+		Settings = getSharedPreferences(BS10Settings.prefName, 0);
+
+		setContentView(R.layout.game);
+		setBackGround();
+	}
+
+	@Override
+	public void onResume(){
+		super .onResume();
+		setBackGround();
+	}
+
+	public void setBackGround() {
+
+		Resources res = getResources();
+		Drawable d = res.getDrawable(R.drawable.menubkc);
+		LinearLayout L = (LinearLayout)findViewById(R.id.gameLayout);
+
+		switch (Settings.getInt("GS", BS10Settings.GS_CLASSIC)) {
+		case BS10Settings.GS_CLASSIC:
+			d = res.getDrawable(R.drawable.menubkc);
+			break;
+		case BS10Settings.GS_WWII:
+			d = res.getDrawable(R.drawable.menubkw);
+			break;
+		case BS10Settings.GS_NOBMPS:
+			d = res.getDrawable(R.drawable.menubkn);
+			break;
+		}
+
+		L.setBackgroundDrawable(d);
+	}
+
+	public void gameCellPiece(View V){
+
+	}
+}

@@ -1,0 +1,6 @@
+
+public class celda {
+	boolean Determinada;
+	integer Orientacio;
+	boolean Final;
+}

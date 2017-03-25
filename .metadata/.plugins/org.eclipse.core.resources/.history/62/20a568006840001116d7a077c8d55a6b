@@ -1,0 +1,23 @@
+package meves.apps.Exemple9_2smsreceived;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+
+public class Exemple9_2smsreceived extends BroadcastReceiver {
+
+	@Override
+	public void onReceive(Context arg0, Intent intent) {
+		try {
+			Object[] pdus = (Object []) intent.getExtras().get("pdus");
+			int numPdus = pdus.length;
+			SmsMessage[] mensajes = new SmsMessage[numPdus];
+	
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+}

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Battleship Solitarie 1.0</string>
+    <string name="Titol">Battleship Solitarie</string>
+    <string name="Versio">v1.0</string>
+    <string name="Opcio1">new game</string>
+    <string name="Opcio2">saved games</string>
+    <string name="Opcio3">settings</string>
+    <string name="Opcio4">how to play</string>
+    <string name="Opcio5">exit</string>   
+    <string name="GS_NOBMPS">Graphical set : no pictures</string>
+    <string name="GS_WWII">Graphical set : World War II</string>
+    <string name="GS_CLASSICAL">Graphical set : classical</string>
+    <string name="DF_BEGGINER">Difficulty : beginner (6x6)</string>
+    <string name="DF_EASY">Difficulty : easy (8x8)</string>
+    <string name="DF_NORMAL">Difficulty : normal (10x10)</string>
+    <string name="DF_HARD">Difficulty : hard (15x15)</string>
+    <string name="DF_EXPERT">Difficulty : expert (20x20)</string>
+    <string name="RS_TRUE">Generate puzzle using recursivitily</string>
+    <string name="RS_FALSE">Generate puzzle using only human techniques</string>
+    <string name="ST_TRUE">Show play time</string>
+    <string name="ST_FALSE">Don\'t show play time</string>
+    <string name="BT_NEW_GAME">New</string>
+    <string name="BT_RESET_GAME">Reset</string>
+    <string name="BT_SOLVE">Solve</string>
+    <string name="BT_HINT">Hint</string>
+    <string name="BT_SAVE">Save</string>
+    <string name="BT_FILLCELL">Fill cell</string>
+    <string name="BT_FILLCOL">Fill col.</string>
+    <string name="BT_FILLROW">Fill row</string>
+    <string name="HT_NEXT">Next ></string>
+    <string name="HT_PREVIOUS">&lt; Previous </string>
+    <string name="Howto1">BATTLESHIP SOLITARIE v1.0\n\nBattleShip Solitarie is an implementation of the logical game with same name (a.k.a Yubotu, a.k.a Bimaru). In it, player must use logic to discover a hidden fleet. In the game board you will find a set of cells, ocassionally pre-discovered cells, and a column and a row with numbers. This numbers indicates how many solid cells are in each row/column. There are several techniques to discover the boats with that clues.</string>
+    <string name="Howto2">Ships size and number are indicated. Ships are all surrounded by water (or board limits). Cells can be a length one ship, a ship\'s beginning or ending, ship\'s middle piece, solid, water or unknown. So, first thing player can do is surround known solid pieces by water (for example, a beginning piece sure got water in each adjacent square except the opened one). </string>
+    <string name="Howto3">Next thing you can do is check row/column sums. If any of them is zero, means that all row/column is water. If unknown cells of that row/column coincides with the sum, that means all unknown cells are solid.</string>
+    <string name="Howto4">Another way to determine cells is check if it can be solid. If it is solid, then the NO,NE,SO,SE squares must be water. Can happens that rows/column adjacent to our cell will not be coherent if check cell is solid. For example, supose we\'re checking a cell that is just over a three cell\'s empty space, and the sum of that row is 3. Then, our check cell must be water, so if not, down row will have only one empty space and a sum of two, so will be incoherent.  </string>
+</resources>

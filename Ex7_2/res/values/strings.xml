@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Exercici 2, unitat 7</string>
+    <string-array name="comunidades">
+        <item >Andalucia</item>
+		<item >Aragon</item>        
+		<item >Asturias</item>		
+		<item >Islas Baleares</item>		
+		<item >Islas Canarias</item>
+		<item >Cantabria</item>		
+		<item >Castilla la mancha</item>		
+		<item >Castilla y Leon</item>
+		<item >Cataluña</item>
+		<item >Extremadura</item>		
+		<item >Galicia</item>
+		<item >Madrid</item>		
+		<item >Murcia</item>		
+		<item >Navarra</item>
+		<item >Pais Vasco</item>
+		<item >La rioja</item>		
+		<item >Comunidad Valenciana</item>
+		<item >Ceuta</item>
+		<item >Melilla</item>
+    </string-array>
+
+</resources>

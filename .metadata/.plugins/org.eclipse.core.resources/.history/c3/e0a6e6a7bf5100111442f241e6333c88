@@ -1,0 +1,14 @@
+package dvtr.logicgames.yubotu;
+
+public class Main {
+	public static void main(String[] args) {
+//		Puzzle P =new FactoriaPuzzle(9,9,K.Fs,1).Genera();
+//		System.out.println(P.Resol().toString());
+//		System.out.println(P.toString());		
+		
+//		System.out.println(Logic159.Pz(8).Resol().toString());
+//		System.out.println(Logic259.Pz(6).Resol().toString());
+		
+		System.out.println(YubotuFree.Pz(7).Resol().toString());
+    }
+}

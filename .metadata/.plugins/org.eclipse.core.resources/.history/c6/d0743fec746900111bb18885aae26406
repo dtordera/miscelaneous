@@ -1,0 +1,25 @@
+package dvtr.games.logic.BS10;
+
+public class BS10Global {
+
+	public void setBackGround(LinearLayout L, SharedPreferences Settings) {
+
+		Resources res = getResources();
+		Drawable d = res.getDrawable(R.drawable.menubkc);
+
+		switch (Settings.getInt("GS", BS10Constants.GS_CLASSIC)) {
+		case BS10Constants.GS_CLASSIC:
+			d = res.getDrawable(R.drawable.menubkc);
+			break;
+		case BS10Constants.GS_WWII:
+			d = res.getDrawable(R.drawable.menubkw);
+			break;
+		case BS10Constants.GS_NOBMPS:
+			d = res.getDrawable(R.drawable.menubkn);
+			break;
+		}
+
+		L.setBackgroundDrawable(d);
+	}
+
+}

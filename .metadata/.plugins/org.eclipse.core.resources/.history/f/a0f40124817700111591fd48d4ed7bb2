@@ -1,0 +1,159 @@
+package shipmodel;
+
+import java.util.Arrays;
+
+import comu.K;
+
+
+public class Flota {
+	
+	byte C,R;
+	byte[] SR;
+	byte[] SC;
+	byte[] Ls;	
+			
+	Vaixell[][] S;
+	
+	Vaixell[] TP;
+
+	
+	public Flota(int c,int r,byte[] l){	
+		C=(byte)c;
+		R=(byte)r;
+		
+		SR = new byte[C];
+		SC = new byte[R];		
+		
+	}	
+	
+	public void CombinacionsPosibles(){
+	
+		Vaixell[] TP = null;				
+		CreaTaulaPosicions();
+		InclouPosicionsxSumes(TP); 	
+		
+		S = new Vaixell[0][0];
+		
+		BuscaCombinacions(new Vaixell[0],TP);		
+	}
+	
+	public void BuscaCombinacions(Vaixell[] check,Vaixell[] Taula){
+	
+		check = Arrays.copyOf(check,check.length+1);
+		
+		p = Taula[L]...;
+		
+		check[check.length-1] = new Vaixell(L,p);							
+	} 
+	
+	public void CreaTaulaPosicions(){
+	
+		int mL=1;
+		
+		for (Vaixell v:V) mL = mL>v.L?mL:v.L;
+		
+		TP = new Vaixell[mL];
+		
+		for (byte n=0;n<mL;n++)
+		TP[n] = new Vaixell(n);
+	}
+	
+	public void InclouPosicionsxSumes(Vaixell[] TP){
+	
+		byte i,j,k,m;
+		boolean z;
+	
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+		for (Vaixell v:TP)
+		{
+			if (v.L<=SC[j]&&i+v.L-1<C)
+			{
+				z=false;
+				for (k=i;k<i+v.L;k++) z|=SR[k]==0;
+				
+				if (!z)
+				v.ps.add(i,j,K.HOR);
+			}
+			
+			if (v.L<=SR[i]&&j+v.L-1<R) 
+			{
+				z=false;
+				for (m=j;m<j+v.L;m++) z|=SC[m]==0;
+				
+				if (!z)
+				v.ps.add(i,j,K.VER);
+			}								
+		}						
+	
+	}
+	
+	
+	public char c(int i,int j){
+		char k;
+	
+		for (Vaixell v:V){
+			
+			k = v.c((byte)i,(byte)j);
+			if (k!=K.I&&k!=K.A) return k;
+		}
+		
+		return K.A;	
+	}
+	
+	public String toString(){
+		String s="";
+		
+		for (byte j=0;j<R;j++)
+		{
+			for (byte i=0;i<C;i++)
+			{
+				char m='·';
+				
+				for (Vaixell v:V)
+					if (v.c(i,j)!=K.I) m=v.c(i,j);
+					
+				s+=m+" ";
+			}
+			s+=" " + SC[j] + "\n";
+		}
+		
+		s+="\n";
+		
+		for (byte i=0;i<C;i++)
+			s+=SR[i] + " ";
+			
+		return s;
+	}
+	
+	public void treuVaixell(Vaixell v,Posicions P){
+	
+		if (v.r()==null) return;
+		
+		byte xo = (byte)(v.r().x-1),
+			 yo = (byte)(v.r().y-1),
+			 xf = (byte)(v.rf().x+1),
+			 yf = (byte)(v.rf().y+1);
+		
+		for (byte i=xo;i<=xf;i++)
+		for (byte j=yo;j<=yf;j++)
+			P.remove(i,j);
+	}
+	
+	public boolean DintreLimits(Vaixell v,Posicio p){
+	
+		return (p.x>=0&&p.J(v.L).x<C&&p.y>=0&&p.J(v.L).y<R);
+	}
+	
+	public boolean CheckejaChocs(Vaixell v,Vaixell[] V,Posicio p){
+		boolean r = true;
+		
+		Vaixell d= new Vaixell(v.L,p);
+				
+		for (Vaixell l:V)
+			r&=!l.choca(d);
+		
+		return r;
+	}
+	
+}

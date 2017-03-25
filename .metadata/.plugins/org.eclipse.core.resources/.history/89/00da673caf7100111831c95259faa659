@@ -1,0 +1,8 @@
+
+public class Posicions {
+	Posicio[] p;
+	
+	public Posicions(Posicio[] l){
+		
+	}
+}

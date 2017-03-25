@@ -1,0 +1,20 @@
+// NOMES ENVIA UN. DESPRES BLOQUEJA EL TELEFON PER ENVIAR SMS VIA SMSMANAGER
+
+package meves.apps.Exemple0901;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.telephony.SmsManager;
+import android.widget.Toast;
+
+public class Exemple9_1smsActivity extends Activity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    	 SmsManager sms = SmsManager.getDefault();
+    	 sms.sendTextMessage("677703749", null, "#1", null, null);    	 
+    	 sms.sendTextMessage("677703749", null, "#2", null, null);    	     	 
+    	 Toast.makeText(Exemple9_1smsActivity.this,"Enviat",Toast.LENGTH_LONG).show();
+    }            
+}

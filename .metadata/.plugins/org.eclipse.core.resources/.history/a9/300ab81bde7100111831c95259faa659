@@ -1,0 +1,9 @@
+
+public class main {
+
+	public static void main(String[] args) {
+//		Flota f = new Flota(6,6,new byte[] {3,2,2,1,1});
+		Flota f = new Flota(10,10,new byte[] {4,3,3,2,2,2,1,1,1,1});
+	}
+
+}

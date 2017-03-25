@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+  	            
+<LinearLayout        
+
+  	xmlns:android="http://schemas.android.com/apk/res/android"         
+  	
+    android:layout_width="match_parent" 
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:id="@+id/howto1">
+              		
+	<dvtr.ulib.views.TransparentPanel 			   		    
+        android:id="@+id/transparentPanel1" 
+		android:orientation="vertical"        
+        android:layout_width="0dip" 
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+		android:gravity="center"       
+        android:layout_marginLeft="50dip"
+        android:layout_marginRight="50dip" >
+        
+	    <TextView 
+            style="@style/instrucstyle" 
+            android:paddingTop="30dip"
+            android:paddingBottom="30dip"
+            android:text="This is only a testing text.">            
+        </TextView>        	    
+	    
+	    
+	    <TextView 
+	        style="@style/optionsstyle"
+	        android:onClick="nextClick"
+	        android:text="@string/HT_NEXT">	        
+	    </TextView>
+	    
+	    <TextView 
+	        style="@style/optionsstyle"
+	        android:onClick="previousClick"
+	        android:text="@string/HT_PREVIOUS">	        
+	    </TextView>	    	    	    
+	    
+	    	            
+    </dvtr.ulib.views.TransparentPanel>
+    
+</LinearLayout>

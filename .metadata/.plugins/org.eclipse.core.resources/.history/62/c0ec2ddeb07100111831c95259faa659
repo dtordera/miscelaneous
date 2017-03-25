@@ -1,0 +1,23 @@
+
+public class Posicio {
+	Index I
+	boolean o;
+	
+	public Posicio(byte i, byte j, boolean h){
+		I = new Index(i,j);
+		o = h; 	
+	}
+	
+	public Posicio(Index i,boolean h){
+		I = i;
+		o = h;
+	}
+	
+	public String toString(){
+		return "("+I.x+","+I.y+","+(o?"-":"|")+")";
+	}
+	
+	public boolean equals(Posicio r){
+		return (I.x==r.I.x&&I.y==r.I.y&&o==r.o);
+	}
+}

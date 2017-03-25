@@ -1,0 +1,7 @@
+package dvtr.ulib.views;
+
+import android.widget.TextView;
+
+public class MTextView extends TextView {
+
+}

@@ -1,0 +1,70 @@
+
+**** Build of configuration Debug for project Plasma ****
+
+make all 
+Building file: ../src/Plasma.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Plasma.d" -MT"src/Plasma.d" -o "src/Plasma.o" "../src/Plasma.c"
+../src/Plasma.c:24:18: error: tdec.h: No such file or directory
+../src/Plasma.c:25:19: error: video.h: No such file or directory
+../src/Plasma.c:31: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘pos1’
+../src/Plasma.c:33: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘colors’
+../src/Plasma.c: In function ‘quit’:
+../src/Plasma.c:43: warning: implicit declaration of function ‘SDL_Quit’
+../src/Plasma.c: At top level:
+../src/Plasma.c:49: error: expected ‘)’ before ‘*’ token
+../src/Plasma.c: In function ‘process_events’:
+../src/Plasma.c:64: error: ‘SDL_Event’ undeclared (first use in this function)
+../src/Plasma.c:64: error: (Each undeclared identifier is reported only once
+../src/Plasma.c:64: error: for each function it appears in.)
+../src/Plasma.c:64: error: expected ‘;’ before ‘event’
+../src/Plasma.c:67: warning: implicit declaration of function ‘SDL_PollEvent’
+../src/Plasma.c:67: error: ‘event’ undeclared (first use in this function)
+../src/Plasma.c:70: error: ‘SDL_KEYDOWN’ undeclared (first use in this function)
+../src/Plasma.c:72: warning: implicit declaration of function ‘handle_key_down’
+../src/Plasma.c:74: error: ‘SDL_QUIT’ undeclared (first use in this function)
+../src/Plasma.c: In function ‘init’:
+../src/Plasma.c:97: error: ‘colors’ undeclared (first use in this function)
+../src/Plasma.c:106: warning: implicit declaration of function ‘SDL_SetPalette’
+../src/Plasma.c:106: error: ‘screen’ undeclared (first use in this function)
+../src/Plasma.c:106: error: ‘SDL_LOGPAL’ undeclared (first use in this function)
+../src/Plasma.c:106: error: ‘SDL_PHYSPAL’ undeclared (first use in this function)
+../src/Plasma.c:110: error: ‘SDL_NUMEVENTS’ undeclared (first use in this function)
+../src/Plasma.c:112: error: ‘SDL_KEYDOWN’ undeclared (first use in this function)
+../src/Plasma.c:112: error: ‘SDL_QUIT’ undeclared (first use in this function)
+../src/Plasma.c:114: warning: implicit declaration of function ‘SDL_EventState’
+../src/Plasma.c:114: error: ‘SDL_IGNORE’ undeclared (first use in this function)
+../src/Plasma.c:118: warning: implicit declaration of function ‘SDL_ShowCursor’
+../src/Plasma.c:118: error: ‘SDL_DISABLE’ undeclared (first use in this function)
+../src/Plasma.c: In function ‘main’:
+../src/Plasma.c:123: error: ‘Uint8’ undeclared (first use in this function)
+../src/Plasma.c:123: error: ‘image’ undeclared (first use in this function)
+../src/Plasma.c:124: error: ‘Uint16’ undeclared (first use in this function)
+../src/Plasma.c:124: error: expected ‘;’ before ‘i’
+../src/Plasma.c:125: error: expected ‘;’ before ‘index’
+../src/Plasma.c:134: warning: implicit declaration of function ‘TDEC_set_video’
+../src/Plasma.c:134: error: ‘SDL_HWSURFACE’ undeclared (first use in this function)
+../src/Plasma.c:134: error: ‘SDL_DOUBLEBUF’ undeclared (first use in this function)
+../src/Plasma.c:134: error: ‘SDL_HWPALETTE’ undeclared (first use in this function)
+../src/Plasma.c:137: warning: implicit declaration of function ‘TDEC_init_timer’
+../src/Plasma.c:139: warning: implicit declaration of function ‘SDL_WM_SetCaption’
+../src/Plasma.c:144: warning: implicit declaration of function ‘SDL_LockSurface’
+../src/Plasma.c:144: error: ‘screen’ undeclared (first use in this function)
+../src/Plasma.c:146: warning: implicit declaration of function ‘TDEC_set_fps’
+../src/Plasma.c:151: warning: implicit declaration of function ‘TDEC_new_time’
+../src/Plasma.c:159: error: ‘tpos4’ undeclared (first use in this function)
+../src/Plasma.c:159: error: ‘pos4’ undeclared (first use in this function)
+../src/Plasma.c:160: error: ‘tpos3’ undeclared (first use in this function)
+../src/Plasma.c:160: error: ‘pos3’ undeclared (first use in this function)
+../src/Plasma.c:164: error: ‘i’ undeclared (first use in this function)
+../src/Plasma.c:166: error: ‘tpos1’ undeclared (first use in this function)
+../src/Plasma.c:166: error: ‘pos1’ undeclared (first use in this function)
+../src/Plasma.c:167: error: ‘tpos2’ undeclared (first use in this function)
+../src/Plasma.c:167: error: ‘pos2’ undeclared (first use in this function)
+../src/Plasma.c:172: error: ‘j’ undeclared (first use in this function)
+../src/Plasma.c:179: error: lvalue required as left operand of assignment
+../src/Plasma.c:196: warning: implicit declaration of function ‘TDEC_fps_ok’
+../src/Plasma.c:197: warning: implicit declaration of function ‘SDL_Flip’
+make: *** [src/Plasma.o] Error 1
+
+**** Build Finished ****

@@ -1,0 +1,6 @@
+
+public class K {
+
+	final static boolean HOR=true,VER=false;
+	final static char[] Ch={'·','~','A','V','<','>','M','X'};
+}

@@ -1,0 +1,21 @@
+package cellmodel;
+
+import comu.BSPuzzle;
+
+public class Resoledor extends BSPuzzle {
+
+	private final byte[][] G;
+
+	public Resoledor(BSPuzzle P) {
+		super(P);
+		
+		G = new byte[C];
+		
+		for (int n=0;n<R;n++)
+			G[n]=new byte[R];
+	}
+	
+	public void Resol() {
+		
+	}
+}

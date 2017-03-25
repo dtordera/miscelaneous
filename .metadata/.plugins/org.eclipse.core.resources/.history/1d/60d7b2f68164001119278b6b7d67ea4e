@@ -1,0 +1,9 @@
+package dvtr.games.logic.BS10;
+
+import android.graphics.Bitmap;
+
+public class BS10Bitmaps {
+
+	Bitmap MenuScreenBackGround;
+	
+}

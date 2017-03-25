@@ -1,0 +1,252 @@
+//
+//      Unit global. Variables globals i procedures diverses.
+//
+//
+
+unit global;
+
+interface
+
+uses graphics, Controls, dialogs, sysutils, forms, stdctrls, classes;
+
+                function  BINdir : string;                                      // torna directori d'aplicació
+                procedure Enviar_seq_obertura(s : string);                      // envia sequencia d'obertura
+                function  NegLumColor(c : TColor) : TColor;
+                function  RC(c : char; l : integer) : string;
+                function  Centrar(s : string; l : integer) : string;
+                function  Dreta(s : string; l : integer) : string;
+                function  Esquerra(s : string; l : integer) : string;
+                function  mDlg(s : string) : TModalResult ; overload;
+                function  mDlg(s : string; t : TMsgDlgType; b : TMsgDlgButtons) : TModalResult; overload;
+                function  mDlg(s : string; C : array of string) : TModalResult; overload;
+                function  Max(s : array of double) : double; overload;
+                function  Max(a,b : integer) : integer; overload;
+                function  Min(a,b : integer) : integer;
+                function  FormatSQLDate(d : TDateTime) : string;
+                function  NoDblSpace(f : string) : string;
+                function  Treballadors : string;
+
+var       C_OBSOLET,
+          C_MARGENOVALID,
+          C_MARGEDEFECTE,
+          C_MARGEMARCA,
+          C_ENTRADADIRECTA,
+          C_REPETIT_2,
+          C_REPETIT_3,
+          C_REPETIT_4,
+          C_MESDOSANYS,
+          C_ABONAMENT,
+          C_ABONADA_AMB,
+          C_ENDEUTE,
+          C_REALITZATS,
+          C_REP_FINALITZADA,
+          C_TORN_OBERT,
+          C_UTS_CERO,
+          C_NORMALIT : TColor;
+
+implementation
+
+
+uses inifiles, comctrls, URaw, dmsrc;
+
+function Treballadors : string;
+var
+     f : TForm;
+     l : TListBox;
+begin
+     result := '';
+
+     if dm.CR['UT_TREBALLADORS'] <> 'SI' then exit;
+
+     f := TForm.Create(Application);
+     f.BorderStyle := bsToolWindow;
+     f.Width := 150;
+     f.Height := 150;
+     f.Caption := 'Treballador';
+     f.Position := poScreenCenter;
+
+     l := TListBox.Create(f);
+     l.Parent := f;
+     l.Align := alClient;
+     l.Items.CommaText := dm.CR['TREBALLADORS'];
+     l.Cursor := crHandPoint;
+
+     if l.Items.Count = 0 then
+     begin
+          f.Release;
+          exit;
+     end;
+
+     l.OnDblClick := dm.ListDblClick;
+     l.OnKeyDown  := dm.ListKeyDown;
+
+     f.ShowModal;
+
+     result := dm.Treballador_escollit;
+end;
+
+function NoDblSpace(f : string) : string;
+begin
+        while Pos('  ',f) <> 0 do
+        f := StringReplace(f,'  ',' ',[rfReplaceAll,rfIgnoreCase]);
+
+        NoDblSpace := f;
+end;
+
+function min(a,b : integer) : integer;
+begin
+     if a < b then result := a else result := b;
+end;
+
+function FormatSQLDate(d : TDateTime) : string;
+begin
+     result := FormatDateTime('#mm/dd/yyyy#',d);
+end;
+
+function Max(s : array of double) : double;
+var
+     i : integer;
+begin
+     result := 0;
+     for i := 0 to Length(s) - 1 do
+            if s[i] > result then result := s[i];
+end;
+
+function Max(a,b : integer) : integer;
+begin
+     if a > b then result := a else result := b;
+end;
+
+function RC(c : char; l : integer) : string;
+begin
+     result := '';
+     while l > 0 do
+     begin
+          result := result  + c;
+          dec(l);
+     end;
+end;
+
+function Centrar(s : string; l : integer) : string;
+begin
+     result := RC(' ',(l - length(s)) div 2) + s;
+end;
+
+function Dreta(s : string; l : integer) : string;
+begin
+     result := RC(' ',l - length(s)) + s;
+end;
+
+function Esquerra(s : string; l : integer) : string;
+begin
+     result := s + RC(' ',l-length(s));
+end;
+
+function Lum(c : TColor) : integer;
+var
+     r,g,b : integer;
+begin
+     r := (c mod $0100);
+     g := (c mod $010000) div $0100;
+     b := (c div $010000);
+
+     result := (r+g+b) div 3;
+end;
+
+function NegLumColor(c : TColor) : TColor;
+begin
+     if Lum(c) < 127 then result := clWhite else result := clGray;
+end;
+
+function BINDir : string;
+begin
+     BINdir := ExtractFilePath(Application.Exename);
+end;
+
+function mDlg(s : string) : TModalResult ; overload;
+begin
+     result := mDlg(s,mtInformation,[mbYes,mbNo]);
+end;
+
+function mDlg(s : string; t : TMsgDlgType; b : TMsgDlgButtons) : TModalResult; overload;
+var
+     o : TButton;
+begin
+     with CreateMessageDialog(s,t,b) do
+     begin
+          o := FindComponent('Yes') as TButton;
+
+          if Assigned(o) then o.Caption := '&Sí';
+
+          case t of
+          mtInformation : Caption := 'Informació';
+          mtWarning     : Caption := 'Atenció';
+          mtError       : Caption := 'Error';
+          end;
+
+          result := ShowModal;
+     end;
+end;
+
+function mDlg(s : string; C : array of string) : TModalResult; overload;
+var
+     b : TMsgDlgButtons;
+     l : integer;
+begin
+     b := [mbYes,mbNo,mbCancel];
+     l := length(c);
+
+     case l of
+     1 : b := [mbOk];
+     2 : b := [mbYes,mbNo];
+     end;
+
+     with CreateMessageDialog(s,mtInformation,b) do
+     begin
+          Caption := 'Informació';
+
+          case l of
+          1 : (FindComponent('ok') as TButton).Caption := c[0];
+          2 : begin
+               (FindComponent('Yes') as TButton).Caption := c[0];
+               (FindComponent('No') as TButton).Caption := c[1];
+              end;
+          3 : begin
+               (FindComponent('Yes') as TButton).Caption := c[0];
+               (FindComponent('No') as TButton).Caption := c[1];
+               (FindComponent('Cancel') as TButton).Caption := c[2];
+              end;
+          end;
+
+          result := ShowModal;
+     end;
+end;
+
+procedure Enviar_seq_obertura(s : string);
+var
+        sl : TStringList;
+        xPrn: TRawPrint;
+        i : integer;
+begin
+        sl := TStringList.Create;
+
+        sl.commatext := s;
+        xPrn := TRawPrint.Create;
+        xPrn.PrinterName := dm.CR['IMPRESORA_2'];
+        xPrn.Document := 'opertura';
+
+        if xPrn.Open = False then
+        raise exception.Create('Error a impresora.');
+
+        for i := 0 to sl.Count do
+        try    xPrn.Write(Chr(strtoint(sl[i])));
+        except
+        end;
+
+        xPrn.Close;
+        xPrn.Free;
+
+        sl.Free;
+end;
+
+end.

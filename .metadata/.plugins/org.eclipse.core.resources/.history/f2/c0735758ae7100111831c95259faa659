@@ -1,0 +1,9 @@
+
+public class Index {
+	byte x,y;
+	
+	public Index(){
+		x=0;
+		y=0;
+	}
+}

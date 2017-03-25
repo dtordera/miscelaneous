@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="app_name">Master.D</string>
+<string name="no_hay_feeds">No hay artículos.</string>
+<string name="titulo_noticias">Noticias</string>
+<string name="acerca_de"><b>Curso Android - Tema 14</b>\n\n(c) 2010 Master.D\nTeléfono: 902404140\n\nwww.master-d.es</string>
+</resources>

@@ -1,0 +1,444 @@
+// Clase shipmodel.Resoledor : resoledor de puzzles BSPuzzle. Resol calculant les combinacions coherents amb les sumes, els
+// vaixells donats, i les condicions inicials. Funciona assignant a cada vaixell les seves posicions posibles, anant eliminant
+// aquestes per les condicions inicials i per incoherencies. Un cop trobades, les solucions son les combinacions daquestes posicions
+// tambe coherents entre elles i les sumes.
+
+package dvtr.games.logic.BS10.puzzle.shipmodel;
+
+import java.util.Arrays;
+
+public class Resoledor extends BSPuzzle {
+
+	public Vaixell[][] S; 	// Solucions, llistes de vaixells	
+	public long tr;			// temps de resolucio
+
+	Vaixell[] B;			// Llista de posicions posibles x vaixell
+	Vaixell[] T;			// Llista de vaixell amb posibilitat de ser inclos a les solucions (treball)				
+	byte[] SRb;				// Backup de les sumes inicials
+	byte[] SCb;				//
+	boolean preparat;		// indica si sha aplicat la funcio prepara()
+	char[][] MG;			// Grid per comprobacio de coherencia amb condicions inicials (mes rapid que recorrent condicions)
+
+	// Constructor
+	public Resoledor(BSPuzzle P){
+		super(P);
+		preparaMG();
+		preparat = false;		
+	}
+	
+	// M : canvia llista condicions inicials
+	public Resoledor M(Mostrades[] m){
+		M = new Mostrades[m.length];
+		System.arraycopy(m,0,M,0,m.length);
+		
+		preparaMG();		
+		preparat = false;
+		
+		return this;
+	}
+	
+	// Resets : reseteja llistes de vaixells de treball i solucions
+	void ResetS(){S = new Vaixell[0][0];} 	
+	void ResetT(){T = new Vaixell[Ls.length];}	
+	void ResetB(){B = new Vaixell[Ls.length];for (byte n=0;n<Ls.length;n++) B[n]=new Vaixell(Ls[n]);}
+	
+	// Backupsumes : fa un backup de les sumes
+	void BackupSumes(){
+		SRb = SR.clone();
+		SCb = SC.clone();
+	}
+	
+	// RestoreSumes : restableix les sumes
+	void RestoreSumes(){
+		SR = SRb.clone();
+		SC = SCb.clone();
+	}
+	
+	// preparaMG : reseteja MG i lomplena de les condicions inicials
+	void preparaMG(){
+		MG = new char[C][R];
+		
+		for (char[] g:MG) Arrays.fill(g,(char)K.I);
+		
+		for (Mostrades m:M)
+			MG[m.x][m.y] = (char)m.v;		
+	}
+	
+	// prepara : fa totes les operacions que eliminen posicions posibles, necesari tansols un cop al inici del proces
+	public long prepara(){			
+				
+		ResetB();			// Reseteja llista de vaixells
+		PosiblesxSumes();	// Asigna a cada vaixell aquelles posicions coherents amb les sumes
+		EliminaxAigua();	// Elimina de cada vaixell aquelles posicions que creuen aigua
+		TrobaSubmarins();	// Troba submarins de les condicions inicials i els marca
+		TreuVaixellsTrobats(); // Marca (asigna una unica posicio) aquells vaixells ja trobats a la preparacio
+		
+		preparat = true; // Es pot començar a resoldre
+		 
+		return NCombinacions(); // torna el nombre de combinacions posibles amb les posicions posibles
+	}
+		
+	// NCombinacions : torna les combinacions posibles que hi han entre les posicions posibles dels vaixells 
+	public long NCombinacions(){		
+	
+		long r=B==null||B.length==0?0:1;
+				
+		for (Vaixell v:B)
+			r*=v.ps.quantitat();
+			
+		return r;
+	}	
+		
+	// Resol : resol trobant com a maxim maxS solucions
+	public int Resol(int maxS){
+	
+		tr = System.currentTimeMillis(); // temps de resolucio, inici.	
+			
+		if (!preparat) prepara(); // Si no esta preparat, es fa la preparacio
+							
+		ResetS(); // Reseteja la llista de solucions
+		ResetT(); // Reseteja la llista de posicions segons vaixell
+		preparaMG(); // Es prepara el grid amb les condicions inicials
+		
+		BackupSumes();
+		SolucionsPosibles(0,maxS);		
+		RestoreSumes();
+		
+		tr = System.currentTimeMillis()-tr;
+		
+		return S.length;								
+	}	
+		
+	// SolucionsPosibles : funcio recursiva: recorre la taula de posicions posibles. Asigna a un vaixell una posicio precalculada a Prepara(),
+	// comproba que es valida. Si ho es, pasa al seguent vaixell i el mateix. Si pasa tots els nivells (idx+1==B.length)
+	// es una solucio completa valida. En cas que no pasi algun nivell, es torna enrere i sutilitza la seguent posicio precalculada.
+	// Sutilitzen variables globals per tal doptimitzar en temps.
+	void SolucionsPosibles(int idx,int maxS){
+	
+		if (maxS!=0&&S.length>=maxS) return; // shan trobat totes les solucions demanades, tornem		
+		
+		for (Posicio p:B[idx].ps.P) { // es recorre la taula de posicions precalculades
+			T[idx] = new Vaixell(B[idx].L,p); // sasigna a la llista de vaixells de treball la posicio 					
+			
+			if (ComprobaCombinacio(idx)) // si es coherent aquesta posicio/vaixell amb els ja existents...			
+			{												
+				if (idx+1==B.length) // Si ja era l'ultim, es solucio correcta
+				{						
+					if (SolucioNoInclosa()){ // comprobem que no estigui ja inclosa (vaixells amb igual longitud son considerats diferents)
+									
+						S = Arrays.copyOf(S,S.length+1);		// Adjuntem a la llista de solucions
+									
+						S[S.length-1] = new Vaixell[T.length];
+						System.arraycopy(T,0,S[S.length-1],0,T.length);
+					}
+				}
+				else										
+					SolucionsPosibles((idx+1),maxS); // en cas que no sigues lultim, pasem al seguent
+			}
+		}							
+		T[idx]=null; // Aqui s'arriva si shan recorregut totes les posicions precalculades per un vaixell, significa llavors que 
+		// l'incoherencia ve dun nivell anterior. Sasigna null i es surt, retornant al vaixell anterior amb una nova posicio		
+	}
+	
+	// SolucioNoInclosa : es considera igual solucio si vaixells amb igual longitud tenen les mateixes posicions tot i diferent ordre
+	boolean SolucioNoInclosa(){
+		
+		byte L = 0;
+		
+		for (Vaixell v:T)	// de la llista de treball, busquem la maxima longitud asignada
+		if (v!=null)
+		L = v.L>L?v.L:L;
+				
+		Posicions[] pc = new Posicions[L]; // fem una taula de posicions segons longitud
+		
+		for (byte n=L;n!=0;n--) pc[n-1] = new Posicions(); 
+		
+		for (Vaixell v:T) // assignem posicions a la llista segons longitud dels vaixells
+		if (v!=null)
+			pc[v.L-1].add(v.ps.r());
+		
+		for (Vaixell[] s:S){ // per cada solucio apliquem el mateix, fem una llista de posicions segons longitud			
+				
+			Posicions[] ps = new Posicions[L];
+			
+			for (int n=0;n<ps.length;n++) ps[n] = new Posicions();
+		
+			for (Vaixell v:s)
+			if (v!=null)
+				ps[v.L-1].add(v.ps.P);
+				
+			if (IgualCombinacio(pc,ps)) return false; // comprobem que les combinacions x longitud son o no iguals
+		}
+								
+		return true;
+	}
+		
+	// IgualCombinacio : comproba que les llistes de posicions no siguin la mateixa en diferent ordre
+	boolean IgualCombinacio(Posicions[] p1,Posicions[] p2){
+		boolean r = true;
+		
+		for (int n=p1.length;n!=0;n--)
+			r &= p1[n-1].mateixoselements(p2[n-1]); 		
+		
+		return r;
+	}		
+	
+	// ComprobaCombinacio : comproba la coherencia de la llista T fins al index idx
+	boolean ComprobaCombinacio(int idx){		
+		return CheckejaM(idx)&&CheckejaSumes()&&!CheckejaChocs(idx);
+	}	
+	
+	// CheckejaSumes() : comproba que la llista T sigui coherent amb les sumes
+	boolean CheckejaSumes(){
+		
+		byte[] SRs,SCs;
+		byte i,j;
+		boolean r = true;			
+		
+		SRs = SRb.clone();
+		SCs = SCb.clone();
+	
+		byte n=0;
+		byte L=(byte)T.length;
+		
+		while(n<L&&T[n]!=null)
+		{
+			for (i=T[n].r().x;i<=T[n].rf().x;i++)		
+			for (j=T[n].r().y;j<=T[n].rf().y;j++)		
+			{
+				SRs[i]--;
+				SCs[j]--;
+			}	
+			
+			n++;				
+		}
+		
+		for (i=0;i<C;i++)
+		r&=!(SRs[i]<0);
+		
+		for (j=0;j<R;j++)
+		r&=!(SCs[j]<0);		
+		
+		return r;
+	}
+	
+	// CheckejaChocs : comproba que els elements de la llista T no choquin amb lultim asignat.
+	boolean CheckejaChocs(int idx){
+		boolean r = false;
+		
+		byte n=0;		
+		while(n<idx)r|=T[n++].choca(T[idx]);
+		
+		return r;	
+	}	
+	
+	// CheckejaM : comproba que la llista T fins al index idx es coherent amb les condicions inicials
+	boolean CheckejaM(int idx){
+		boolean r=true;
+		byte i,j;
+
+		for (i=T[idx].r().x;i<T[idx].rf().x;i++)
+		for (j=T[idx].r().y;j<T[idx].rf().y;j++)
+			r&=MG[i][j]==K.I||(T[idx].c(i,j)==MG[i][j]);
+			
+		return r;
+	}
+	
+	// c : torna el valor de la posicio i,j
+	char c(byte i,byte j){
+	
+		char k;
+	
+		byte n=0;		
+		while(n<T.length&&T[n]!=null){
+			k = T[n].c(i,j);
+			if (k!=K.I&&k!=K.A) return k;
+			n++;
+		}
+		
+		return K.A;
+	}
+	
+	// TreuVaixellsTrobats : treu de les posicions posibles les posicions que creuen vaixells ja trobats. 
+	void TreuVaixellsTrobats(){
+		byte i,j;
+	
+		for (Vaixell v:B)
+			if (v.r()!=null)
+			{
+				for (j=v.r().y;j<v.rf().y;j++)
+				for (i=v.r().x;i<v.rf().x;i++)
+				for (Vaixell l:B)
+					if (l!=v)
+					l.ps.treu(i,j,l.L);
+			}
+	}	
+
+	// TrobaSubmarins : elimina els submarins trobats a les condicions inicials, reduint el nº de combinacions
+	public void TrobaSubmarins(){
+		for (Mostrades m:M)	
+			if (m.v==K.B) 			
+			for (Vaixell v:B) {
+
+				if (v.r()!=null) continue;				
+					
+				if (v.L==1){
+					v.ps.reset();
+					v.ps.add(m.x,m.y,K.HOR);
+								
+					break;
+				}
+			}		
+	}
+
+	// PosiblesxSumes : assigna posicions posibles a vaixell de longitud L segons sumes i limits
+	void PosiblesxSumes(){
+	
+		byte i,j,k,m;
+		boolean z;
+		
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+		for (Vaixell v:B)
+		{			
+			if (v.L<=SC[j]&&i+v.L-1<C)
+			{
+				z=false;
+				for (k=i;k<i+v.L;k++) z|=SR[k]==0;
+				
+				if (!z)
+				v.ps.add(i,j,K.HOR);
+			}
+			
+			if (v.L!=1&&v.L<=SR[i]&&j+v.L-1<R) 
+			{
+				z=false;
+				for (m=j;m<j+v.L;m++) z|=SC[m]==0;
+				
+				if (!z)
+				v.ps.add(i,j,K.VER);
+			}
+		}		
+	}
+	
+	// EliminaxAigua : treu les posicions de vaixell que creuen aigua o incoherents amb les condicions inicials
+	public void EliminaxAigua(){
+	
+		for (Mostrades m:M){
+			switch(m.v){
+			case K.I : break;
+			case K.A : for (Vaixell v:B) v.ps.treu(m.x,m.y,v.L); break;
+			case K.B : for (Vaixell v:B) {
+							v.ps.treu(m.x-1,m.y-1,v.L);
+							v.ps.treu(m.x,m.y-1,v.L);			//  ... 
+							v.ps.treu(m.x+1,m.y-1,v.L);			//	.O.
+							v.ps.treu(m.x-1,m.y,v.L);			// 	...
+							v.ps.treu(m.x+1,m.y,v.L);
+							v.ps.treu(m.x-1,m.y+1,v.L);
+							v.ps.treu(m.x+1,m.y+1,v.L);
+							if (v.L!=1) v.ps.remove(m.x,m.y);
+						}
+						break;
+			case K.N : for (Vaixell v:B) {
+							v.ps.treu(m.x-1,m.y-1,v.L);
+							v.ps.treu(m.x,m.y-1,v.L);			// ...
+							v.ps.treu(m.x+1,m.y-1,v.L);			// .A.
+							v.ps.treu(m.x-1,m.y,v.L);			// . .
+							v.ps.treu(m.x+1,m.y,v.L);			// . .
+							v.ps.treu(m.x-1,m.y+1,v.L);
+							v.ps.treu(m.x+1,m.y+1,v.L);
+							v.ps.treu(m.x-1,m.y+2,v.L);
+							v.ps.treu(m.x+1,m.y+2,v.L);
+							v.ps.remove(m.x,m.y+1);
+						}break;
+			case K.S : for (Vaixell v:B) {
+							v.ps.treu(m.x-1,m.y+1,v.L);			// . .
+							v.ps.treu(m.x,m.y+1,v.L);			// . .
+							v.ps.treu(m.x+1,m.y+1,v.L);			// .V.
+							v.ps.treu(m.x-1,m.y,v.L);			// ...
+							v.ps.treu(m.x+1,m.y,v.L);
+							v.ps.treu(m.x-1,m.y-1,v.L);
+							v.ps.treu(m.x+1,m.y-1,v.L);
+							v.ps.treu(m.x-1,m.y-2,v.L);
+							v.ps.treu(m.x+1,m.y-2,v.L);		
+						}break;
+			case K.O : for (Vaixell v:B) {
+							v.ps.treu(m.x-1,m.y-1,v.L);			// ....
+							v.ps.treu(m.x-1,m.y,v.L);			// .<
+							v.ps.treu(m.x-1,m.y+1,v.L);			// ....
+							v.ps.treu(m.x,m.y-1,v.L);
+							v.ps.treu(m.x,m.y+1,v.L);
+							v.ps.treu(m.x+1,m.y-1,v.L);
+							v.ps.treu(m.x+1,m.y+1,v.L);
+							v.ps.treu(m.x+2,m.y-1,v.L);
+							v.ps.treu(m.x+2,m.y+1,v.L);
+							v.ps.remove(m.x+1,m.y);						
+						}break;
+			case K.E : for (Vaixell v:B) {						// ....
+							v.ps.treu(m.x+1,m.y-1,v.L);			//   >.
+							v.ps.treu(m.x+1,m.y,v.L);			// ....
+							v.ps.treu(m.x+1,m.y+1,v.L);
+							v.ps.treu(m.x,m.y-1,v.L);
+							v.ps.treu(m.x,m.y+1,v.L);
+							v.ps.treu(m.x-1,m.y-1,v.L);
+							v.ps.treu(m.x-1,m.y+1,v.L);
+							v.ps.treu(m.x-2,m.y-1,v.L);
+							v.ps.treu(m.x-2,m.y+1,v.L);
+					
+						}break;
+			default : for (Vaixell v:B) {
+			
+							v.ps.remove(m.x,m.y);
+			
+							v.ps.treu(m.x-1,m.y-1,v.L);			// . .
+							v.ps.treu(m.x+1,m.y-1,v.L);			//  M
+							v.ps.treu(m.x-1,m.y+1,v.L);			// . .
+							v.ps.treu(m.x+1,m.y+1,v.L);
+							
+							if (v.L<3) 
+							{
+								v.ps.treu(m.x-1,m.y,v.L);
+								v.ps.treu(m.x+1,m.y,v.L);
+								v.ps.treu(m.x,m.y-1,v.L);
+								v.ps.treu(m.x,m.y+1,v.L);
+							}
+						}						
+			}
+		}							
+	}		
+	
+	// toString
+	public String toString(){
+	
+		String r="";	
+	
+		int n=0;
+		for (Vaixell[] s:S){
+				
+			r+="\nSolucio nº:"+(++n)+"\n";
+					
+			for (byte j=0;j<R;j++) {
+		
+				for (byte i=0;i<C;i++){
+				
+					char m='.';
+		
+					for (Vaixell v:s)
+						if (v.c(i,j)!=K.I) m=v.c(i,j);					
+					 
+					r+=m + " ";
+				}
+				
+				r += SC[j] + "\n";
+			}		
+		
+			r+="\n";
+			for (byte i=0;i<C;i++)
+				r+=SR[i] + " ";
+					
+			r+="\n";					
+		}
+			
+		return r;
+	}
+}

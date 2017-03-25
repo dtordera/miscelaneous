@@ -1,0 +1,17 @@
+INTRODUCCION A JAVA. EJERCICIO FINAL.
+
+Se ha creado un programa de gestión de tienda de música en modo consola. Sus tres partes esenciales són: 
+
+-Clase parseador : lee la entrada de datos e interpreta los comandos
+-Clase dato y sus derivadas : almacenamiento y gestión de los datos.
+-Clase comando y sus derivadas : las ordenes a ejecutar són clases en sí mismas, creando instancias de ellas mediante metaclases y llamando al método sobreescrito Ejecutar.
+
+Observaciones : 
+
+- Se ha usado heréncia y metaclases para los comandos facilitando así la creación de nuevos, para que este más organizado el código y para poder usar de manera general su llamada en el parseador. 
+- Debido a esta facilidad de crear comandos, se han creado varios comandos alternativos (vaciar, guardar, cargar,...) durante el desarrollo del programa, aunque no se pedian en el enunciado.
+- Se ha creado la clase Datos sin usar ArrayList, debido a que la manera de trabajar era más basada en los índices de la própia clase Dato, que no en los índices del array, por lo que se tendría que haber programado casi más adaptando el ArrayList que no creando la clase de cero basada en un array (Lista).
+- Se han creado las tres listas de datos (Música, Clientes, Ventas) del tipo Datos. Se ha hecho el método Guardar y Cargar en esta clase en general, por lo que se ha adaptado el programa para poder guardar y cargar todas las listas, no solo la de ventas tal como pedía el ejercicio. 
+- En la clase dato existe el campo informacion, que trata la información a guardar como una tira completa (formateada mediante _separador_). Se hace esto para poder trabajar con los datos de manera general, independientemente de que tipo de dato sea. Para no duplicar la información mediante campos en las clases heredadas (los que seran los verdaderos datos usados), los métodos get/set de estas clases acceden a la propia dato.información directamente.
+
+

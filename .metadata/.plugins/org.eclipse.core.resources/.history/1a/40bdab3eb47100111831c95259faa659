@@ -1,0 +1,17 @@
+
+public class Vaixell {
+	byte L;
+	Posicions ps;
+	
+	public Vaixell(byte l){
+		L=l;
+		ps = new Posicions();
+	}
+	
+	public Vaixell(byte l,Posicio...r){
+	
+		L=l;
+		ps = new Posicions(r);
+		
+	}
+}

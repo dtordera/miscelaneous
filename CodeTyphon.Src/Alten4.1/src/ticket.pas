@@ -1,0 +1,424 @@
+unit ticket;
+
+interface
+
+uses Windows, StdCtrls, ExtCtrls, UText, Classes, Controls, graphics, FPanel, Forms;
+
+type TEstilEscPos = (epUtilitzar,epNoUtilitzar);
+
+type
+  T_ticket = class(TForm)
+    fOpcions: TFPanel;
+    btCancel: TButton;
+    FPanel2: TFPanel;
+    Button1: TButton;
+    mFons: TPanel;
+    mPeu: TMemo;
+    mLinia2: TMemo;
+    mIVADesc: TMemo;
+    mTotal: TMemo;
+    mLinia1: TMemo;
+    mConceptes: TMemo;
+    mCapcelera: TMemo;
+    mInfo: TMemo;
+    mEstab: TMemo;
+    mTitol: TMemo;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    UText2: TUText;
+    UText3: TUText;
+    UText4: TUText;
+    UText5: TUText;
+    tAmple: TUText;
+    Memo3: TMemo;
+    Panel4: TPanel;
+    Panel5: TPanel;
+    tEscPos: TMUText;
+    procedure FormCreate(Sender: TObject);
+    procedure UText3React(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure UText2React(Sender: TObject);
+    procedure UText4React(Sender: TObject);
+    procedure UText5React(Sender: TObject);
+    procedure SetAmple(a : integer);
+    function  GetAmple : integer;
+    procedure SetEstilEscPos(E : TEstilEscPos);
+    function  GetEstilEscPos : TEstilEscPos;
+    procedure tAmpleReact(Sender: TObject);
+    procedure tEscPosReact(Sender: TObject);
+  private
+     procedure PosaFontsEscPos;
+     procedure FerTicketEscPos;
+     procedure FerConceptesEscPos;
+     procedure FerConceptesRaw;
+     procedure FerTotalEscPos;
+     procedure FerTotalRaw;
+     procedure FerIVADescompte;
+     procedure FerTicketRaw;
+     procedure FerInfo;
+     procedure PosaFontsRaw;
+  public
+     property  EstilEscPos : TEstilEscPos read GetEstilEscPos write SetEstilEscPos;
+     property  AmpleChar : integer read GetAmple write SetAmple;
+     procedure CarregaFitxers;
+     procedure GuardaFitxers;
+     procedure PosaLlargades;
+end;
+
+implementation
+
+{$R *.dfm}
+
+uses global, dmsrc, gulib, estilcolor, sysutils;
+
+procedure T_ticket.FormCreate(Sender: TObject);
+begin
+     _estilcolor.Apply(sender as TCustomForm);
+     AmpleChar := strtoint(dm.CR['AMPLE_TICKET_C']);
+
+     if dm.CR['ESCPOS'] = 'SI'
+     then EstilEscPos := epUtilitzar
+     else EstilEscPos := epNoUtilitzar;
+end;
+
+procedure T_ticket.SetEstilEscPos(E : TEstilEscPos);
+begin
+     case E of
+     epUtilitzar   : begin dm.CR['ESCPOS'] := 'SI'; FerTicketEscPos; end;
+     epNoUtilitzar : begin dm.CR['ESCPOS'] := 'NO'; FerTicketRaw; end;
+     end;
+
+     tEscPos.ItemIndex := integer(E);
+end;
+
+function T_ticket.GetEstilEscPos : TEstilEscPos;
+begin
+     result := TEstilEscPos(tEscPos.ItemIndex);
+end;
+
+procedure T_ticket.SetAmple(a : integer);
+begin
+     dm.CR['AMPLE_TICKET_C'] := inttostr(a);
+     Font.Name := 'consolas';
+     Font.Size := 9;
+     ClientWidth := fOpcions.Width + Panel2.Width + Panel3.Width + Canvas.TextWidth('X')*a;
+     tAmple.Caption := '    &Ample : ' + inttostr(a) + ' caràcters';
+
+     case EstilEscPos of
+     epUtilitzar   : FerTicketEscPos;
+     epNoUtilitzar : FerTicketRaw;
+     end;
+end;
+
+procedure T_ticket.PosaFontsEscPos;
+begin
+     mTitol.Font.Name  := 'consolas';
+     mTitol.Font.Size  := 18;
+     mTitol.Font.Style := [fsBold];
+
+     mEstab.Font.Name  := 'consolas';
+     mEstab.Font.Size  := 8;
+
+     mInfo.Font.Name   := 'consolas';
+     mInfo.Font.Size   := 9;
+
+     mCapcelera.Font.Name  := 'consolas';
+     mCapcelera.Font.Size  := 8;
+     mCapcelera.Font.Style := [fsUnderline];
+
+     mConceptes.Font.Name := 'consolas';
+     mConceptes.Font.Size := 8;
+
+     mLinia1.Font.Name  := 'consolas';
+     mLinia1.Font.Size  := 8;
+     mLinia1.Font.Style := [fsUnderline];
+
+     mTotal.Font.Name := 'consolas';
+     mTotal.Font.Size := 14;
+
+     mIVADesc.Font.Name := 'consolas';
+     mIVADesc.Font.Size := 9;
+
+     mLinia2.Font.Name  := 'consolas';
+     mLinia2.Font.Size  := 8;
+     mLinia2.Font.Style := [fsUnderline];
+
+     mPeu.Font.Name := 'consolas';
+     mPeu.Font.Size := 8;
+end;
+
+procedure T_ticket.PosaFontsRaw;
+begin
+     mTitol.Font.Name  := 'consolas';
+     mTitol.Font.Size  := 9;
+     mTitol.Font.Style := [];
+
+     mEstab.Font.Name  := 'consolas';
+     mEstab.Font.Size  := 9;
+
+     mInfo.Font.Name   := 'consolas';
+     mInfo.Font.Size   := 9;
+
+     mCapcelera.Font.Name  := 'consolas';
+     mCapcelera.Font.Size  := 9;
+     mCapcelera.Font.Style := [];
+
+     mConceptes.Font.Name := 'consolas';
+     mConceptes.Font.Size := 9;
+
+     mLinia1.Font.Name  := 'consolas';
+     mLinia1.Font.Size  := 9;
+     mLinia1.Font.Style := [];
+
+     mTotal.Font.Name := 'consolas';
+     mTotal.Font.Size := 9;
+
+     mIVADesc.Font.Name := 'consolas';
+     mIVADesc.Font.Size := 9;
+
+     mLinia2.Font.Name  := 'consolas';
+     mLinia2.Font.Size  := 9;
+     mLinia2.Font.Style := [];
+
+     mPeu.Font.Name := 'consolas';
+     mPeu.Font.Size := 9;
+end;
+
+procedure T_ticket.FerTicketEscPos;
+begin
+     PosaFontsEscPos;
+     FerInfo;
+     FerConceptesEscPos;
+     FerTotalEscPos;
+     FerIVADescompte;
+     PosaLlargades;
+end;
+
+procedure T_ticket.FerTicketRaw;
+begin
+     PosaFontsRaw;
+     FerInfo;
+     FerConceptesRaw;
+     FerTotalRaw;
+     FerIVADescompte;
+
+     PosaLlargades;
+end;
+
+procedure T_ticket.FerInfo;
+var
+     lREF,
+     lDATA : integer;
+begin
+     lDATA := length('data 01/01/2011');
+     lREF  := length(' Ref.#000000');
+     mInfo.Lines.Text := ' Ref.#000000' + RC(' ',AmpleChar - lDATA - lREF - 2) + 'data 01/01/2011' + #13#10 +
+          ' VENTA AL COMPTAT';
+end;
+
+procedure T_ticket.FerConceptesEscPos;
+var
+     acf2 : integer;
+     s : string;
+     pr,
+     ut,
+     im : string;
+     X : integer;
+begin
+     X := Canvas.TextWidth('X');
+     Canvas.Font.Size := 8;
+     acf2 := AmpleChar * X div Canvas.TextWidth('X');
+     Canvas.Font.Size := 9;
+
+     s := ' ref.# concepte';
+
+     pr := '     preu'; { 00000.00}
+     ut := ' uts';     {+0.0}
+     im := '   import'; { 00000.00}
+
+     mCapcelera.Lines.Text := s + RC(' ',acf2 - length(s+pr+ut+im) - 2) + ut + pr + im + ' ';
+
+     s := ' 00000 DESCRIPCIÓ DE CONCEPTE DE PROVA';
+
+     if Length(s) > acf2 then s := Copy(s,0,acf2 - 5) + '(...)';
+
+     mConceptes.Lines.Text := s + #13#10 + RC(' ',acf2 - length(pr + ut + im) - 2) + '+0.0 00000.00 00000.00';
+
+     mLinia1.Lines.Text := RC(' ',acf2-1);
+     mLinia2.Lines.Text := RC(' ',acf2-1);
+end;
+
+procedure T_ticket.FerConceptesRaw;
+var
+     s : string;
+     pr,
+     ut,
+     im : string;
+begin
+     s := ' ref.# concepte';
+
+     pr := '     preu'; { 00000.00}
+     ut := ' uts';     {+0.0}
+     im := '   import'; { 00000.00}
+
+     mCapcelera.Lines.Text := ' ' + RC('-',AmpleChar - 3) + #13#10 + s + RC(' ',AmpleChar - length(s+pr+ut+im) - 2) + ut + pr + im + ' ' + #13#10 +
+                              ' ' + RC('-',AmpleChar - 3);
+
+     s := ' 00000 DESCRIPCIÓ DE CONCEPTE DE PROVA';
+
+     if Length(s) > AmpleChar then s := Copy(s,0,AmpleChar - 5 - 1) + '(...)';
+
+     mConceptes.Lines.Text := s + #13#10 + RC(' ',AmpleChar - length(pr + ut + im) - 2) + '+0.0 00000.00 00000.00';
+
+     mLinia1.Lines.Text := ' ' + RC('-',AmpleChar-3);
+     mLinia2.Lines.Text := ' ' + RC('-',AmpleChar-3);
+end;
+
+procedure T_ticket.FerTotalEscPos;
+var
+     acf2 : integer;
+     s : string;
+     im : string;
+     X : integer;
+begin
+     X := Canvas.TextWidth('X');
+     Canvas.Font.Size := 14;
+     acf2 := AmpleChar * X div Canvas.TextWidth('X');
+     Canvas.Font.Size := 9;
+
+     s := ' TOTAL';
+     im := '00000.00 '; { 00000.00}
+
+     mTotal.Lines.Text := s + RC(' ',acf2 - length(s + im)) + im;
+end;
+
+procedure T_ticket.FerTotalRaw;
+var
+     s : string;
+     im : string;
+begin
+     s := '  TOTAL';
+     im := '00000.00   '; { 00000.00}
+
+     mTotal.Lines.Text := s + RC(' ',AmpleChar - length(s + im)) + im;
+end;
+
+procedure T_ticket.FerIVADescompte;
+var
+     iv,
+     ds,
+     im : string;
+begin
+     im := '0000.00  ';
+     iv := '  I.V.A.(%18)';
+     ds := '  Descompte(%0.00)';
+
+     mIVADesc.Text := iv + RC(' ',AmpleChar - length(im + iv) - 1) + im + #13#10 +
+                      ds + RC(' ',AmpleChar - length(im + ds) - 1) + im;
+end;
+
+function T_ticket.GetAmple : integer;
+begin
+     result := strtoint(dm.CR['AMPLE_TICKET_C']);
+end;
+
+procedure T_ticket.PosaLlargades;
+var
+     h : integer;
+begin
+     Font.Assign(mTitol.Font);
+     h := Canvas.TextHeight('X');
+     mTitol.ClientHeight  := h * mTitol.Lines.Count;
+
+     Font.Assign(mEstab.Font);
+     h := Canvas.TextHeight('X');
+     mEstab.ClientHeight  := h * mEstab.Lines.Count;
+
+     Font.Assign(mPeu.Font);
+     h := Canvas.TextHeight('X');
+     mPeu.ClientHeight    := h * mPeu.Lines.Count;
+
+     Font.Assign(mInfo.Font);
+     h := Canvas.TextHeight('X');
+     mInfo.ClientHeight   := h * mInfo.Lines.Count;
+
+     Font.Assign(mConceptes.Font);
+     h := Canvas.TextHeight('X');
+     mConceptes.ClientHeight := h * mConceptes.Lines.Count;
+
+     Font.Assign(mCapcelera.Font);
+     h := Canvas.TextHeight('X');
+     mCapcelera.ClientHeight := h * mCapcelera.Lines.Count;
+
+     Font.Assign(mTotal.Font);
+     h := Canvas.TextHeight('X');
+     mTotal.ClientHeight := h * mTotal.Lines.Count;
+
+     Font.Assign(mIVADesc.Font);
+     h := Canvas.TextHeight('X');
+     mIVADesc.ClientHeight := h * mIVADesc.Lines.Count;
+end;
+
+procedure T_ticket.CarregaFitxers;
+begin
+     try
+     mTitol.Lines.LoadFromFile(BINDIR + 'STP\\tl.tck');
+     mEstab.Lines.LoadFromFile(BINDIR + 'STP\\es.tck');
+     mPeu.Lines.LoadFromFile(BINDIR + 'STP\\pe.tck');
+     except
+     raise Exception.Create('No s''ha trobat algun dels fitxers amb dades de tickets (tl.tck,es.tck,pe.tck)');
+     end;
+end;
+
+procedure T_ticket.GuardaFitxers;
+begin
+     try
+     mTitol.Lines.SaveToFile(BINDIR + 'STP\\tl.tck');
+     mEstab.Lines.SaveToFile(BINDIR + 'STP\\es.tck');
+     mPeu.Lines.SaveToFile(BINDIR + 'STP\\pe.tck');
+     except
+     raise Exception.Create('No s''ha pogut grabar les dades de tickets');
+     end;
+end;
+
+procedure T_ticket.UText3React(Sender: TObject);
+begin
+     GuardaFitxers;
+     close;
+end;
+
+procedure T_ticket.FormActivate(Sender: TObject);
+begin
+     CarregaFitxers;
+     PosaLlargades;
+end;
+
+procedure T_ticket.UText2React(Sender: TObject);
+begin
+     mTitol.Lines.Text := gULib.MemoIn('Títol',mTitol.Lines.Text,400,250);
+     PosaLlargades;
+end;
+
+procedure T_ticket.UText4React(Sender: TObject);
+begin
+     mEstab.Lines.Text := gULib.MemoIn('Establiment',mEstab.Lines.Text,400,250);
+     PosaLlargades;
+end;
+
+procedure T_ticket.UText5React(Sender: TObject);
+begin
+     mPeu.Lines.Text := gULib.MemoIn('Peu',mPeu.Lines.Text,400,250);
+     PosaLlargades;
+end;
+
+procedure T_ticket.tAmpleReact(Sender: TObject);
+begin
+     AmpleChar := integer(Round(gULib.NumberIn('Ample en caràcters',dm.CR['AMPLE_TICKET_C'])));
+end;
+
+procedure T_ticket.tEscPosReact(Sender: TObject);
+begin
+     EstilEscPos := TEstilEscPos(tESCPOS.ItemIndex);
+end;
+
+end.

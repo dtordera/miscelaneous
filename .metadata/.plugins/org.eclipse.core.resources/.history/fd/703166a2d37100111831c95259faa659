@@ -1,0 +1,129 @@
+import java.util.Arrays;
+import java.util.Collections;
+
+
+public class Flota {
+	Vaixell[] V;
+	byte C,R;
+	
+	public Flota(int c,int r,byte[] l){	
+		C=(byte)c;
+		R=(byte)r;
+	
+		V= new Vaixell[l.length];
+		
+		for (byte n=0;n<l.length;n++)
+		V[n] = new Vaixell(l[n]);
+		
+		Coloca();	
+		
+	}	
+	
+	public void Coloca(){
+	
+		boolean fet = false;
+		
+		while (!fet)
+		{	
+			Posicions P = ShufflePosicions();
+			
+			for (Vaixell v:V)
+				v = new Vaixell(v.L);
+		
+			for (Vaixell v:V) {							
+				for (Posicio p:P.P)
+				{
+					System.out.println("\nPosicio " + p.toString() + "; Vaixell " + v.L);
+				
+					if (DintreLimits(v,p)&&CheckPosicio(v,V,p)) {
+						v.ps = new Posicions(p);
+						
+						if (v.r()==null) return;
+		
+						byte xo = (byte)(v.r().x-1),
+							yo = (byte)(v.r().y-1),
+							xf = (byte)(v.rf().x+1),
+							yf = (byte)(v.rf().y+1);
+		
+						for (byte i=xo;i<xf;i++)
+							for (byte j=yo;j<yf;j++)
+								P.remove(i,j);
+
+						System.out.println("Posicio " + p.toString() + " assignada a " + v.L);
+						break;						
+					}
+					else
+					System.out.println("Posicio " + p.toString() + " no valida per " + v.L);
+				}
+			}
+			
+			fet = true;		
+			
+			for (Vaixell v:V)
+				fet &= v.r()!=null;
+		}		
+		
+		String s="";
+		
+		for (byte j=0;j<R;j++)
+		{
+			for (byte i=0;i<C;i++)
+			{
+				char m='·';
+				
+				for (Vaixell v:V)
+				if (v.dintre(i,j)) m='X';
+			}
+		}
+		
+	}
+	
+	public void treuVaixell(Vaixell v,Posicions P){
+	
+		if (v.r()==null) return;
+		
+		byte xo = (byte)(v.r().x-1),
+			 yo = (byte)(v.r().y-1),
+			 xf = (byte)(v.rf().x+1),
+			 yf = (byte)(v.rf().y+1);
+		
+		for (byte i=xo;i<xf;i++)
+		for (byte j=yo;j<yf;j++)
+			P.remove(i,j);
+	}
+	
+	public boolean DintreLimits(Vaixell v,Posicio p){
+	
+		byte xo = (byte)p.x,
+			 yo = (byte)p.y,
+			 xf = (byte)p.J(v.L).x,
+			 yf = (byte)p.J(v.L).y;		
+	
+		return (xo>=0&&xf<C&&yo>=0&&yf<R);
+	}
+	
+	public boolean CheckPosicio(Vaixell v,Vaixell[] V,Posicio p){
+		boolean r = true;
+		
+		Vaixell d= new Vaixell(v.L,p);
+				
+		for (Vaixell l:V)
+		r&=!d.choque(l);
+		
+		return r;
+	}
+	
+	public Posicions ShufflePosicions(){
+		int i,j;					
+		Posicions P = new Posicions();
+		
+		for (j=0;j<R;j++)
+		for (i=0;i<C;i++)
+		{
+			P.add(i,j,K.HOR);
+			P.add(i,j,K.VER);
+		}
+	
+		return P.Shuffle();
+	}
+}

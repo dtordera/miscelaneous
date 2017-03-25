@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy 3 elements to &apos;TestMyView/src/jj.ll.pp&apos;&#x0A;- Original project: &apos;CrossCompatibility&apos;&#x0A;- Destination element: &apos;TestMyView/src/jj.ll.pp&apos;&#x0A;- Original elements:&#x0A;     com.example.android.touchexample.VersionedGestureDetector.java&#x0A;     com.example.android.touchexample.TouchExampleActivity.java&#x0A;     com.example.android.touchexample.TouchExampleView.java" description="Copy compilation units" destination="=TestMyView/src&lt;jj.ll.pp" element1="/src&lt;com.example.android.touchexample{VersionedGestureDetector.java" element2="/src&lt;com.example.android.touchexample{TouchExampleActivity.java" element3="/src&lt;com.example.android.touchexample{TouchExampleView.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1329828357445" units="3" version="1.0"/>
+</session>

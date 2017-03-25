@@ -1,0 +1,61 @@
+package pkULIB;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS ON}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE ON}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'ULIB - llibreria de components general'}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  vcl,
+  vcldb,
+  dbrtl,
+  adortl,
+  vclx;
+
+contains
+  UDBAlter in 'UDBAlter.pas',
+  UDBLabel in 'UDBLabel.pas',
+  UDBPickUp in 'UDBPickUp.pas',
+  SFilter in 'SFilter.pas',
+  UDBVAux in 'UDBVAux.pas',
+  UDBView in 'UDBView.pas',
+  UText in 'UText.pas',
+  ULabel in 'ULabel.pas',
+  UDBGlobal in 'UDBGlobal.pas',
+  ConfigRecord in 'ConfigRecord.pas',
+  FPanel in 'FPanel.pas',
+  gULIB in 'gULIB.pas',
+  MCEdit in 'MCEdit.pas',
+  BDInfo in 'BDInfo.pas',
+  BringToFront in 'BringToFront.pas',
+  CColor in 'CColor.pas',
+  Gradient in 'Gradient.pas',
+  RTScript in 'RTScript.pas',
+  RTScriptfnc in 'RTScriptfnc.pas',
+  UProcessos in 'UProcessos.pas',
+  HelpInfo in 'HelpInfo.pas',
+  UDBLoader in 'UDBLoader.pas',
+  urForm in 'urForm.pas' {_urForm};
+
+end.

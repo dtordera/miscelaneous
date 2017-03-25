@@ -1,0 +1,125 @@
+package dvtr.games.logic.BS10;
+
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+public class BS10SettingsActivity extends Activity {
+
+	private String 	GS_NOBMPS,
+				   	GS_WWII,
+				   	GS_CLASSIC;
+
+	private String 	DF_BEGGINER,
+					DF_EASY,
+					DF_NORMAL,
+					DF_HARD,
+					DF_EXPERT;
+
+	private String  RS_TRUE,
+	                RS_FALSE;
+
+	SharedPreferences Settings;
+	SharedPreferences.Editor SettingsEditor;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+
+		super.onCreate(savedInstanceState);
+
+		Settings = getSharedPreferences(BS10Settings.prefName, 0);
+		SettingsEditor = Settings.edit();
+
+		setStrings();
+		setContentView(R.layout.settings);
+	}
+
+	public void setStrings(){
+		Resources Res = getResources();
+
+		GS_NOBMPS  = Res.getString(R.string.GS_NOBMPS);
+		GS_WWII    = Res.getString(R.string.GS_WWII);
+		GS_CLASSIC = Res.getString(R.string.GS_CLASSICAL);
+
+		DF_BEGGINER = Res.getString(R.string.DF_BEGGINER);
+		DF_EASY     = Res.getString(R.string.DF_EASY);
+		DF_NORMAL   = Res.getString(R.string.DF_NORMAL);
+		DF_EXPERT   = Res.getString(R.string.DF_EXPERT);
+		DF_HARD     = Res.getString(R.string.DF_HARD);
+
+		RS_TRUE     = Res.getString(R.string.RS_TRUE);
+		RS_FALSE    = Res.getString(R.string.RS_FALSE);
+	}
+
+	@Override
+	protected void onResume(){
+		super.onResume();
+		SetSettingsBackGround();
+	}
+
+	public void SetSettingsBackGround() {
+		LinearLayout L = (LinearLayout)findViewById(R.id.settingsLayout);
+		TextView T = (TextView)findViewById(R.id.setting1);
+		String s;
+
+		Resources res = getResources();
+		Drawable d = res.getDrawable(R.drawable.menubkc);
+
+		switch (Settings.getInt("GS", BS10Settings.GS_CLASSIC)) {
+		case BS10Settings.GS_WWII:
+			d = res.getDrawable(R.drawable.menubkw);
+			s = GS_WWII;
+			break;
+		case BS10Settings.GS_NOBMPS:
+			d = res.getDrawable(R.drawable.menubkn);
+			s = GS_NOBMPS;
+			break;
+		default:
+			d = res.getDrawable(R.drawable.menubkc);
+			s = GS_CLASSIC;
+		}
+
+		L.setBackgroundDrawable(d);
+		T.setText(s);
+	}
+
+	public void settingGraphicalSet(View V) {
+
+		int n;
+		String s = ((TextView)findViewById(R.id.setting1)).getText().toString();
+
+		if (s.equals(GS_NOBMPS)) n = BS10Settings.GS_CLASSIC;
+		else if (s.equals(GS_CLASSIC)) n = BS10Settings.GS_WWII;
+		else n = BS10Settings.GS_NOBMPS;
+
+		SettingsEditor.putInt("GS", n);
+		SettingsEditor.commit();
+
+		SetSettingsBackGround();
+	}
+
+	public void settingDifficulty(View V){
+		String s = ((TextView)findViewById(R.id.setting2)).getText().toString();
+		int d;
+
+		if (s.equals(DF_BEGGINER)) d=6;
+		else if (s.equals(DF_EASY)) d=8;
+		else if (s.equals(DF_NORMAL)) d=10;
+		else if (s.equals(DF_HARD)) d=15;
+		else d=20;
+
+		SettingsEditor.putInt("PuzzleSize",d);
+		SettingsEditor.commit();
+		SettingsEditor.putInt("PuzzleSize",123);
+
+	}
+
+	public void settingRecursive(View V){
+	}
+
+}

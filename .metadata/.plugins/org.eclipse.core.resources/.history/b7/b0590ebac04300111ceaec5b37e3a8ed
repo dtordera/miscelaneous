@@ -1,0 +1,19 @@
+
+
+
+
+public class celda {
+
+	const int ORI_NO_DET = 0,
+			  ORI_HORZ   = 1,
+		      ORI_VERT   = 2,
+		      ORI_AMBAS  = 3;
+		      
+		   
+
+	boolean Determinada;
+	int[] 	Orientacio;
+	int[] 	PartVaixell;
+	int[] 	vaixell;
+	
+}

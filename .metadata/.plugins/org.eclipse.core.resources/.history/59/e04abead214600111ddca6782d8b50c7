@@ -1,0 +1,11 @@
+
+public class Vaixells {
+	Vaixell[] Flota;
+	
+	public Vaixells(int[] v){
+		Flota = new Vaixell[v.length];
+		
+		for (int i=0;i<Flota.length;i++)
+			Flota[i] = new Vaixell(v[i]);
+	}
+}

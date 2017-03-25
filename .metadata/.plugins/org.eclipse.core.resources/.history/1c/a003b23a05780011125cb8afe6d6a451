@@ -1,0 +1,76 @@
+package dvtr.games.logic.yubotu.shipmodel;
+
+import java.util.Arrays;
+import java.util.Random;
+
+public class FactoriaPuzzle {
+
+	public void Genera(int C,int R,byte[] Ls){
+	
+		System.gc();
+	
+		Flota F;
+		CondicionsInicials[] CI = new CondicionsInicials[0];		
+		Random rnd = new Random();
+						
+		ResoledorPuzzle RP;
+		
+		F = new Flota(C,R,Ls);						
+		RP = new ResoledorPuzzle(F.SR,F.SC,CI,Ls);				
+		
+		byte x,y;
+		int s;		
+		
+		
+		if (RP.Resol(2)!=1)
+		do {								
+			x = (byte)rnd.nextInt(C);
+			y = (byte)rnd.nextInt(R);
+			
+			CI = Arrays.copyOf(CI,CI.length+1);
+			CI[CI.length-1] = new CondicionsInicials(x,y,F.c(x,y));
+						
+			RP.M(CI);
+			s = RP.Resol(2);
+			
+//			if (s==0) CI = Arrays.copyOf(CI,CI.length-1);
+				
+		} while(s!=1);
+		
+		char bak;
+		
+		System.out.println("---");
+		
+		for (int n=0;n<CI.length;n++){
+			bak = CI[n].v;
+			CI[n].v = K.I;
+			
+			if (RP.M(CI).Resol(2)!=1) CI[n].v = bak;
+		}
+		
+		char[][] G = new char[C][R];
+		
+		for (char[] g:G)
+		Arrays.fill(g,K.I);
+		
+		for (CondicionsInicials ci:CI)
+			G[ci.x][ci.y] = ci.v;
+			
+		String r="";
+		
+		for (byte j=0;j<R;j++) {
+		
+			for (byte i=0;i<C;i++) 
+				r+=G[i][j] + " ";
+				
+			r += F.SC[j] + "\n";
+		}		
+		
+		r+="\n";
+		for (byte i=0;i<C;i++)
+			r+=F.SR[i] + " ";
+			
+		System.out.println(r);		
+		
+	}
+}

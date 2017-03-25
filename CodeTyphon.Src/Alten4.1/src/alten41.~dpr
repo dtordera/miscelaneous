@@ -1,0 +1,223 @@
+program alten41;
+
+{972477373 degisa}
+
+uses
+  UIApp in 'UIAPP.pas',
+  Forms,
+  Windows,
+  controls,
+  stdctrls,
+  sysutils,
+  udbview,
+  ulabel,
+  utext,
+  FPanel,
+  Gradient,
+  dialogs,
+  classes,
+  main in 'main.pas' {_main},
+  dmsrc in 'dmsrc.pas' {dm: TDataModule},
+  config in 'config.pas' {_config},
+  global in 'global.pas',
+  linies in 'linies.pas' {_linies},
+  marques in 'marques.pas' {_marques},
+  families in 'families.pas' {_families},
+  articles in 'articles.pas' {_articles},
+  personals in 'personals.pas' {_personals},
+  caixa in 'caixa.pas' {_caixa},
+  averies in 'averies.pas' {_averies},
+  pressupostos in 'pressupostos.pas' {_pressupostos},
+  earticles in 'earticles.pas' {_earticles},
+  lectura in 'lectura.pas' {_lectura},
+  reports in 'reports.pas' {_reports},
+  etorns in 'etorns.pas' {_etorns},
+  estilcolor in 'estilcolor.pas',
+  fastbut in 'fastbut.pas' {_fastbut},
+  ecaixa in 'ecaixa.pas' {_ecaixa},
+  entrades in 'entrades.pas' {_entrades},
+  eentrades in 'eentrades.pas' {_eentrades},
+  magatzem in 'magatzem.pas' {_magatzem},
+  tanctorn in 'tanctorn.pas' {_tanctorn},
+  resmtrn in 'resmtrn.pas' {_resmtrn},
+  epersonals in 'epersonals.pas' {_epersonals},
+  epressupostos in 'epressupostos.pas' {_epressupostos},
+  eventesA in 'eventesA.pas' {_eventesA},
+  ventesB in 'VentesB.pas' {_ventesB},
+  eventesB in 'eventesB.pas' {_eventesB},
+  ventesA in 'VentesA.pas' {_ventesA},
+  eaveries in 'eaveries.pas' {_eaveries},
+  econcepte in 'econcepte.pas' {_econcepte},
+  emarques in 'emarques.pas' {_emarques},
+  efamilies in 'efamilies.pas' {_efamilies},
+  elinies in 'elinies.pas' {_elinies},
+  llegcol in 'llegcol.pas' {_llegcol},
+  carregues in 'carregues.pas' {_carregues},
+  codcolor in 'codcolor.pas' {_codcolor},
+  colorscfg in 'colorscfg.pas' {_colorscfg},
+  dbutils in 'dbutils.pas',
+  epoblacions in 'epoblacions.pas' {_epoblacions},
+  poblacions in 'poblacions.pas' {_poblacions},
+  LlistCfg in 'llistcfg.pas',
+  ticket in 'ticket.pas' {_ticket},
+  cventesA in 'cventesA.pas' {_cventesA},
+  URaw in 'Uraw.pas',
+  tickprn in 'tickprn.pas',
+  cpressupostos in 'cpressupostos.pas' {_cpressupostos},
+  caveries in 'caveries.pas' {_caveries},
+  cventesB in 'cventesB.pas' {_cventesB},
+  econcepteaux in 'econcepteaux.pas',
+  mainaux in 'mainaux.pas',
+  vresum in 'vresum.pas' {_vresum},
+  segmag in 'segmag.pas' {_segmag},
+  centrades in 'centrades.pas' {_centrades},
+  sumcli in 'sumcli.pas' {_sumcli},
+  sumlinart in 'sumlinart.pas' {_sumlinart},
+  normalit in 'normalit.pas' {normalit},
+  mdant in 'mdant.pas' {_mdant},
+  escpos in 'escpos.pas',
+  margemitj in 'margemitj.pas' {_margemitj},
+  peinfor in 'peinfor.pas' {_peinfor};
+
+{$R *.RES}
+
+procedure RegistrarClases;
+begin
+     RegisterClasses
+     ([
+          TUDBView,
+          TCustomULabel,
+          TBLabel,
+          TCustomUText,
+          TSimpleUText,
+          TFPanel,
+          TGradientNC,
+          TGradient,
+          TLabel,
+          TButton
+     ]);
+
+     RegisterClasses
+     ([
+          T_earticles,
+          T_epersonals,
+          T_eaveries,
+          T_eventesA,
+          T_eventesB,
+          T_epressupostos,
+          T_ecaixa,
+          T_etorns,
+          T_eentrades
+     ]);
+end;
+
+procedure CrearEstilColor;
+begin
+     _estilcolor := TEstilcolor.Create;
+     _estilcolor.Load(BINDIR + 'STC\' + dm.CR['estil_prefixat']);
+     _estilcolor.Active := dm.CR['APLICAR_COLORS'] = 'SI';
+end;
+
+procedure Creardesdefonsmain;
+begin
+     _articles := T_articles.Create(_main.fonsmain);
+     _articles.Parent := _main.fonsmain;
+
+     _personals  := T_personals.Create(_main.fonsmain);
+     _personals.Parent  := _main.fonsmain;
+
+     _averies := T_averies.Create(_main.fonsmain);
+     _averies.Parent := _main.fonsmain;
+
+     _pressupostos := T_pressupostos.Create(_main.fonsmain);
+     _pressupostos.Parent := _main.fonsmain;
+
+     _ventesA    := T_ventesA.Create(_main.fonsmain);
+     _ventesA.Parent := _main.fonsmain;
+
+     _ventesB    := T_ventesB.Create(_main.fonsmain);
+     _ventesB.Parent := _main.fonsmain;
+
+     _caixa         := T_caixa.Create(_main.fonsmain);
+     _caixa.Parent  := _main.fonsmain;
+
+     _magatzem   := T_magatzem.Create(_main.fonsmain);
+     _magatzem.Parent := _main.fonsmain;
+
+     _entrades := T_entrades.Create(_main.fonsmain);
+     _entrades.Parent := _main.fonsmain;
+
+     _poblacions := T_poblacions.Create(_main.fonsmain);
+     _poblacions.Parent := _main.fonsmain;
+
+     _marques := T_marques.Create(_main.fonsmain);
+     _marques.Parent  := _main.fonsmain;
+
+     _families := T_families.Create(_main.fonsmain);
+     _families.Parent := _main.fonsmain;
+
+     _linies   := T_linies.Create(_main.fonsmain);
+     _linies.Parent   := _main.fonsmain;
+
+     _caveries := T_caveries.Create(_main.fonsmain);
+     _caveries.Parent := _main.fonsmain;
+
+     _cpressupostos := T_cpressupostos.Create(_main.fonsmain);
+     _cpressupostos.Parent := _main.fonsmain;
+
+     _cventesA := T_cventesA.Create(_main.fonsmain);
+     _cventesA.Parent := _main.fonsmain;
+
+     _cventesB := T_cventesB.Create(_main.fonsmain);
+     _cventesB.Parent := _main.fonsmain;
+
+     _centrades := T_centrades.Create(_main.fonsmain);
+     _centrades.Parent := _main.fonsmain;
+
+     _carregues := T_carregues.Create(Application);
+     _fastbut   := T_fastbut.Create(Application);
+end;
+
+procedure Allibera;
+begin
+     if Assigned(_centrades)      then _centrades.Release;
+     if Assigned(_caveries)       then _caveries.Release;
+     if Assigned(_cpressupostos)  then _cpressupostos.Release;
+     if Assigned(_cventesB)       then _cventesB.Release;
+     if Assigned(_cventesA)       then _cventesA.Release;
+     if Assigned(_carregues)      then _carregues.Release;
+     if Assigned(_marques)        then _marques.Release;
+     if Assigned(_caixa)          then _caixa.Release;
+     if Assigned(_magatzem)       then _magatzem.Release;
+     if Assigned(_ventesA)        then _ventesA.Release;
+     if Assigned(_ventesB)        then _ventesB.Release;
+     if Assigned(_pressupostos)   then _pressupostos.Release;
+     if Assigned(_averies)        then _averies.Release;
+     if Assigned(_personals)      then _personals.Release;
+     if Assigned(_entrades)       then _entrades.Release;
+     if Assigned(_linies)         then _linies.Release;
+     if Assigned(_families)       then _families.Release;
+     if Assigned(_fastbut)        then _fastbut.Release;
+     if Assigned(_estilcolor)     then _estilcolor.Free;
+end;
+
+begin
+     Application.Initialize;
+     RegistrarClases;
+     Application.Title := 'Alten.4.1';
+
+     Application.CreateForm(Tdm, dm);
+  if not dm.ErrorConexio then
+     begin
+          CrearEstilColor;
+
+          Application.CreateForm(T_main, _main);
+          Creardesdefonsmain;
+
+          Application.Run;
+          Allibera;
+     end
+     else dm.Free;
+
+     CompactAndRepair(dm.CR['database']);
+end.

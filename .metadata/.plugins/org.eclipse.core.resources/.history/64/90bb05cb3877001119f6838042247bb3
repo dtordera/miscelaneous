@@ -1,0 +1,11 @@
+package comu;
+
+public class K {
+
+	static final boolean SHIP_MODEL = true,
+					     CELL_MODEL = false;
+					     
+	static final boolean HOR=true,
+						 VER=false;					     
+
+}

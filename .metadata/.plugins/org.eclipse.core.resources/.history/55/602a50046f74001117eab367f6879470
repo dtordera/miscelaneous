@@ -1,0 +1,35 @@
+package dvtr.games.logic.yubotu.shipmodel;
+
+import java.util.Arrays;
+import java.util.Random;
+
+public class FactoriaPuzzle {
+
+	public void Genera(int C,int R,byte[] Ls){
+	
+		Flota F = new Flota(C,R,Ls);
+		CondicionsInicials[] CI = new CondicionsInicials[0];		
+		Random rnd = new Random();
+		
+		System.out.println(F.toString());
+		
+		ResoledorPuzzle RP = new ResoledorPuzzle(F.SR,F.SC,null,Ls);
+		
+		boolean fet = false;
+		int s;
+		byte x,y;
+		
+		while (!fet) {
+			s = RP.Resol(1);
+			
+			CI = Arrays.copyOf(CI,CI.length+1);
+			
+			x = rnd.nextInt(C);
+			y = rnd.nextInt(R);
+			
+			CI[CI.length-1] = new CondicionInicial(x,y,F.c(x,y));
+		
+			
+		}
+	}
+}

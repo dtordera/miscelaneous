@@ -1,0 +1,19 @@
+
+public class Posicio {
+	Index r;
+	boolean o;
+	
+	public Posicio(byte i, byte j, boolean h){
+		r = new Index(i,j);
+		o = h; 	
+	}
+	
+	public Posicio(Index i,boolean h){
+		r = i;
+		o = h;
+	}
+	
+	public String toString(){
+		return "("+r.x+","+r.y+","+(o?"-":"|")+")";
+	}
+}

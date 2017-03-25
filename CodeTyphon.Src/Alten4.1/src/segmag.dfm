@@ -1,0 +1,75 @@
+object _segmag: T_segmag
+  Left = 744
+  Top = 237
+  AutoSize = True
+  BorderStyle = bsToolWindow
+  Caption = 'magatzem'
+  ClientHeight = 332
+  ClientWidth = 383
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -13
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  FormStyle = fsStayOnTop
+  OldCreateOrder = False
+  Position = poDesktopCenter
+  OnCreate = FormCreate
+  PixelsPerInch = 120
+  TextHeight = 16
+  object v: TUDBView
+    Left = 0
+    Top = 0
+    Width = 383
+    Height = 332
+    LoseFocus = False
+    ShowHBar = True
+    Rounded = False
+    Kind = uvNormal
+    Align = alClient
+    Data.Connection = dm.CT
+    Data.Table = 'segmag'
+    Data.PrimaryKey = 'id'
+    Data.SFilterKind = fkProgressive
+    DateTimeFormat = 'ddddd'
+    FloatFormat = '0.00'
+    OnReturn = vReturn
+    EscClose = True
+    PopupMenu = PopupMenu
+    TabOrder = 0
+    TabStop = True
+    Caption.Fixed = 'magatzem'
+    Caption.Separator = ' * '
+    Look.FixedRowVAlign = vaTop
+    Look.FixedRow = clNavy
+    Look.FixedRowHeight = 23
+    Look.FixedRowFont.Charset = DEFAULT_CHARSET
+    Look.FixedRowFont.Color = clWhite
+    Look.FixedRowFont.Height = -12
+    Look.FixedRowFont.Name = 'Arial'
+    Look.FixedRowFont.Style = []
+    Look.Odd = 15002091
+    Look.Even = 14673116
+    Look.DataRowHeight = 18
+    Look.DataFont.Charset = DEFAULT_CHARSET
+    Look.DataFont.Color = 10526880
+    Look.DataFont.Height = -13
+    Look.DataFont.Name = 'Tahoma'
+    Look.DataFont.Style = []
+    Look.Border = False
+    Look.BorderColor = clNavy
+    Look.Focused = 33023
+    Look.Selected = clNavy
+    Look.BackColor = clBtnFace
+    DblClickAsEnter = True
+  end
+  object PopupMenu: TPopupMenu
+    OnPopup = PopupMenuPopup
+    Left = 120
+    Top = 90
+    object Sumes1: TMenuItem
+      Caption = 'Suma fins aquesta data : '
+    end
+  end
+end

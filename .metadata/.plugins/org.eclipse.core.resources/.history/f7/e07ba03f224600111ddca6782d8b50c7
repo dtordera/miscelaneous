@@ -1,0 +1,10 @@
+
+public class AResoldre {
+	public final static Vaixells Flota1 = new Vaixells(new char[]{ k.ACO,k.CRE,k.CRE,k.DES,k.DES,k.DES,k.DES,k.SUB,k.SUB,k.SUB,k.SUB });
+	
+
+	public final static Puzzle[] 
+			Puzzles = new Puzzle(Flota1.Flota,new int[]{1,4,2,3,2,3,1,2,2},new int[]{
+	
+
+}

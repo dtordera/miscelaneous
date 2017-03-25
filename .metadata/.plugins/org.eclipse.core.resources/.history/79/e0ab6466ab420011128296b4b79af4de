@@ -1,0 +1,113 @@
+package meves.apps.Ex0901;
+
+import android.app.AlertDialog;
+import android.app.ListActivity;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.view.View;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
+
+public class Ex9_1Activity extends ListActivity {
+
+	Cursor cursor;
+	ListAdapter adapter;
+	int LastPositionCursor;
+	String NumTel;
+	
+	
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+    
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        LastPositionCursor = position;
+		
+		Cursor tlfcur = 
+				getContentResolver().query(
+						ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+						null,
+						ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "= ?",
+						new String[] {""+id},
+						null);
+		int nTelefonos = tlfcur.getCount();
+		
+		final String[] telefonos = new String[nTelefonos];
+		int x = 0,
+			col;
+		
+		
+		while(tlfcur.moveToNext()) {
+			col = tlfcur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+			telefonos[x++] = tlfcur.getString(col);
+		}
+		tlfcur.close();
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		
+		builder.setTitle("Selecciona telèfon :");
+		builder.setItems(telefonos, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int item) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(Ex9_1Activity.this);
+				
+				builder.setTitle("Acció :");
+				builder.setItems(new String[] {"SMS","Trucar" },new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int item) {
+						switch(item) {
+						case 0 : Toast.makeText(Ex9_1Activity.this,"Envia SMS" ,Toast.LENGTH_SHORT).show();
+						case 1 : Toast.makeText(Ex9_1Activity.this,"Trucar",Toast.LENGTH_SHORT).show();
+					}
+				}  // onclick
+				}  // Listener
+				); // setItems
+				
+				builder.setNegativeButton("Cancelar",null);
+				AlertDialog alert = builder.create();
+				alert.show();
+			}
+		});
+		builder.setNegativeButton("Cancelar",null);
+		AlertDialog alert = builder.create();
+		alert.show();
+    }
+					           
+    public void onStop() {
+    	stopManagingCursor(cursor);
+    	cursor.close();
+    	super.onStop();
+    }
+    
+    public void onResume() {    	
+        cursor = getContentResolver().query(
+        		ContactsContract.Contacts.CONTENT_URI,
+        		new String[] {
+        				ContactsContract.Contacts._ID,
+        				ContactsContract.Contacts.DISPLAY_NAME },
+        		null,
+        		null,
+        		null
+        		);               
+        
+        startManagingCursor(cursor);
+                
+        adapter = 
+        		new SimpleCursorAdapter(
+        				Ex9_1Activity.this,
+        				android.R.layout.simple_list_item_1,
+        				cursor,
+        				new String[] {ContactsContract.Contacts.DISPLAY_NAME},
+        				new int[] {android.R.id.text1}
+        		);
+        
+        setListAdapter(adapter);
+        setSelection(LastPositionCursor);
+    	
+    	super.onResume();    	
+    }
+}

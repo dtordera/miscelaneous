@@ -1,0 +1,25 @@
+package comu;
+
+public class Index {
+	
+	public byte x,y;
+	
+	public Index(){
+		x=-99;
+		y=-99;
+	}
+	
+	public Index(int i,int j){
+		x = (byte)i;
+		y = (byte)j;
+	}
+	
+	public Index(Index I){
+		x = I.x;
+		y = I.y;		
+	}
+	
+	public String toString(){
+		return "("+x+","+y+")";
+	}
+}

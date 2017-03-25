@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/ScrollView01" android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="match_parent" android:layout_height="match_parent">
+		<Button android:id="@+id/auto" android:layout_height="wrap_content"
+			android:layout_width="match_parent" android:text="@string/auto" />
+		<Button android:id="@+id/manual_ss" android:layout_height="wrap_content"
+			android:layout_width="match_parent" android:text="@string/manual_ss" />
+		<Button android:id="@+id/manual_tb" android:layout_height="wrap_content"
+			android:layout_width="match_parent" android:text="@string/manual_tb" />
+	</LinearLayout>
+</ScrollView>

@@ -1,0 +1,25 @@
+package dvtr.games.logic.BS10;
+
+import android.app.ProgressDialog;
+import android.widget.TextView;
+
+public class BS10BuildPuzzleThread extends Thread {
+	ProgressDialog pd;
+	TextView in;
+
+	public BS10BuildPuzzleThread(ProgressDialog d,TextView i){
+		super();
+
+		pd = d;
+		in = i;
+	}
+
+	@Override
+	public void run(){
+		if (!CheckFitxerPuzzle()) NouFitxerPuzzle();
+		}
+	}
+
+	boolean CheckFitxerPuzzle(){
+	}
+}

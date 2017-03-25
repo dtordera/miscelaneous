@@ -1,0 +1,70 @@
+package ok.ok.ok;
+
+import java.io.IOException;
+import java.io.Writer;
+
+import org.apache.commons.net.smtp.SMTPClient;
+import org.apache.commons.net.smtp.SMTPReply;
+import org.apache.commons.net.smtp.SimpleSMTPHeader;
+
+import android.app.Activity;
+import android.os.Bundle;
+
+public class TestemailActivity extends Activity {
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+        
+        send("dtordera@gmail.com","dtordera@gmail.com","klasjdflsdjf","opweopiadmodiopsf");
+        
+    }
+    
+		private void checkReply(SMTPClient sc) throws IOException {
+	if (SMTPReply.isNegativeTransient(sc.getReplyCode())) {
+		sc.disconnect();
+		throw new IOException("Transient SMTP error " + sc.getReplyCode());
+	} else if (SMTPReply.isNegativePermanent(sc.getReplyCode())) {
+		sc.disconnect();
+		throw new IOException("Permanent SMTP error " + sc.getReplyCode());
+	}
+	}		
+		
+public void send(String from, String to, String subject, String text)
+throws IOException {
+        SMTPClient client = new SMTPClient("UTF-8");
+        client.setDefaultTimeout(60 * 1000);
+ 
+        client.setRequireStartTLS(true); // requires STARTTLS
+        //client.setUseStartTLS(true); // tries STARTTLS, but falls back if not supported
+        client.setUseAuth(true); // use SMTP AUTH
+        //client.setAuthMechanisms(authMechanisms); // sets AUTH mechanisms e.g. LOGIN
+ 
+       	client.connect("smtp.gmail.com", 587);
+       	checkReply(client);
+ 
+       	client.login("localhost", "dtordera@gmail.com", "9097UeID");
+       	checkReply(client);
+ 
+       	client.setSender(from);
+       	checkReply(client);
+       	client.addRecipient(to);
+       	checkReply(client);
+ 
+       	Writer writer = client.sendMessageData();
+ 
+       	if (writer != null) {
+       		SimpleSMTPHeader header = new SimpleSMTPHeader(from, to, subject);
+       		writer.write(header.toString());
+       		writer.write(text);
+       		writer.close();
+       		client.completePendingCommand();
+       	        checkReply(client);
+        }
+ 
+        client.logout();
+        client.disconnect();
+}		
+    
+}

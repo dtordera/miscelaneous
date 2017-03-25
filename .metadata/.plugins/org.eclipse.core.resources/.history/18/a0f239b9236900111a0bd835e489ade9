@@ -1,0 +1,158 @@
+package dvtr.games.logic.BS10;
+
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+public class BS10SettingsActivity extends Activity {
+
+	private String 	GS_NOBMPS,
+				   	GS_WWII,
+				   	GS_CLASSIC;
+
+	private String 	DF_BEGGINER,
+					DF_EASY,
+					DF_NORMAL,
+					DF_HARD,
+					DF_EXPERT;
+
+	private String  RS_TRUE,
+	                RS_FALSE;
+
+	SharedPreferences Settings;
+	SharedPreferences.Editor SettingsEditor;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+
+		super.onCreate(savedInstanceState);
+
+		Settings = getSharedPreferences(BS10Settings.prefName, 0);
+		SettingsEditor = Settings.edit();
+
+		setStrings();
+		setContentView(R.layout.settings);
+	}
+
+	public void setStrings(){
+		Resources Res = getResources();
+
+		GS_NOBMPS  = Res.getString(R.string.GS_NOBMPS);
+		GS_WWII    = Res.getString(R.string.GS_WWII);
+		GS_CLASSIC = Res.getString(R.string.GS_CLASSICAL);
+
+		DF_BEGGINER = Res.getString(R.string.DF_BEGGINER);
+		DF_EASY     = Res.getString(R.string.DF_EASY);
+		DF_NORMAL   = Res.getString(R.string.DF_NORMAL);
+		DF_EXPERT   = Res.getString(R.string.DF_EXPERT);
+		DF_HARD     = Res.getString(R.string.DF_HARD);
+
+		RS_TRUE     = Res.getString(R.string.RS_TRUE);
+		RS_FALSE    = Res.getString(R.string.RS_FALSE);
+	}
+
+	@Override
+	protected void onResume(){
+		super.onResume();
+
+		setSettingsBackGround();
+		setDifficultyText();
+	}
+
+	public void setSettingsBackGround() {
+		LinearLayout L = (LinearLayout)findViewById(R.id.settingsLayout);
+		TextView T = (TextView)findViewById(R.id.setting1);
+		String s;
+
+		Resources res = getResources();
+		Drawable d = res.getDrawable(R.drawable.menubkc);
+
+		switch (Settings.getInt("GS", BS10Settings.GS_CLASSIC)) {
+		case BS10Settings.GS_WWII:
+			d = res.getDrawable(R.drawable.menubkw);
+			s = GS_WWII;
+			break;
+		case BS10Settings.GS_NOBMPS:
+			d = res.getDrawable(R.drawable.menubkn);
+			s = GS_NOBMPS;
+			break;
+		default:
+			d = res.getDrawable(R.drawable.menubkc);
+			s = GS_CLASSIC;
+		}
+
+		L.setBackgroundDrawable(d);
+		T.setText(s);
+	}
+
+	public void settingGraphicalSet(View V) {
+
+		int n;
+
+		switch(Settings.getInt("GS",BS10Settings.GS_CLASSIC)) {
+			case BS10Settings.GS_CLASSIC : n = BS10Settings.GS_WWII; break;
+			case BS10Settings.GS_WWII    : n = BS10Settings.GS_NOBMPS; break;
+			default : n = BS10Settings.GS_CLASSIC;
+		}
+
+		SettingsEditor.putInt("GS", n);
+		SettingsEditor.commit();
+
+		setSettingsBackGround();
+	}
+
+	public void settingDifficulty(View V){
+		int d;
+
+		switch(Settings.getInt("PS",BS10Settings.DF_NORMAL)){
+			case BS10Settings.DF_BEGGINER : d=BS10Settings.DF_EASY; break;
+			case BS10Settings.DF_EASY     : d=BS10Settings.DF_NORMAL; break;
+			case BS10Settings.DF_NORMAL   : d=BS10Settings.DF_HARD; break;
+			case BS10Settings.DF_HARD     : d=BS10Settings.DF_EXPERT; break;
+			default : d=BS10Settings.DF_BEGGINER;
+		}
+
+		SettingsEditor.putInt("DF",d);
+		SettingsEditor.commit();
+
+		setDifficultyText();
+	}
+
+	public void setDifficultyText(){
+		TextView T = (TextView)findViewById(R.id.setting2);
+		String s;
+
+		switch(Settings.getInt("DF",10)){
+		case BS10Settings.DF_BEGGINER : s = DF_BEGGINER; break;
+		case BS10Settings.DF_EASY: s = DF_EASY; break;
+		case BS10Settings.DF_NORMAL : s = DF_NORMAL;break;
+		case BS10Settings.DF_HARD   : s = DF_HARD; break;
+		case BS10Settings.DF_EXPERT : s = DF_EXPERT; break;
+		default : s = DF_NORMAL;
+		}
+
+		T.setText(s);
+	}
+
+	public void settingRecursive(View V){
+
+		SettingsEditor.putBoolean("RS",!Settings.getBoolean("RS",true)).commit();
+
+		setRecursiveText();
+	}
+
+	public void setRecursiveText(){
+		((TextView)findViewById(R.id.setting3)).setText(Settings.getBoolean("RS",true)? RS_TRUE:RS_FALSE);
+	}
+
+	public void settingShowTime(View V){
+		SettingsEditor.putBoolean("ST",!Settings.getBoolean("ST",true)).commit();
+
+		setShowTimeText();
+	}
+}

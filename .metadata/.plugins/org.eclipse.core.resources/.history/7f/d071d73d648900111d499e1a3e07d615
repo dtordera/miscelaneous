@@ -1,0 +1,161 @@
+package dvtr.games.logic.BS10;
+
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+public class BS10SettingsActivity extends Activity {
+
+	private String 	GS_NOBMPS,
+				   	GS_WWII,
+				   	GS_CLASSIC;
+
+	private String 	SZ_TINY,
+					SZ_SMALL,
+					SZ_NORMAL;
+
+	private String  DF_NORMAL,
+					DF_EXPERT;
+
+	private String  ST_TRUE,
+					ST_FALSE;
+
+	SharedPreferences Settings;
+	SharedPreferences.Editor SettingsEditor;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+
+		super.onCreate(savedInstanceState);
+
+		Settings = getSharedPreferences(BS10Constants.prefName, 0);
+		SettingsEditor = Settings.edit();
+
+		setStrings();
+		setContentView(R.layout.settings);
+	}
+
+	public void setStrings(){
+		Resources Res = getResources();
+
+		GS_NOBMPS  = Res.getString(R.string.GS_NOBMPS);
+		GS_WWII    = Res.getString(R.string.GS_WWII);
+		GS_CLASSIC = Res.getString(R.string.GS_CLASSICAL);
+
+		SZ_TINY   = Res.getString(R.string.SZ_TINY);
+		SZ_SMALL  = Res.getString(R.string.SZ_SMALL);
+		SZ_NORMAL = Res.getString(R.string.SZ_NORMAL);
+
+		DF_NORMAL = Res.getString(R.string.DF_NORMAL);
+		DF_EXPERT = Res.getString(R.string.DF_EXPERT);
+
+		ST_TRUE   = Res.getString(R.string.ST_TRUE);
+		ST_FALSE  = Res.getString(R.string.ST_FALSE);
+	}
+
+	@Override
+	protected void onResume(){
+		super.onResume();
+
+		setSettingsBackGround();
+		setSizeText();
+		setDifficultyText();
+		setShowTimeText();
+	}
+
+	public void setSettingsBackGround() {
+		LinearLayout L = (LinearLayout)findViewById(R.id.settingsLayout);
+		TextView T = (TextView)findViewById(R.id.setting1);
+		String s;
+
+		Resources res = getResources();
+		Drawable d = res.getDrawable(R.drawable.menubkc);
+
+		switch (Settings.getInt("GS", BS10Constants.GS_CLASSIC)) {
+		case BS10Constants.GS_WWII:
+			d = res.getDrawable(R.drawable.menubkw);
+			s = GS_WWII;
+			break;
+		case BS10Constants.GS_NOBMPS:
+			d = res.getDrawable(R.drawable.menubkn);
+			s = GS_NOBMPS;
+			break;
+		default:
+			d = res.getDrawable(R.drawable.menubkc);
+			s = GS_CLASSIC;
+		}
+
+		L.setBackgroundDrawable(d);
+		T.setText(s);
+	}
+
+	public void settingGraphicalSet(View V) {
+
+		int n;
+
+		switch(Settings.getInt("GS",BS10Constants.GS_CLASSIC)) {
+			case BS10Constants.GS_CLASSIC : n = BS10Constants.GS_WWII; break;
+			case BS10Constants.GS_WWII    : n = BS10Constants.GS_NOBMPS; break;
+			default : n = BS10Constants.GS_CLASSIC;
+		}
+
+		SettingsEditor.putInt("GS", n);
+		SettingsEditor.commit();
+
+		setSettingsBackGround();
+	}
+
+	public void settingSize(View V){
+		int d;
+
+		switch(Settings.getInt("SZ",BS10Constants.SZ_NORMAL)){
+			case BS10Constants.SZ_TINY  : d=BS10Constants.SZ_SMALL; break;
+			case BS10Constants.SZ_SMALL : d=BS10Constants.SZ_NORMAL; break;
+			default                     : d=BS10Constants.SZ_TINY; break;
+		}
+
+		SettingsEditor.putInt("SZ",d);
+		SettingsEditor.commit();
+
+		setSizeText();
+	}
+
+	public void setSizeText(){
+		TextView T = (TextView)findViewById(R.id.setting2);
+		String s;
+
+		switch(Settings.getInt("SZ",10)){
+		case BS10Constants.SZ_TINY   : s = SZ_TINY; break;
+		case BS10Constants.SZ_SMALL  : s = SZ_SMALL; break;
+		default : s = SZ_NORMAL;
+		}
+
+		T.setText(s);
+	}
+
+	public void settingDifficulty(View V){
+
+		SettingsEditor.putBoolean("DF",!Settings.getBoolean("DF",true)).commit();
+
+		setDifficultyText();
+	}
+
+	public void setDifficultyText(){
+		((TextView)findViewById(R.id.setting3)).setText(Settings.getBoolean("DF",true)? DF_NORMAL:DF_EXPERT);
+	}
+
+	public void settingShowTime(View V){
+		SettingsEditor.putBoolean("ST",!Settings.getBoolean("ST",true)).commit();
+
+		setShowTimeText();
+	}
+
+	public void setShowTimeText(){
+		((TextView)findViewById(R.id.setting4)).setText(Settings.getBoolean("ST",true)?ST_TRUE:ST_FALSE);
+	}
+}

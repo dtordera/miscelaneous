@@ -1,0 +1,14 @@
+
+public class K {
+
+	final static boolean HOR=true,VER=false;
+	final static char 	I='·',
+						A='~',
+						N='A',
+						S='V',
+						O='<',
+						E='>',
+						M='M',
+						X='X',
+						B='O';
+}

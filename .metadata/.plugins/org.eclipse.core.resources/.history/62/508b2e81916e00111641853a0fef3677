@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/gameLayout"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent" 
+  android:orientation="horizontal"
+  android:gravity="right|center_vertical"
+  android:weightSum="5">
+  
+    <FrameLayout
+        android:id="@+id/Frame"
+        android:layout_width="0dip"
+        android:layout_height="match_parent"
+        android:layout_weight="4" >
+        
+        <Chronometer
+            	style="@style/buttonstyle"
+            	android:id="@+id/time">
+        </Chronometer>
+        
+        <LinearLayout
+            	android:layout_width="50dp"
+            	android:layout_height = "match_parent"
+            	android:background="#3000">  
+            	
+            	<Button
+            	    android:id="@+id/ButtonBoats"
+            	    android:layout_width="match_parent"
+            	    android:layout_height="150">
+            	</Button>      
+        </LinearLayout>
+                
+    </FrameLayout>
+  
+    <LinearLayout 
+        android:id="@+id/linearLayout2"         
+        android:layout_width="0dip" 
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+       
+        android:gravity="center_horizontal|bottom" 
+        android:orientation="vertical" >
+        
+        <Button android:id="@+id/btNewGame" android:paddingTop="30dip" style="@style/buttonstyle" android:text="@string/BT_NEW_GAME" android:onClick="NewGameClick"/>
+        <Button android:id="@+id/btResetGame" style="@style/buttonstyle" android:text="@string/BT_RESET_GAME" android:onClick="ResetGameClick"/>
+        <Button android:id="@+id/btHint"  style="@style/buttonstyle" android:text="@string/BT_HINT"/>
+        <Button android:id="@+id/btSolve" style="@style/buttonstyle" android:text="@string/BT_SOLVE" android:onClick="SolveGameClick"/>       
+        <Button android:id="@+id/btSave" style="@style/buttonstyle" android:text="@string/BT_SAVE"/>
+        <Button style="@style/buttonstyle" />
+        <Button android:id="@+id/btPosa" style="@style/buttonstyle" android:text="@string/BT_FILLCELL" android:onClick="gameCellPiece" android:paddingBottom="30dip" />            
+    </LinearLayout>       
+    
+</LinearLayout>

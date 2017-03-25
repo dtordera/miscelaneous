@@ -1,0 +1,26 @@
+
+public class Vaixell {
+	byte L;
+	Posicions ps;
+	
+	public Vaixell(byte l){
+		L=l;
+		ps = new Posicions();
+	}
+	
+	public Vaixell(byte l,Posicio...r){	
+		L=l;
+		ps = new Posicions(r);		
+	}
+	
+	public Posicio r(){
+		return ps.r();
+	}
+		
+	public String toString(){
+		return "L="+L+":\n"+ps.toString();
+	}	
+	
+	public boolean choque(Vaixell v){
+	}
+}

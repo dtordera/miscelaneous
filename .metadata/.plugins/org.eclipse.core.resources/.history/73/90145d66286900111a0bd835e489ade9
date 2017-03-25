@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+  	            
+<LinearLayout        
+
+  	xmlns:android="http://schemas.android.com/apk/res/android"         
+  	
+  	android:id="@+id/settingsLayout"
+    android:layout_width="match_parent" 
+    android:layout_height="match_parent"> 
+              		
+	<dvtr.ulib.views.TransparentPanel 			   		    
+        android:id="@+id/transparentPanel1" 
+		android:orientation="vertical"        
+        android:layout_width="0dip" 
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_margin="30dip"
+        android:layout_marginBottom="60dip"
+        android:layout_marginTop="60dip">
+        
+        <TextView android:id="@+id/TitleSettings"
+            style="@style/titlestyle" 
+            android:paddingLeft="30dip" 
+            android:paddingBottom="30dip"
+            android:text="@string/TitleSettings" />
+        <TextView android:id="@+id/setting1" 
+            style="@style/optionsstyle" 
+            android:paddingLeft="40dip"         	
+            android:onClick="settingGraphicalSet"/>     
+        <TextView android:id="@+id/setting2"
+            style="@style/optionsstyle"
+            android:paddingLeft="40dip"
+            android:onClick="settingDifficulty" />
+        <TextView android:id="@+id/setting3"
+            style="@style/optionsstyle"
+            android:paddingLeft="40dip"
+            android:onClick="settingRecursive" />
+        <TextView android:id="@+id/setting4"
+            style="@style/optionsstyle"
+            android:paddingLeft="40dip"
+            android:onClick="settingShowTime" />
+        
+    </dvtr.ulib.views.TransparentPanel>
+    
+</LinearLayout>

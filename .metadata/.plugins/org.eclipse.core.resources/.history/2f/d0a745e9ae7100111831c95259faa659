@@ -1,0 +1,6 @@
+
+public class Vaixell {
+	byte L;
+	Posicions ps;
+	Index[] ds;
+}

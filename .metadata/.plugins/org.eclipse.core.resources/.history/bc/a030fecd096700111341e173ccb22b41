@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<style name="Theme.D1NoTitleDim" parent="android:style/Theme.Translucent">
+<item name="android:windowNoTitle">true</item>
+<item name="android:fillViewport">false</item>
+<item name="android:paddingBottom">100dip</item>
+<item name="android:paddingTop">100dip</item>
+<item name="android:paddingLeft">100dip</item>
+<item name="android:paddingRight">100dip</item>
+<item name="android:backgroundDimEnabled">true</item>
+<item name="android:background">@android:color/transparent</item>
+</style>
+</resources>

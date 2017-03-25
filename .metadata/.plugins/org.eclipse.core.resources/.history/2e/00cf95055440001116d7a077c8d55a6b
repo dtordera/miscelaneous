@@ -1,0 +1,49 @@
+package meves.apps.Exemple0901;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.telephony.gsm.SmsManager;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+public class Exemple9_1smsActivity extends Activity {
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+        
+        final  EditText tlf = (EditText)findViewById(R.id.Telefon);
+        final  EditText sms = (EditText)findViewById(R.id.Cos);
+        Button boto = (Button) findViewById(R.id.button1);
+        
+        boto.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				String destino = tlf.getText().toString();
+				String text = sms.getText().toString();
+				
+				enviaSMS(destino,text);
+				tlf.setText("");
+				sms.setText("");
+			}
+		});
+		
+		private void enviaSMS(String d,String c){
+		try {
+			@SuppressWarnings("deprecation")
+			SmsManager smsMgr = SmsManager.getDefault();
+			
+			smsMgr.sendTextMessage(d,"677703749",c,null,null);
+			
+			Toast.makeText(Exemple9_1smsActivity.this, "SMS enviado",Toast.LENGTH_LONG).show();
+		} catch (Exception e) { 
+			Toast.makeText(Exemple9_1smsActivity.this, "Error enviant : " + e.getMessage(), Toast.LENGTH_LONG).show();
+			
+		}        
+    }
+}

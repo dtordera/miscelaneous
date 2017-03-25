@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+  	            
+<LinearLayout        
+
+  	xmlns:android="http://schemas.android.com/apk/res/android"         
+  	
+    android:layout_width="match_parent" 
+    android:layout_height="match_parent"  
+    android:background="@android:color/transparent">
+  		
+	<dvtr.games.logic.BSv10.TransparentPanel 	
+	    		    
+        android:id="@+id/transparentPanel1" 
+        android:layout_width="0dip" 
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_margin="50dip">
+        
+        <TextView android:id="@+id/textView1" 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content" 
+            android:text="TextView"/>       
+            
+    </dvtr.games.logic.BSv10.TransparentPanel>
+    
+</LinearLayout>

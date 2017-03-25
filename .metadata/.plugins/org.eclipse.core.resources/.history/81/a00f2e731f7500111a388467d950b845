@@ -1,0 +1,10 @@
+package comu;
+
+public class FactoriaPuzzle {
+
+	byte C,R;
+	byte[] Ls;
+	
+
+	public
+}

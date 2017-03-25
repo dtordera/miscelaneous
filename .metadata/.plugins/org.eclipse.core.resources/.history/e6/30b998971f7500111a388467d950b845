@@ -1,0 +1,14 @@
+package comu;
+
+public class FactoriaPuzzle {
+
+	static final boolean SHIP_MODEL = true,
+					     CELL_MODEL = false;
+
+	byte C,R;
+	byte[] Ls;
+	
+	boolean Model;	
+
+	public
+}

@@ -1,0 +1,15 @@
+package dvtr.games.logic.BS10;
+
+import android.content.Context;
+import android.view.View;
+
+public class BS10GameView extends View {
+
+	public BS10GameView(Context context) {
+		super(context);
+
+		final static byte MIN_CELLES_DIBUIXADES=4;
+
+	}
+
+}

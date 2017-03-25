@@ -1,0 +1,349 @@
+unit dmsrc;
+
+interface
+
+uses Windows, stdctrls, ConfigRecord, Forms, Classes, DB, ADODB, Dialogs, sysutils, ComObj, controls, ShellApi;
+
+type
+  Tdm = class(TDataModule)
+     CG: TADOConnection;
+     CR: TConfigRecord;
+     CT: TADOConnection;
+     procedure DataModuleCreate(Sender: TObject);
+     function  CarregaBD : boolean;
+     procedure CreaBaseDeDadesTemporal;
+     procedure DataModuleDestroy(Sender: TObject);
+    procedure  CRLoad(Sender: TObject);
+  private
+  public
+     ErrorConexio : boolean;
+     Treballador_escollit : string;
+     procedure RecarregaBD;
+     procedure EliminarBasesDeDadesTemporals;
+     procedure CrearCopiaDeSeguretat;
+     procedure ContaCopiesdeseguretat;
+     procedure ListDblClick(sender : TObject);
+     procedure ListKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+  end;
+
+var
+  dm: Tdm;
+
+implementation
+
+uses filectrl, global, main, dbutils;
+
+{$R *.DFM}
+
+procedure Tdm.RecarregaBD;
+var
+     op  : TOpenDialog;
+     desistit : boolean;
+label 1;
+begin
+     desistit := false;
+
+     op := TOpenDialog.Create(nil);
+     op.FileName := 'alten4.mdb';
+     op.InitialDir := BINDIR + 'BD';
+     op.Filter := 'Fitxers de base de dades (*.mdb)|*.mdb|Tots els fitxers (*.*)|*.*';
+     op.Title := 'Conexió a base de dades';
+
+1:   mDlg('ERROR GENERAL : no s''ha pogut conectar a la base de dades ' + CR['database'],mtError,[mbOK]);
+
+     if op.Execute then
+     begin
+          CR['database'] := op.FileName;
+          CR.Save;
+
+          if not CarregaBD then goto 1;
+     end
+     else desistit := true;
+
+     if desistit then
+     begin
+          mDlg('No hi ha cap base de dades carregada. El programa no pot continuar i es sortirà.',mtError,[mbOk]);
+          ErrorConexio := true;
+     end;
+
+     op.Free;
+end;
+
+procedure Tdm.DataModuleCreate(Sender: TObject);
+begin
+     CR.Load;
+     if not CarregaBD then RecarregaBD;
+     ContaCopiesdeSeguretat;
+     CreaBaseDeDadesTemporal;
+end;
+
+procedure Tdm.CreaBaseDeDadesTemporal;
+var
+     i : integer;
+     s : string;
+     fet : boolean;
+     q : TADOQuery;
+begin
+     if ErrorConexio then exit;
+
+     i := 0;
+     fet := false;
+     while not fet do
+     begin
+          s := BINDIR + 'tmp\bctm'+formatfloat('0000',i)+'.mdb';
+          inc(i);          
+          fet := not FileExists(s);
+     end;
+
+     q := TADOQuery.Create(nil);
+     q.Connection := dm.CT;
+
+     try
+          Crear_base_de_dades(s);
+          CR['BASE_TMP'] := s;
+          CT.ConnectionString := ConnectString(s);
+          CT.Connected := true;
+
+          q.Active := false;
+          q.SQL.Text := 'select * into c_conceptes_tmp from c_ventesA in ''' + dm.CR['database'] + ''' where id_ref = -99999999';
+          q.ExecSQL;
+          q.SQL.Text := 'select * into c_aveart_tmp from c_aveart in ''' + dm.CR['database'] + ''' where id_ref = -99999999';
+          q.ExecSQL;
+          q.SQL.Text := 'select * into c_aveint_tmp from c_aveint in ''' + dm.CR['database'] + ''' where id_ref = -99999999';
+          q.ExecSQL;
+          q.SQL.Text := 'create table segmag('+
+                        'id integer primary key,'+
+                        'data datetime, '+
+                        'id_ref integer, '+
+                        'tp_ref char(1), '+
+                        'uts_mod double '+
+                        ')';
+          q.ExecSQL;
+          q.SQL.Text := 'create table reporttemp('+
+                         'id_data varchar(50) with compression, '+
+                         'NOM_NIF varchar(150) with compression, '+
+                         'DIR_TEL varchar(150) with compression, '+
+                         'POB_CP  varchar(150) with compression, '+
+                         'BASE  varchar(20) with compression, '+
+                         'ANOMALIES memo with compression, ' +
+                         'GARANTIA varchar(50) with compression, '+
+                         'ENTR varchar(200) with compression, '+
+                         'REP_FINALITZADA varchar(150) with compression, '+
+                         'pressupost_FACTURA varchar(150) with compression, '+
+                         'IVA varchar(20) with compression, '+
+                         'IVA_P varchar(20) with compression, '+
+                         'SUBTOTAL varchar(20) with compression, '+
+                         'TOTAL varchar(20) with compression, '+
+                         'TOTAL_ABO varchar(20) with compression, '+
+                         'DESCOMPTE_P varchar(20) with compression, '+
+                         'DESCOMPTE varchar(20) with compression,'+
+                         'OBSERVACIONS memo with compression,'+
+                         'REP_A_DOMICILI varchar(200) with compression, '+
+                         'REP_EXTERNA varchar(200) with compression, '+
+                         'INFO_AB_COB varchar(30) with compression,'+
+                         'TOTAL_P varchar(15) with compression, ' +
+                         'A_COMPTE varchar(40) with compression, '+
+                         'EN_DEUTE varchar(40) with compression, '+
+                         'PEU varchar(255) with compression,'+
+                         'ESTAB memo with compression'+
+                         ')';
+          q.ExecSQL;
+          q.SQL.Text := 'create table c_ReportTemp('+
+                        'id_elem varchar(10) with compression, '+
+                        'concepte memo with compression, '+
+                        'uts  varchar(20) with compression, '+
+                        'preu varchar(20) with compression, '+
+                        'import varchar(20) with compression '+
+                        ')';
+          q.ExecSQL;
+          q.SQL.Text := 'create table c_ReportTemp2('+
+                        'id_elem varchar(10) with compression, '+
+                        'concepte memo with compression, '+
+                        'uts  varchar(20) with compression '+
+                        ')';
+          q.ExecSQL;
+
+     except
+     on E:EOleException do
+     begin
+          mDlg(Format('ERROR : no s''ha pogut crear la base de dades temporal o alguna de les seves taules. '+
+          'Comprobi que existeixi el directori ' + BINDIR + 'tmp\ i el disc dur no estigui plè o amb restriccions d''escritura.'+#13#10+
+          'Codi error : %d'+#13#10+'Missatge : %s',[E.ErrorCode,E.Message]),
+          mtError,[mbOk]);
+     end;
+     end;
+
+     q.Free;
+end;
+
+
+procedure Tdm.ContaCopiesdeseguretat;
+var
+     f : TFileListBox;
+     s : TForm;
+begin
+     s := TForm.Create(Application);
+     f := TFileListBox.Create(s);
+     f.Parent := s;
+     f.Visible := false;
+     f.Width := 0;
+     f.Height := 0;
+     f.Mask := '*.*';
+     try
+     f.Directory := dm.CR['BAK_DIR'];
+     except
+     mDlg('Error d''accés a la carpeta de còpies de seguretat ' + dm.CR['BAK_DIR'],mtError,[mbOk]);
+     s.Release;
+     exit;
+     end;
+
+     if f.Count > 150 then
+     if mDlg('Hi han 150 o més còpies de seguretat al directori ' + dm.CR['BAK_DIR']+'. S''haurien de borrar o moure les antigues per tal de no colapsar el disc dur.',['&Obrir','&Continuar']) = mrYes
+     then ShellExecute(s.Handle, 'open', PChar('explorer'),PChar(dm.CR['BAK_DIR']), PChar(dm.CR['BAK_DIR']),SW_SHOWNORMAL);
+
+     f.free;
+     s.Release;
+end;
+
+procedure Tdm.EliminarBasesDeDadesTemporals;
+var
+     f : TFileListBox;
+     fr : TForm;
+begin
+     fr := TForm.Create(Application);
+
+     f := TFileListBox.Create(nil);
+     f.Width  := 0;
+     f.Height := 0;
+     f.Parent := fr;
+     f.Visible := false;
+     f.Mask := 'bctm*.mdb;bctm*.ldb';
+     f.Directory := BINDIR + 'tmp';
+
+     while f.Count > 0 do
+     begin
+          if not DeleteFile(f.Items[0])
+          then mDlg('Error intentant eliminar fitxer temporal ' + f.Items[0],mtError,[mbOk]);
+
+          f.Items.Delete(0);
+     end;
+
+     f.Free;
+     fr.Release;
+end;
+
+function Tdm.CarregaBD : boolean;
+begin
+     result := true;
+
+     if (CR['database'] = 'default') or
+        (CR['database'] = '') then
+         CR['database'] := BINDIR + 'bd\alten4.mdb';
+
+     try  CG.Connected := false;
+          CG.ConnectionString := ConnectString(CR['database']);
+          CG.Connected := true;
+     except
+          result := false;
+     end;
+end;
+
+procedure Tdm.DataModuleDestroy(Sender: TObject);
+var
+     ss : TStrings;
+     q : TADOQuery;
+begin
+     if ErrorConexio then exit;
+
+     ss := TStringList.Create;
+     if dm.CR['PANELL_ORDRES'] = 'SI'
+     then ss.SaveToFile(BINDIR + 'STP\\pp.stp')
+     else DeleteFile(BINDIR + 'STP\\pp.stp');
+     ss.Free;
+
+     q := TADOQuery.Create(nil);
+     q.Connection := dm.CG;
+
+     try
+     q.SQL.Text := 'drop table articles_backup';
+     q.ExecSQL;
+     except
+     end;
+
+     q.Free;     
+
+     dm.CG.Connected := false;
+     dm.CT.Connected := false;
+
+     EliminarBasesdeDadesTemporals;     
+end;
+
+function DonaData__(d : TDateTime) : string;
+begin
+     result := StringReplace(FormatDateTime('ddddd',d),'/','_',[rfReplaceAll]);
+end;
+
+procedure Tdm.CrearCopiaDeSeguretat;
+var
+     s : string;
+     c : string;
+     err : integer;
+begin
+     s := StringReplace(ExtractFileName(dm.CR['DATABASE']),'.mdb','',[rfReplaceAll]);
+     s := dm.CR['BAK_DIR'] + '\' + s + '_' + DonaData__(date) + '.mdb';
+     c := dm.CR['database'];
+
+     if not CopyFile(PAnsiChar(c),PAnsiChar(s),false) then
+     begin
+          err := GetLastError;
+          mDlg(Format('Error intentant crear còpia de seguretat: comprobar que existeixi la carpeta ' + dm.CR['BAK_DIR'] + ' i tingui els permissos correctes.'#13#10+
+          'nº error : ' + '%d',[err]), mtError,[mbOk]);
+     end;
+
+     CompactAndRepair(s);
+end;
+
+procedure Tdm.CRLoad(Sender: TObject);
+begin
+     C_OBSOLET                := strtoint(dm.CR['C_OBSOLET']);
+     C_MARGENOVALID           := strtoint(dm.CR['C_MARGENOVALID']);
+     C_MARGEDEFECTE           := strtoint(dm.CR['C_MARGEDEFECTE']);
+     C_MARGEMARCA             := strtoint(dm.CR['C_MARGEMARCA']);
+     C_ENTRADADIRECTA         := strtoint(dm.CR['C_ENTRADADIRECTA']);
+     C_REPETIT_2              := strtoint(dm.CR['C_REPETIT_2]']);
+     C_REPETIT_3              := strtoint(dm.CR['C_REPETIT_3']);
+     C_REPETIT_4              := strtoint(dm.CR['C_REPETIT_4']);
+     C_MESDOSANYS             := strtoint(dm.CR['C_MESDOSANYS']);
+     C_ABONAMENT              := strtoint(dm.CR['C_ABONAMENT']);
+     C_ABONADA                := strtoint(dm.CR['C_ABONADA']);
+     C_ENDEUTE                := strtoint(dm.CR['C_ENDEUTE']);
+     C_REALITZATS             := strtoint(dm.CR['C_REALITZATS']);
+     C_REP_FINALITZADA        := strtoint(dm.CR['C_REP_FINALITZADA']);
+     C_TORN_OBERT             := strtoint(dm.CR['C_TORN_OBERT']);
+     C_UTS_CERO               := strtoint(dm.CR['C_UTS_CERO']);
+     C_NORMALIT               := strtoint(dm.CR['C_NORMALIT']);
+end;
+
+procedure Tdm.ListDblClick(sender : TObject);
+begin
+     Treballador_escollit := (sender as TListBox).Items[(sender as TListBox).ItemIndex];
+     ((sender as TListBox).Owner as TForm).Close;
+end;
+
+procedure Tdm.ListKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+     case Key of
+     27 : begin
+          Treballador_escollit := '';
+          ((sender as TListBox).Owner as TForm).Close;
+          Key := 0;
+          end;
+     13 : begin
+          Treballador_escollit := (sender as TListBox).Items[(sender as TListBox).ItemIndex];
+          ((sender as TListBox).Owner as TForm).Close;
+          Key := 0;
+          end;
+     end;
+end;
+
+end.

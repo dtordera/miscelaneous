@@ -1,0 +1,221 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+
+
+public class Resoledor {
+
+	grid gs, // solució
+		 gi, // inicial
+		 gt; // treball;
+		 
+	ArrayList<grid> g = new ArrayList<grid>();
+		 	
+	public Resoledor(grid g) {
+
+		gi = new grid(g);
+		gs = new grid(gi);
+		gt = new grid(gs);
+	}
+	
+	public String toString() {
+		return "Inicial :\n" + gi.toString() + "\nSolució :\n" + gs.toString() + "\nTreball :\n" + gt.toString();
+	}
+	
+	public boolean resoldre(){
+		boolean resolt = false;
+		
+		while(!zeros());
+		patrons();
+		completament();
+		idpart();
+		
+		return resolt;
+	}
+	
+	public boolean idpart(){
+	
+		boolean ret = false;
+		
+		System.out.println("Aplicant idpart()");
+		
+		for (int i=0;i<gt.mc;i++)
+		for (int j=0;j<gt.mr;j++)
+		{
+			if (gt.C(i,j) != k.X) continue;
+			
+			for (int p=0;p<k.Patrons.length;p++)
+			{
+				if (comprobapatro(i,j,p)) 
+				{
+					gt.C(i,j,p);
+					ret = true;
+				}
+			}
+		}				
+		
+		
+		return ret;
+	}
+	
+	public boolean comprobapatro(int i,int j,int p){
+	
+		boolean ret = true;
+		int v,l;
+	
+		for (int n=0;n<5;n++)
+		for (int m=0;m<5;m++)
+		{
+			v = k.Patrons[p][i][j];
+			l = gt.C(i,j);
+			
+			ret = ret && k.PatroPosible(p,i,j)
+		}
+		
+		return ret;		 
+	}
+	
+	public boolean completament(){
+			
+		System.out.println("Aplicant completament()");	
+		
+		boolean fet = false;
+		
+		while(!fet)
+			fet = !(completament_aigues() || completament_parts());
+		
+		return false;
+	}
+	
+	public boolean completament_aigues(){
+	
+		boolean ret = false;
+				
+		for (int j=0;j<gt.mr;j++)
+		{		
+			if (gt.SC[j] == 0) continue;
+			
+			int OC = 0;		
+						
+			for (int i=0;i<gt.mc;i++)
+				if (gt.C(i,j) > k.A) OC++;
+				
+			System.out.print(gt.SC[j] + " =? " + OC + "\n");					
+										
+			if (gt.SC[j] == OC)
+			for (int i=0;i<gt.mc;i++)
+				if (gt.C(i,j) < k.A) 
+				{
+					gt.C(i,j,k.A);
+					ret = true;
+				}
+		}
+		
+		for (int i=0;i<gt.mc;i++)
+		{
+			if (gt.SR[i] == 0) continue;
+
+			int OR = 0;
+			
+			for (int j=0;j<gt.mr;j++)
+				if ((gt.C(i,j) != k.A) && (gt.C(i,j) != k.X)) OR++;
+							
+			if (gt.SR[i] == OR) 
+			for (int j=0;j<gt.mr;j++)
+				if (gt.C(i,j) == k.X) 
+				{
+					gt.C(i,j,k.A);				
+					ret = true;
+				}
+		}
+		
+		return ret;	
+	}
+	
+	public boolean completament_parts(){
+		boolean ret = false;
+				
+		for (int j=0;j<gt.mr;j++)
+		{
+			int BC = 0;
+			int OC = 0;
+			
+			for (int i=0;i<gt.mc;i++)
+				if (gt.C(i,j) == k.X) BC++;
+				else
+				if (gt.C(i,j) != k.A) OC++;
+																						
+			if (gt.SC[j] - OC == BC) 
+			for (int i=0;i<gt.mc;i++)
+				if (gt.C(i,j) == k.X)
+				{
+					gt.C(i,j,k.P);
+					ret = true;
+				}
+		}
+		
+		for (int i=0;i<gt.mc;i++)
+		{
+			int BR = 0;
+			int OR = 0;
+			
+			for (int j=0;j<gt.mr;j++)
+				if (gt.C(i,j) == k.X) BR++;
+				else
+				if (gt.C(i,j) != k.A) OR++;
+				
+			if (gt.SR[i] - OR == BR) 
+			for (int j=0;j<gt.mr;j++)
+				if (gt.C(i,j) == k.X) 
+				{
+					gt.C(i,j,k.P);
+					ret = true;
+				}
+		}
+		
+		return ret;
+	}
+	
+	public boolean patrons() {
+		boolean ret = false;
+		
+		System.out.println("Aplicant patrons()");
+		
+		for (int j=0;j<gt.mr;j++)
+		for (int i=0;i<gt.mc;i++)
+			ret = ret || AplicaPatro(gt,i,j);
+		
+		return ret;
+	}
+	
+	public boolean AplicaPatro(grid g, int i,int j){
+		boolean ret = false;
+		
+		int v = g.C(i,j);
+		
+		for (int n = 0;n < 5;n++)
+		for (int m = 0;m < 5;m++)
+		{
+			int p = k.vPatro(v,n,m);
+			
+			if ((p != k.X) && g.C(i-2+n,j-2+m) != p) { g.C(i-2+n,j-2+m,p); ret = true; }
+		}
+		return ret;
+	}
+	
+	public boolean zeros() {
+		
+		boolean ret = false;
+		
+		System.out.println("Aplicant zeros()");
+		
+		for (int j=0;j<gt.mr;j++)
+		for (int i=0;i<gt.mc;i++)		
+			if (((gt.SR[i] == 0) || (gt.SC[j] == 0)) && (gt.C(i,j) == k.X)) {
+				gt.C(i,j,k.A);
+				
+				ret = true;
+			}
+			
+		return ret;		
+	}
+}

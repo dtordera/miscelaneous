@@ -1,0 +1,9 @@
+
+public class FactoriaPuzzle {
+
+	final static int[] Ls={4,3,3,2,2,2,1,1,1,1};
+	final static int C=10,R=10;
+	public void Genera(){
+	
+	}
+}

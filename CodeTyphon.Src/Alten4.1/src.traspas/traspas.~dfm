@@ -1,0 +1,93 @@
+object Form1: TForm1
+  Left = 286
+  Top = 352
+  Width = 670
+  Height = 279
+  Caption = 'Form1'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -13
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 120
+  TextHeight = 16
+  object LLabel1: TLLabel
+    Left = 110
+    Top = 20
+    Width = 421
+    Height = 16
+    Cursor = crHandPoint
+    ColorMouseOver = 33023
+    ColorRestore = clBlack
+    Caption = 'LLabel1'
+    NoClick = False
+    PassColors = False
+    OnLoad = LLabel1Load
+    Dialog.DefaultExt = '*.*'
+    Dialog.Filter = 'All files (*.*)|*.*'
+    Dialog.InitialDir = 'C:\Archivos de programa\Delphi7SE\Bin\'
+    Dialog.Options = []
+  end
+  object b2: TLLabel
+    Left = 110
+    Top = 40
+    Width = 14
+    Height = 16
+    Cursor = crHandPoint
+    ColorMouseOver = 33023
+    ColorRestore = clBlack
+    Caption = 'b2'
+    NoClick = False
+    PassColors = False
+    Dialog.DefaultExt = '*.*'
+    Dialog.Filter = 'All files (*.*)|*.*'
+    Dialog.InitialDir = 'C:\Archivos de programa\Delphi7SE\Bin\'
+    Dialog.Options = []
+  end
+  object Label1: TLabel
+    Left = 40
+    Top = 20
+    Width = 38
+    Height = 16
+    Caption = 'Origen'
+  end
+  object Label2: TLabel
+    Left = 40
+    Top = 40
+    Width = 28
+    Height = 16
+    Caption = 'Dest'#237
+  end
+  object Label3: TLabel
+    Left = 350
+    Top = 110
+    Width = 37
+    Height = 16
+    Caption = 'Label3'
+  end
+  object Button1: TButton
+    Left = 110
+    Top = 70
+    Width = 121
+    Height = 25
+    Caption = 'Clients'
+    TabOrder = 0
+    OnClick = Button1Click
+  end
+  object Button2: TButton
+    Left = 110
+    Top = 100
+    Width = 121
+    Height = 25
+    Caption = 'Ventes'
+    TabOrder = 1
+    OnClick = Button1Click
+  end
+  object CG: TADOConnection
+    LoginPrompt = False
+    Left = 40
+    Top = 150
+  end
+end

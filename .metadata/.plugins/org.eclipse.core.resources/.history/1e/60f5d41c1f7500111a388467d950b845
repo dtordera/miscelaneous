@@ -1,0 +1,19 @@
+package comu;
+
+public class BSPuzzle {
+	byte C,R;
+	byte[] SR,SC;
+	byte[] Ls;
+	Mostrades[] M;
+	
+	public BSPuzzle(byte[] sr, byte[] sc,Mostrades[] m, byte[] ls){
+	
+		C = (byte)sr.length;
+		R = (byte)sc.length;
+	
+		SR=sr.clone();
+		SC=sc.clone();
+		
+	
+	}
+}

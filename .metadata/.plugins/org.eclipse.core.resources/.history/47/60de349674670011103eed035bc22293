@@ -1,0 +1,19 @@
+package dvtr.ulib.views;
+
+import android.content.Context;
+import android.widget.TextView;
+
+public class MTextView extends TextView {
+
+	String[] SA;
+
+	public MTextView(Context context) {
+		super(context);
+	}
+
+	public MTextView(Contenxt context,String[] A){
+		super(context);
+		SA = Arrays.copyof(A,A.length);
+	}
+
+}

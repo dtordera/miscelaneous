@@ -1,0 +1,70 @@
+
+public class Vaixell {
+	public Index i = new Index(-1,-1);	// inici
+	public char  l = 0;					// longitud
+	public byte o= k._i_;	    // orientacio
+	public boolean fixat = false;		// si ja està determinat
+		
+	public Index distancia(Vaixell v) {
+		Index ret = new Index(-1,-1);					
+		
+		ret.x = v.i.x > i.x ? (i.x + Px()*l > v.i.x ? 0 : v.i.x - i.x - Px()*l) : (v.i.x + v.Px()*v.l > i.x ? 0 : i.x - v.i.x - v.Px()*v.l);
+		ret.y = v.i.y > i.y ? (i.y + Py()*l > v.i.y ? 0 : v.i.y - i.y - Py()*l) : (v.i.y + v.Py()*v.l > i.y ? 0 : i.y - v.i.y - v.Py()*v.l);		
+		
+		return ret;
+	}
+	
+	public boolean min_d(Vaixell v,int m) {
+		boolean ret = false;
+			ret = (distancia(v).x > m) && (distancia(v).y > m)));;
+		return ret;
+	}
+	
+	public Vaixell(int x,int y,char L,byte O){
+		i.x = x;
+		i.y = y;
+		l = L;
+		o = O;
+	}
+	
+	public Vaixell(char L) {
+		i.x = 0;
+		i.y = 0;
+		l   = L;
+		o   = k._h_;
+	}
+	
+	public void posa(Index I,byte O) {
+		i.x = I.x;
+		i.y = I.y;
+		o   = O;
+	}
+	
+	public Index F(){ // Punt final
+		return new Index(i.x + Px()*l,i.y + Py()*l);		
+	}
+	
+	public byte Px() { // projeccio a X
+		return (byte)(o == k._h_ ? 1 : 0);
+	}
+	
+	public byte Py() { // projeccio a Y
+		return (byte)(o == k._v_ ? 1 : 0);
+	}
+		
+	public boolean a(Index f){
+		
+		return (f.x >= i.x) && (f.x < i.x + Px()*l) && (f.y >= i.y) && (f.y	< i.y + Py()*l);
+	}
+	
+	public void toGrid(char [][] g){
+		char c;
+	
+		for (int n=0;n<l;n++)
+		{
+			c = n == 0 ? (l == 1 ? 'O': (o == k._v_? 'A':'C')):(n==l-1 ? (o == k._v_? 'U' : '>'): 'X');
+							
+			g[i.x + n*Px()][i.y + n*Py()] = c;			
+		}
+	}
+}

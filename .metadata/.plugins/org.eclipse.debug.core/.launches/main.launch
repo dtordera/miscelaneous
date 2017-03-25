@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/Yubotu.0.5/src/dvtr/games/logic/yubotu/shipmodel/main.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="dvtr.games.logic.yubotu.shipmodel.main"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Yubotu.0.5"/>
+</launchConfiguration>

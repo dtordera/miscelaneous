@@ -1,0 +1,11 @@
+
+public class Posicio {
+	byte x,y;
+	boolean o;
+	
+	public Posicio(byte i, byte j, byte h){
+		x = i;
+		y = j;
+		o = h; 	
+	}
+}

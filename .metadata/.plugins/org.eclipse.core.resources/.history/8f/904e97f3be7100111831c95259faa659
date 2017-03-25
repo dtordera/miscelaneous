@@ -1,0 +1,9 @@
+
+public class Flota {
+	Vaixell[] V;
+	byte C,byte R;
+	
+	public Flota(byte C,byte R,int[] L){
+	}
+	
+}

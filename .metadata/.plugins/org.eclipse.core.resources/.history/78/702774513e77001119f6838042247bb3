@@ -1,0 +1,13 @@
+package comu;
+
+public class K {
+
+	public static final boolean SHIP_MODEL = true,
+								CELL_MODEL = false;
+					     
+	public static final boolean HOR=true,
+						 VER=false;
+						 
+	public static final char 	I='·',A='~',N='A',S='V',
+								O='<',E='>',X='X',B='O';						 					     
+}

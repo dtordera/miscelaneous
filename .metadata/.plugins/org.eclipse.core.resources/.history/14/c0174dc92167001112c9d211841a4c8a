@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="right" 
+    android:orientation="horizontal">
+	    
+    <TextView android:id="@+id/twTitol"
+        style="@style/titlestyle"
+        android:text="@string/Titol" />
+    <TextView android:id="@+id/twVersio"
+        style="@style/versionstyle"        
+    	android:text="@string/Versio" />
+    <TextView android:id="@+id/twOpcio1"
+		style="@style/optionsstyle"                
+        android:text="@string/Opcio1"
+    	android:onClick="optionNewGame" />
+    <TextView android:id="@+id/twOpcio2"
+		style="@style/optionsstyle"        
+        android:text="@string/Opcio2" 
+        android:onClick="optionSavedGames" />
+    <TextView android:id="@+id/twOpcio3"
+		style="@style/optionsstyle"         
+        android:onClick="optionSettings"
+        android:text="@string/Opcio3" />
+    <TextView android:id="@+id/twOpcio4"
+		style="@style/optionsstyle"         
+    	android:text="@string/Opcio4" 
+    	android:onClick="optionHowToPlay" />
+    <TextView android:id="@+id/twOpcio5"
+		style="@style/optionsstyle"         
+        android:text="@string/Opcio5" 
+		android:onClick="optionExit" /> 
+</LinearLayout>
